@@ -5,6 +5,8 @@
 /dist/
 /docs/
 .idea/*
+/tasks/
+/umls/
 
 .DS_Store
 coverage
