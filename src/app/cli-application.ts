@@ -21,7 +21,7 @@ export default class CliApplication {
         acc[currItem] = [];
         command = currItem;
       } else if (command && currItem) {
-        acc[currItem].push(currItem);
+        acc[command].push(currItem);
       }
       return acc;
     }, parsedCommand);
