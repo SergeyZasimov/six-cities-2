@@ -1,4 +1,5 @@
 import { readFileSync } from 'fs';
+import FileReadError from '../../errors/file-reader-error.js';
 import { FeatureType } from '../../types/feature-type.enum.js';
 import { HousingType } from '../../types/housing-type.enum.js';
 import { Offer } from '../../types/offer.type.js';
@@ -8,10 +9,14 @@ import { FileReaderInterface } from './file-reader.interface.js';
 export default class TSVFileReader implements FileReaderInterface {
   private rawData = '';
 
-  constructor(public readonly filename: string) {}
+  constructor(public readonly filePath: string) {}
 
   public read(): void {
-    this.rawData = readFileSync(this.filename, 'utf-8');
+    try {
+      this.rawData = readFileSync(this.filePath, 'utf-8');
+    } catch (err) {
+      throw new FileReadError(this.filePath);
+    }
   }
 
   public prepareToConsole(): Offer[] {
@@ -23,7 +28,7 @@ export default class TSVFileReader implements FileReaderInterface {
       .split('\n')
       .filter((row) => row.trim() !== '')
       .map((line) => line.split('\t'))
-      .map((item) => this.convertData(item));
+      .map(this.convertData);
   }
 
   private convertData = (dataArray: string[]): Offer => {
