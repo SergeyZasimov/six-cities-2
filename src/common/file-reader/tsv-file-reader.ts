@@ -1,5 +1,5 @@
 import { readFileSync } from 'fs';
-import FileReadError from '../../errors/file-reader-error.js';
+import FileReadError from '../../errors/file-read-error.js';
 import { FeatureType } from '../../types/feature-type.enum.js';
 import { HousingType } from '../../types/housing-type.enum.js';
 import { Offer } from '../../types/offer.type.js';

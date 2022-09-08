@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs';
 import path from 'path';
-import FileReadError from '../errors/file-reader-error.js';
+import FileReadError from '../errors/file-read-error.js';
 import { CliCommandInterface } from './cli-command.interface.js';
 
 export default class VersionCommand implements CliCommandInterface {
