@@ -1,0 +1,142 @@
+{
+  "api": {
+    "titles": [
+      "lorem ipsum dolor sit amet",
+      "consectetur adipiscing elit",
+      "sed do eiusmod tempor incididunt",
+      "ut labore et dolore magna aliqua",
+      "ut enim ad minim veniam",
+      "quis nostrud exercitation ullamco laboris nisi ",
+      "duis aute irure dolor in reprehenderit",
+      "excepteur sint occaecat cupidatat non proident"
+    ],
+    "descriptions": [
+      "Quisque non tellus orci ac. Euismod in pellentesque massa placerat. In massa tempor nec feugiat nisl.",
+      " Lacus suspendisse faucibus interdum posuere. Ut morbi tincidunt augue interdum.",
+      "Neque viverra justo nec ultrices dui sapien eget. Sit amet risus nullam eget felis eget nunc lobortis.",
+      "Volutpat odio facilisis mauris sit amet massa. Purus faucibus ornare suspendisse sed nisi lacus sed viverra.",
+      "Odio pellentesque diam volutpat commodo sed egestas egestas fringilla phasellus. Feugiat vivamus at augue eget arcu dictum varius duis.",
+      "Ultricies integer quis auctor elit. In est ante in nibh mauris cursus mattis molestie.",
+      "Ut consequat semper viverra nam libero justo. Ac tincidunt vitae semper quis lectus nulla at.",
+      "Egestas maecenas pharetra convallis posuere morbi. Aliquet bibendum enim facilisis gravida neque convallis a."
+    ],
+    "cities": [
+      {
+        "name": "Paris",
+        "location": {
+          "latitude": 48.85661,
+          "longitude": 2.351499
+        }
+      },
+      {
+        "name": "Cologne",
+        "location": {
+          "latitude": 50.938361,
+          "longitude": 6.959974
+        }
+      },
+      {
+        "name": "Brussels",
+        "location": {
+          "latitude": 50.846557
+        }
+      },
+      {
+        "name": "Amsterdam",
+        "location": {
+          "latitude": 52.370216
+        }
+      },
+      {
+        "name": "Hamburg",
+        "location": {}
+      },
+      {
+        "name": "Dusseldorf",
+        "location": {
+          "latitude": 51.225402,
+          "longitude": 6.776314
+        }
+      }
+    ],
+    "previewImages": [
+      "room-1.jpg",
+      "room-2.jpg",
+      "room-3.jpg",
+      "room-4.jpg",
+      "room-5.jpg",
+      "room-6.jpg",
+      "room-7.jpg",
+      "room-8.jpg"
+    ],
+    "photos": [
+      "room-1-photo1.jpg",
+      "room-1-photo2.jpg",
+      "room-2-photo1.jpg",
+      "room-2-photo2.jpg",
+      "room-3-photo1.jpg",
+      "room-3-photo2.jpg",
+      "room-4-photo1.jpg",
+      "room-4-photo2.jpg",
+      "room-5-photo1.jpg",
+      "room-5-photo2.jpg",
+      "room-6-photo1.jpg",
+      "room-6-photo2.jpg",
+      "room-7-photo1.jpg",
+      "room-7-photo2.jpg",
+      "room-8-photo1.jpg",
+      "room-8-photo2.jpg"
+    ],
+    "housingTypes": ["Apartment", "House", "Room", "Hotel"],
+    "features": [
+      "Breakfast",
+      "Air conditioning",
+      "Laptop friendly workspace",
+      "Baby seat",
+      "Washer",
+      "Towels",
+      "Fridge"
+    ],
+    "users": [
+      "Judy Chavez",
+      "Daniel Kelly",
+      "Christopher Torres",
+      "Mark Davis",
+      "Thomas Dawson",
+      "Vanessa Miller",
+      "Ray Anderson",
+      "Brandon Freeman"
+    ],
+    "emails": [
+      "craddagrizouxu-6960@mail.com",
+      "mehoilleutubrei-4332@mail.com",
+      "zeuhummewoima-7270@mail.com",
+      "quaucroibreweibroi-2398@mail.com",
+      "sasoxefrauteu-3265@mail.com",
+      "mijippoddekoi-8627@mail.com",
+      "gremmagropegru-7388@mail.com",
+      "hifoprobreva-4771@mail.com"
+    ],
+    "passwords": [
+      "+vOD3CV|",
+      "me[wcZq2",
+      "AOy?Tb3>",
+      "r8C3dFj:",
+      "0:UBjqVw",
+      "Hjxl#W7H",
+      "L}eeU5Ky",
+      "l.g!4prU"
+    ],
+    "avatars": [
+      "avatar-1.jpg",
+      "avatar-2.jpg",
+      "avatar-3.jpg",
+      "avatar-4.jpg",
+      "avatar-5.jpg",
+      "avatar-6.jpg",
+      "avatar-7.jpg",
+      "avatar-8.jpg"
+    ],
+    "userTypes": ["Default", "Pro"]
+  }
+}
