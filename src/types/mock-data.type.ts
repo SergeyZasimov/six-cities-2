@@ -1,7 +1,9 @@
+import { City } from './city.type.js';
+
 export type MockData = {
   titles: string[];
   descriptions: string[];
-  cities: string[];
+  cities: City[];
   previewImages: string[];
   photos: string[];
   housingTypes: string[];

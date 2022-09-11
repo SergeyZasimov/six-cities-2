@@ -49,7 +49,8 @@ export default class TSVFileReader implements FileReaderInterface {
       guests,
       price,
       features,
-      hostName,
+      hostFirstName,
+      hostLastName,
       hostEmail,
       hostAvatar,
       hostPassword,
@@ -81,7 +82,7 @@ export default class TSVFileReader implements FileReaderInterface {
       price: parseFloat(price),
       features: features.split(';').map((feature) => feature as FeatureType),
       host: {
-        name: hostName,
+        name: [hostFirstName, hostLastName].join(' '),
         email: hostEmail,
         avatar: hostAvatar,
         password: hostPassword,
