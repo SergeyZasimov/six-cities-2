@@ -6,8 +6,8 @@ import { ReadFileEvent } from '../types/read-file-events.enum.js';
 export default class ImportCommand implements CliCommandInterface {
   public readonly name = '--import';
 
-  public async execute(filename: string): Promise<void> {
-    const fileReader = new TSVFileReader(filename.trim());
+  public async execute(filePath: string): Promise<void> {
+    const fileReader = new TSVFileReader(filePath.trim());
     fileReader.on(ReadFileEvent.COMPLETE_ROW, this.onCompleteRow);
     fileReader.on(ReadFileEvent.READ_END, this.onReadEnd);
 

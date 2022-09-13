@@ -1,15 +1,15 @@
 import { CliCommandInterface } from './cli-command.interface.js';
 import { MockData } from '../types/mock-data.type.js';
 import got from 'got';
-import { appendFile } from 'fs/promises';
 import OfferGenerator from '../common/offer-generator/offer-generator.js';
+import TSVFileWriter from '../common/file-writer/tsv-file-writer.js';
 
 export default class GenerateCommand implements CliCommandInterface {
   public readonly name = '--generate';
   private initData!: MockData;
 
-  public async execute( ...parameters: string[] ): Promise<void> {
-    const [count, filepath, url] = parameters;
+  public async execute(...parameters: string[]): Promise<void> {
+    const [count, filePath, url] = parameters;
     const offersCount = parseInt(count, 10);
 
     try {
@@ -19,16 +19,18 @@ export default class GenerateCommand implements CliCommandInterface {
     }
 
     const offerGeneratorString = new OfferGenerator(this.initData);
+    const tsvFileWriter = new TSVFileWriter(filePath);
 
     const appendPromises = Array.from({ length: offersCount }, () => {
-      appendFile(filepath, `${offerGeneratorString.generate()}\n`, 'utf-8');
+      const row = offerGeneratorString.generate();
+      tsvFileWriter.write(row);
     });
 
     Promise.all(appendPromises)
       .then(() => {
-        console.log(`Файл ${filepath} был создан!`);
+        console.log(`Файл ${filePath} был создан!`);
       })
-      .catch(( err ) => {
+      .catch((err) => {
         console.log(`запись в файл остановлена по причине: ${err}`);
       });
   }
