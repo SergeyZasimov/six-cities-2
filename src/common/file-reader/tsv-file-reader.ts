@@ -1,24 +1,25 @@
 import { FileReaderInterface } from './file-reader.interface.js';
 import EventEmitter from 'events';
-import { createReadStream } from 'fs';
+import { createReadStream, ReadStream } from 'fs';
 import { ReadFileEvent } from '../../types/read-file-events.enum.js';
 
 export default class TSVFileReader extends EventEmitter implements FileReaderInterface {
+  private stream: ReadStream;
+
   constructor(public readonly filePath: string) {
     super();
-  }
-
-  public async read(): Promise<void> {
-    const stream = createReadStream(this.filePath, {
+    this.stream = createReadStream(this.filePath, {
       highWaterMark: 16 * 1024,
       encoding: 'utf-8',
     });
+  }
 
+  public async read(): Promise<void> {
     let readLine = '';
     let rowCount = 0;
     let endLinePosition = -1;
 
-    for await (const chunk of stream) {
+    for await (const chunk of this.stream) {
       readLine += chunk.toString();
       endLinePosition = readLine.indexOf('\n');
 
