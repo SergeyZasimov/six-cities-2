@@ -33,31 +33,11 @@ export default class TSVFileReader implements FileReaderInterface {
 
   private convertData = (dataArray: string[]): Offer => {
     const [
-      title,
-      description,
-      date,
-      cityName,
-      cityLat,
-      cityLong,
-      previewImage,
-      photos,
-      isPremium,
-      isFavorite,
-      rating,
-      type,
-      rooms,
-      guests,
-      price,
-      features,
-      hostFirstName,
-      hostLastName,
-      hostEmail,
-      hostAvatar,
-      hostPassword,
-      hostType,
-      commentsAmount,
-      locationLat,
-      locationLong,
+      title, description, date, cityName, cityLat, cityLong,
+      previewImage, photos, isPremium, isFavorite, rating,
+      type, rooms, guests, price, features, hostFirstName,
+      hostLastName, hostEmail, hostAvatar, hostPassword,
+      hostType, commentsAmount, locationLat, locationLong,
     ] = dataArray;
 
     return {

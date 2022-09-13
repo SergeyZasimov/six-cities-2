@@ -38,18 +38,23 @@
       {
         "name": "Brussels",
         "location": {
-          "latitude": 50.846557
+          "latitude": 50.846557,
+          "longitude": 4.351697
         }
       },
       {
         "name": "Amsterdam",
         "location": {
-          "latitude": 52.370216
+          "latitude": 52.370216,
+          "longitude": 4.895168
         }
       },
       {
         "name": "Hamburg",
-        "location": {}
+        "location": {
+          "latitude": 53.550341,
+          "longitude": 10.000654
+        }
       },
       {
         "name": "Dusseldorf",
@@ -87,7 +92,12 @@
       "room-8-photo1.jpg",
       "room-8-photo2.jpg"
     ],
-    "housingTypes": ["Apartment", "House", "Room", "Hotel"],
+    "housingTypes": [
+      "Apartment",
+      "House",
+      "Room",
+      "Hotel"
+    ],
     "features": [
       "Breakfast",
       "Air conditioning",
@@ -137,6 +147,9 @@
       "avatar-7.jpg",
       "avatar-8.jpg"
     ],
-    "userTypes": ["Default", "Pro"]
+    "userTypes": [
+      "Default",
+      "Pro"
+    ]
   }
 }

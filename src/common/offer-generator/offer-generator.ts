@@ -27,7 +27,8 @@ enum MockConfig {
 }
 
 export default class OfferGenerator implements OfferGeneratorInterface {
-  constructor(private readonly mockData: MockData) {}
+  constructor( private readonly mockData: MockData ) {
+  }
 
   public generate(): string {
     const title = getRandomItem<string>(this.mockData.titles);
@@ -41,7 +42,7 @@ export default class OfferGenerator implements OfferGeneratorInterface {
     const photos = getRandomItems<string>(this.mockData.photos);
     const isPremium = Boolean(generateRandomValue(0, 1));
     const isFavorite = Boolean(generateRandomValue(0, 1));
-    const rating = generateRandomValue(MockConfig.RATING_MIN, MockConfig.RATING_MAX);
+    const rating = generateRandomValue(MockConfig.RATING_MIN, MockConfig.RATING_MAX - 1, 1);
     const type = getRandomItem<string>(this.mockData.housingTypes);
     const rooms = generateRandomValue(MockConfig.ROOMS_MIN, MockConfig.ROOMS_MAX);
     const guests = generateRandomValue(MockConfig.GUESTS_MIN, MockConfig.GUESTS_MAX);
@@ -74,31 +75,16 @@ export default class OfferGenerator implements OfferGeneratorInterface {
     } = city;
 
     return [
-      title,
-      description,
-      date,
-      cityName,
+      title, description, date, cityName,
       cityLatitude.toString(),
       cityLongitude.toString(),
-      previewImage,
-      photos.join(';'),
-      isPremium,
-      isFavorite,
-      rating.toString(),
-      type,
-      rooms.toString(),
-      guests.toString(),
-      price.toString(),
-      features.join(';'),
-      firstName,
-      lastName,
-      email,
-      avatar,
-      password,
-      userType,
-      commentsAmount.toString(),
-      locationLatitude,
-      locationLongitude,
+      previewImage, photos.join(';'),
+      isPremium, isFavorite, rating.toString(),
+      type, rooms.toString(), guests.toString(),
+      price.toString(), features.join(';'),
+      firstName, lastName, email, avatar,
+      password, userType, commentsAmount.toString(),
+      locationLatitude, locationLongitude,
     ].join('\t');
   }
 }
