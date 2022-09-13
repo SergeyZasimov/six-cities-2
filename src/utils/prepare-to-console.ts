@@ -3,7 +3,9 @@ import { HousingType } from '../types/housing-type.enum.js';
 import { FeatureType } from '../types/feature-type.enum.js';
 import { UserType } from '../types/user-type.enum.js';
 
-const convertData = ( dataArray: string[] ): Offer => {
+export const prepareToConsole = ( row: string ): Offer => {
+  const dataArray = row.replace('\n', '').split('\t');
+
   const [
     title, description, date, cityName, cityLat, cityLong,
     previewImage, photos, isPremium, isFavorite, rating,
@@ -46,16 +48,4 @@ const convertData = ( dataArray: string[] ): Offer => {
       longitude: parseFloat(locationLong),
     },
   };
-};
-
-export const prepareToConsole = ( row: string ): Offer[] => {
-  if (!row) {
-    return [];
-  }
-
-  return row
-    .split('\n')
-    .filter(( line ) => line.trim() !== '')
-    .map(( line ) => line.split('\t'))
-    .map(convertData);
 };

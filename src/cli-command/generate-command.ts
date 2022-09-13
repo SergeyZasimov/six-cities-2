@@ -28,7 +28,7 @@ export default class GenerateCommand implements CliCommandInterface {
 
     Promise.all(appendPromises)
       .then(() => {
-        console.log(`Файл ${filePath} был создан!`);
+        console.log(`Файл ${filePath} был записан!`);
       })
       .catch((err) => {
         console.log(`запись в файл остановлена по причине: ${err}`);
