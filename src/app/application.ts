@@ -8,6 +8,6 @@ export default class Application {
   }
 
   public async init() {
-    this.logger.info('Инициализация приложения...');
+    this.logger.info('App initialization...');
   }
 }

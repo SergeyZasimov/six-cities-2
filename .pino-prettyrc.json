@@ -1,0 +1,6 @@
+{
+  "colorize": "colorette.isColorSupported",
+  "translateTime": "SYS:standard",
+  "levelFirst": true,
+  "messageFormat": "{hostname} - {msg}"
+}
