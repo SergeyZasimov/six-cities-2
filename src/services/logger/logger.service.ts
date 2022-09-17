@@ -1,6 +1,6 @@
+import { injectable } from 'inversify';
 import pino, { Logger } from 'pino';
 import { LoggerInterface } from './logger.interface.js';
-import { injectable } from 'inversify';
 
 @injectable()
 export default class LoggerService implements LoggerInterface {
@@ -8,6 +8,7 @@ export default class LoggerService implements LoggerInterface {
 
   constructor() {
     this.logger = pino();
+    this.logger.info('Logger created...');
   }
 
   public debug( message: string, ...args: unknown[] ): void {
