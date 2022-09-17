@@ -19,9 +19,11 @@ export default class HelpCommand implements CliCommandInterface {
     console.log(
       chalk.italic(`
     Команды:
-        --version:                   # выводит номер версии
-        --help:                      # печатает этот текст
-        --import <path>:             # импортирует данные из TSV
+        --version:                          # выводит номер версии
+        --help:                             # печатает этот текст
+        --import <path>:                    # импортирует данные из TSV
+        --generate <count> <path> <url>     # генерирует данные, в количестве <count>, принятые с сервера <url>
+                                            # и записывает в файл <path>
     `),
     );
   }
