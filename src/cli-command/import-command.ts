@@ -1,4 +1,4 @@
-import TSVFileReader from '../common/file-reader/tsv-file-reader.js';
+import TSVFileReader from '../services/file-reader/tsv-file-reader.js';
 import { CliCommandInterface } from './cli-command.interface.js';
 import { prepareToConsole } from '../utils/prepare-to-console.js';
 import { ReadFileEvent } from '../types/read-file-events.enum.js';
