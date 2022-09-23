@@ -6,7 +6,7 @@ import { ReadFileEvent } from '../../types/read-file-events.enum.js';
 export default class TSVFileReader extends EventEmitter implements FileReaderInterface {
   private stream: ReadStream;
 
-  constructor(public readonly filePath: string) {
+  constructor( public readonly filePath: string ) {
     super();
     this.stream = createReadStream(this.filePath, {
       highWaterMark: 16 * 1024,
@@ -27,7 +27,9 @@ export default class TSVFileReader extends EventEmitter implements FileReaderInt
         const completeRow = readLine.slice(0, endLinePosition + 1);
         readLine = readLine.slice(++endLinePosition);
         rowCount++;
-        this.emit(ReadFileEvent.COMPLETE_ROW, completeRow);
+        await new Promise(( resolve ) => {
+          this.emit(ReadFileEvent.COMPLETE_ROW, completeRow, resolve);
+        });
         endLinePosition = readLine.indexOf('\n');
       }
     }
