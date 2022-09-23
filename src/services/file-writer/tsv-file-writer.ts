@@ -6,7 +6,7 @@ export default class TSVFileWriter implements FileWriterInterface {
 
   constructor(public readonly filePath: string) {
     this.stream = createWriteStream(this.filePath, {
-      flags: 'a',
+      flags: 'w',
       encoding: 'utf-8',
       highWaterMark: 64 * 1024,
       autoClose: true,

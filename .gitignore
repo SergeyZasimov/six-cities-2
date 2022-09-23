@@ -7,6 +7,7 @@
 .idea/*
 /tasks/
 /umls/
+/mongodb/
 
 .DS_Store
 coverage

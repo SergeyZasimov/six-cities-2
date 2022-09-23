@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 import { City } from '../../types/city.type.js';
 import { MockData } from '../../types/mock-data.type.js';
 import { generateRandomValue, getRandomItem, getRandomItems } from '../../utils/random.js';
@@ -33,10 +32,6 @@ export default class OfferGenerator implements OfferGeneratorInterface {
   public generate(): string {
     const title = getRandomItem<string>(this.mockData.titles);
     const description = getRandomItem<string>(this.mockData.descriptions);
-    const date = dayjs()
-      .subtract(generateRandomValue(MockConfig.FIRST_WEEK_DAY, MockConfig.LAST_WEEK_DAY), 'day')
-      .subtract(generateRandomValue(MockConfig.FIRST_MONTH, MockConfig.LAST_MONTH), 'month')
-      .toISOString();
     const city = getRandomItem<City>(this.mockData.cities);
     const previewImage = getRandomItem<string>(this.mockData.previewImages);
     const photos = getRandomItems<string>(this.mockData.photos);
@@ -51,9 +46,7 @@ export default class OfferGenerator implements OfferGeneratorInterface {
     const userName = getRandomItem<string>(this.mockData.users);
     const email = getRandomItem<string>(this.mockData.emails);
     const avatar = getRandomItem<string>(this.mockData.avatars);
-    const password = getRandomItem<string>(this.mockData.passwords);
     const userType = getRandomItem<string>(this.mockData.userTypes);
-    const commentsAmount = generateRandomValue(MockConfig.COMMENT_MIN, MockConfig.COMMENTS_MAX);
 
     const locationLatitude = generateRandomValue(
       MockConfig.LATITUDE_MIN,
@@ -75,7 +68,7 @@ export default class OfferGenerator implements OfferGeneratorInterface {
     } = city;
 
     return [
-      title, description, date, cityName,
+      title, description, cityName,
       cityLatitude.toString(),
       cityLongitude.toString(),
       previewImage, photos.join(';'),
@@ -83,8 +76,7 @@ export default class OfferGenerator implements OfferGeneratorInterface {
       type, rooms.toString(), guests.toString(),
       price.toString(), features.join(';'),
       firstName, lastName, email, avatar,
-      password, userType, commentsAmount.toString(),
-      locationLatitude, locationLongitude,
+      userType, locationLatitude, locationLongitude,
     ].join('\t');
   }
 }
