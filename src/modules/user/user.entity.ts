@@ -13,7 +13,6 @@ export interface UserEntity extends defaultClasses.Base {
     collection: 'users',
   },
 })
-
 export class UserEntity extends defaultClasses.TimeStamps implements User {
   constructor( data: User ) {
     super();

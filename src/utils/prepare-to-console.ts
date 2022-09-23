@@ -7,17 +7,16 @@ export const prepareToConsole = ( row: string ): Offer => {
   const dataArray = row.replace('\n', '').split('\t');
 
   const [
-    title, description, date, cityName, cityLat, cityLong,
+    title, description, cityName, cityLat, cityLong,
     previewImage, photos, isPremium, isFavorite, rating,
     type, rooms, guests, price, features, hostFirstName,
-    hostLastName, hostEmail, hostAvatar, hostPassword,
-    hostType, commentsAmount, locationLat, locationLong,
+    hostLastName, hostEmail, hostAvatar, hostType,
+    locationLat, locationLong,
   ] = dataArray;
 
   return {
     title,
     description,
-    createdAt: new Date(date),
     city: {
       name: cityName,
       location: {
@@ -39,10 +38,8 @@ export const prepareToConsole = ( row: string ): Offer => {
       name: [hostFirstName, hostLastName].join(' '),
       email: hostEmail,
       avatar: hostAvatar,
-      password: hostPassword,
       type: hostType as UserType,
     },
-    commentsAmount: parseInt(commentsAmount, 10),
     location: {
       latitude: parseFloat(locationLat),
       longitude: parseFloat(locationLong),

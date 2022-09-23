@@ -53,7 +53,6 @@ export default class OfferGenerator implements OfferGeneratorInterface {
     const avatar = getRandomItem<string>(this.mockData.avatars);
     const password = getRandomItem<string>(this.mockData.passwords);
     const userType = getRandomItem<string>(this.mockData.userTypes);
-    const commentsAmount = generateRandomValue(MockConfig.COMMENT_MIN, MockConfig.COMMENTS_MAX);
 
     const locationLatitude = generateRandomValue(
       MockConfig.LATITUDE_MIN,
@@ -83,7 +82,7 @@ export default class OfferGenerator implements OfferGeneratorInterface {
       type, rooms.toString(), guests.toString(),
       price.toString(), features.join(';'),
       firstName, lastName, email, avatar,
-      password, userType, commentsAmount.toString(),
+      password, userType,
       locationLatitude, locationLongitude,
     ].join('\t');
   }
