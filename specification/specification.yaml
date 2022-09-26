@@ -142,6 +142,230 @@ paths:
         "204":
           description: Сеанс завершён.
 
+  /offers/createOffer:
+    post:
+      tags:
+        - offers
+      summary: Создание предложения
+      description: Сохраняет новое предложение в базу данных.
+
+      requestBody:
+        description: Данные для создания нового предложения.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createOffer'
+
+      responses:
+        "201":
+          description: Пользователь зарегистрирован. Возвращает объект пользователя.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/offer'
+
+        "400":
+          description: Отправлены неверные данные.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Поле «Рейтинг» обязательно для заполнения.
+
+        "401":
+          description: Пользователь не авторизован.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Вы не имеете доступа к этим ресурсам.
+
+  /offers:
+    get:
+      tags:
+        - offers
+      summary: Список предложений.
+      description: Возвращает список предложений в порядке убывания даты публикации.
+
+      requestBody:
+        description: Данные о количестве возвращаемых предложений.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                count:
+                  type: number
+                  example: 60
+                  default: 60
+
+      responses:
+        "200":
+          description: Список предложений
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/offer'
+
+  /offers/{offerId}:
+    get:
+      tags:
+        - offers
+      summary: Детальная информация по предложению.
+      description: Возвращает информацию о предложении с определённым id.
+      parameters:
+        - in: path
+          name: offerId
+          required: true
+          schema:
+            type: string
+            description: ID запрашиваемого предложения.
+
+      responses:
+        "200":
+          description: Возвращает данные по предложению.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/offer'
+
+        "404":
+          description: Предложение не найдено.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Предложение не найдено.
+
+    patch:
+      tags:
+        - offers
+      summary: Редактирование предложения.
+      description: Изменяет данные предложения и возвращает обновлённый объект.
+      parameters:
+        - in: path
+          name: offerId
+          required: true
+          schema:
+            type: string
+            description: ID изменяемого предложения.
+
+      requestBody:
+        description: Данные для обновления предложения.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createOffer'
+
+      responses:
+        "200":
+          description: Возвращает обновлённые данные по предложению.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/offer'
+
+        "400":
+          description: Отправлены неверные данные.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Поле «Рейтинг» обязательно для заполнения.
+
+        "401":
+          description: Пользователь не авторизован.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Вы не имеете доступа к этим ресурсам.
+
+        "404":
+          description: Предложение не найдено.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Предложение не найдено.
+
+    delete:
+      tags:
+        - offers
+      summary: Удаление предложения.
+      description: Удаление предложения и комментариев к нему.
+      parameters:
+        - in: path
+          name: offerId
+          required: true
+          schema:
+            type: string
+            example: '632db7ffa4c4750721ab0618'
+            description: ID удаляемого предложения.
+
+        - in: header
+          name: X-Token
+          schema:
+            type: string
+            example: 'T2xpdmVyLmNvbm5lckBnbWFpbC5jb20='
+            description: Сессионный токен пользователя.
+
+      responses:
+        "200":
+          description: Предложение успешно удалено.
+          content:
+            application/json:
+              schema:
+                description: ID удалённого предложения
+                type: object
+                example: {
+                  id: '632db7ffa4c4750721ab0618'
+                }
+
+        "401":
+          description: Пользователь не авторизован.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Вы не имеете доступа к этим ресурсам.
+
+        "404":
+          description: Предложение не найдено.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Предложение не найдено.
+
+
+
 
 components:
   schemas:
@@ -211,3 +435,237 @@ components:
         token:
           type: string
           example: T2xpdmVyLmNvbm5lckBnbWFpbC5jb20=
+
+    createOffer:
+      type:
+        object
+
+      properties:
+        title:
+          type: string
+          minLength: 10
+          maxLength: 100
+          example: Beautiful & luxurious studio at great location
+
+        description:
+          type: string
+          minLength: 20
+          maxLength: 1024
+          example: A quiet cozy and picturesque that hides behind a a river by the unique lightness of Amsterdam.
+            The building is green and from 18th century.
+
+        city:
+          type: object
+          example: {
+            name: 'Paris',
+            location: {
+              latitude: 48.85661,
+              longitude: 2.351499
+            }
+          }
+
+        previewImage:
+          type: string
+          example: 'img/apartment.jpg'
+
+        photos:
+          type: array
+          minItems: 6
+          example: [
+            "img/apartment-01.jpg",
+            "img/apartment-02.jpg",
+            "img/apartment-03.jpg",
+            "img/apartment-04.jpg",
+            "img/apartment-05.jpg",
+            "img/apartment-06.jpg",
+          ]
+
+        isPremium:
+          type: boolean
+          example: true
+
+        isFavorite:
+          type: boolean
+          example: false
+
+        rating:
+          type: number
+          example: 3.4
+          minimum: 1
+          maximum: 5
+
+        type:
+          type: string
+          example: Apartment
+          enum:
+            - Apartment
+            - House
+            - Room
+            - Hotel
+
+        rooms:
+          type: number
+          example: 3
+          minimum: 1
+          maximum: 8
+
+        guests:
+          type: number
+          example: 5
+          minimum: 1
+          maximum: 10
+
+        price:
+          type: number
+          example: 567.89
+          minimum: 100
+          maximum: 100000
+
+        features:
+          type: array
+          example: [
+            'Breakfast',
+            'Air conditioning'
+          ]
+          enum:
+            - Breakfast
+            - Air conditioning
+            - Laptop friendly workspace
+            - Baby seat
+            - Washer
+            - Towels
+            - Fridge
+
+        hostId:
+          type: string
+          example: 632db7ffa4c4750721ab0616
+
+        location:
+          type: object
+          example: {
+            latitude: 48.85661,
+            longitude: 2.351499
+          }
+
+    offer:
+      type:
+        object
+
+      properties:
+        id:
+          type: string
+          example: 632db7ffa4c4750721ab0618
+
+        title:
+          type: string
+          minLength: 10
+          maxLength: 100
+          example: Beautiful & luxurious studio at great location
+
+        description:
+          type: string
+          minLength: 20
+          maxLength: 1024
+          example: A quiet cozy and picturesque that hides behind a a river by the unique lightness of Amsterdam.
+            The building is green and from 18th century.
+
+        city:
+          type: object
+          example: {
+            name: 'Paris',
+            location: {
+              latitude: 48.85661,
+              longitude: 2.351499
+            }
+          }
+
+        previewImage:
+          type: string
+          example: 'img/apartment.jpg'
+
+        photos:
+          type: array
+          minItems: 6
+          example: [
+            "img/apartment-01.jpg",
+            "img/apartment-02.jpg",
+            "img/apartment-03.jpg",
+            "img/apartment-04.jpg",
+            "img/apartment-05.jpg",
+            "img/apartment-06.jpg",
+          ]
+
+        isPremium:
+          type: boolean
+          example: true
+
+        isFavorite:
+          type: boolean
+          example: false
+
+        rating:
+          type: number
+          example: 3.4
+          minimum: 1
+          maximum: 5
+
+        type:
+          type: string
+          example: Apartment
+          enum:
+            - Apartment
+            - House
+            - Room
+            - Hotel
+
+        rooms:
+          type: number
+          example: 3
+          minimum: 1
+          maximum: 8
+
+        guests:
+          type: number
+          example: 5
+          minimum: 1
+          maximum: 10
+
+        price:
+          type: number
+          example: 567.89
+          minimum: 100
+          maximum: 100000
+
+        features:
+          type: array
+          example: [
+            'Breakfast',
+            'Air conditioning'
+          ]
+          enum:
+            - Breakfast
+            - Air conditioning
+            - Laptop friendly workspace
+            - Baby seat
+            - Washer
+            - Towels
+            - Fridge
+
+        hostId:
+          type: string
+          example: 632db7ffa4c4750721ab0616
+
+        location:
+          type: object
+          example: {
+            latitude: 48.85661,
+            longitude: 2.351499
+          }
+
+        createdAt:
+          type: string
+          example: '2022-09-23T13:43:27.411Z'
+
+        updatedAt:
+          type: string
+          example: '2022-09-23T13:43:27.411Z'
