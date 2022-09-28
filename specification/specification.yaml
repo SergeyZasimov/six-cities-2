@@ -1,0 +1,851 @@
+openapi: 3.0.3
+info:
+  title: API сервер для курсового проекта «Шесть городов»
+  description: |-
+    * Список ресурсов и маршрутов сервера «Шесть городов»
+  version: 1.0.0
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+tags:
+  - name: offers
+    description: Действия с объявлениями.
+  - name: comments
+    description: Действия с комментариями.
+  - name: users
+    description: Действия с пользователями.
+  - name: favorites
+    description: Действия с избранными предложениями.
+
+paths:
+  /users/register:
+    post:
+      tags:
+        - users
+      summary: Регистрация пользователя.
+      description: Сохраняет нового пользователя в базу данных.
+
+      requestBody:
+        description: Данные для создания нового пользователя.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createUser'
+
+      responses:
+        "201":
+          description: Пользователь зарегистрирован. Возвращает объект пользователя.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+
+        "400":
+          description: Отправлены неверные данные.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Пароль должен быть больше 6 символов и не более 12.
+
+        "409":
+          description: Пользователь с таким email уже существует.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Пользователь с таким email уже существует.
+
+  /users/login:
+    post:
+      tags:
+        - users
+      summary: Авторизация пользователя.
+      description: Авторизация пользователя по логину и паролю.
+
+      requestBody:
+        description: Данные для авторизация пользователя.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/loginUser'
+
+      responses:
+        "200":
+          description: Успешная авторизация.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+
+        "400":
+          description: Отправлены неверные данные.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Пароль должен быть больше 6 символов и не более 12.
+
+    get:
+      tags:
+        - users
+      summary: Проверка состояния пользователя.
+      description: Проверка состояния пользователя по токену.
+      parameters:
+        - $ref: '#/components/parameters/token'
+
+      responses:
+        "200":
+          description: Статус пользователя - авторизован.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+
+        "401":
+          $ref: '#/components/responses/401'
+
+  /users/logout:
+    delete:
+      tags:
+        - users
+      summary: Выход из закрытой части приложения.
+      description: Завершает сеанс работы в закрытой части приложения.
+        Остаются доступными ресурсы, не требующие авторизации.
+      parameters:
+        - $ref: '#/components/parameters/token'
+
+      responses:
+        "204":
+          description: Сеанс завершён.
+
+  /offers/createOffer:
+    post:
+      tags:
+        - offers
+      summary: Создание предложения
+      description: Сохраняет новое предложение в базу данных.
+      parameters:
+        - $ref: '#/components/parameters/token'
+
+      requestBody:
+        description: Данные для создания нового предложения.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createOffer'
+
+      responses:
+        "201":
+          description: Предложение создано. Возвращает объект предложения.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/offer'
+
+        "400":
+          description: Отправлены неверные данные.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Поле «Цена» обязательно для заполнения.
+
+        "401":
+          $ref: '#/components/responses/401'
+
+  /offers:
+    get:
+      tags:
+        - offers
+      summary: Список предложений.
+      description: Возвращает список предложений в порядке убывания даты публикации.
+
+      requestBody:
+        description: Данные о количестве возвращаемых предложений.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                count:
+                  type: number
+                  example: 60
+                  default: 60
+
+      responses:
+        "200":
+          description: Список предложений
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/offer'
+
+  /offers/{offerId}:
+    get:
+      tags:
+        - offers
+      summary: Детальная информация по предложению.
+      description: Возвращает информацию о предложении с определённым id.
+      parameters:
+        - $ref: '#/components/parameters/offerId'
+
+      responses:
+        "200":
+          description: Возвращает данные по предложению.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/offer'
+
+        "404":
+          $ref: '#/components/responses/offer-404'
+
+    patch:
+      tags:
+        - offers
+      summary: Редактирование предложения.
+      description: Изменяет данные предложения и возвращает обновлённый объект.
+      parameters:
+        - $ref: '#/components/parameters/token'
+        - $ref: '#/components/parameters/offerId'
+      requestBody:
+        description: Данные для обновления предложения.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createOffer'
+
+      responses:
+        "200":
+          description: Возвращает обновлённые данные по предложению.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/offer'
+
+        "400":
+          description: Отправлены неверные данные.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Поле «Рейтинг» обязательно для заполнения.
+
+        "401":
+          $ref: '#/components/responses/401'
+
+        "404":
+          $ref: '#/components/responses/offer-404'
+
+    delete:
+      tags:
+        - offers
+      summary: Удаление предложения.
+      description: Удаление предложения и комментариев к нему.
+      parameters:
+        - in: path
+          name: offerId
+          required: true
+          schema:
+            type: string
+            example: '632db7ffa4c4750721ab0618'
+            description: ID удаляемого предложения.
+
+        - $ref: '#/components/parameters/token'
+
+      responses:
+        "200":
+          description: Предложение успешно удалено.
+          content:
+            application/json:
+              schema:
+                description: ID удалённого предложения
+                type: object
+                example: {
+                  id: '632db7ffa4c4750721ab0618'
+                }
+
+        "401":
+          $ref: '#/components/responses/401'
+
+
+        "404":
+          $ref: '#/components/responses/offer-404'
+
+  /offers/{city}/premium:
+    get:
+      tags:
+        - offers
+      summary: Список премиальных предложений для города.
+      description: Возвращает не больше 3 предложений с флагом "Premium".
+      parameters:
+        - in: path
+          name: city
+          required: true
+          schema:
+            type: string
+            description: Название города.
+            example: 'Paris'
+
+      responses:
+        "200":
+          description: Список премиальных предложений.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/offer'
+                maxItems: 3
+
+        "404":
+          description: Город не найден.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Город не найден.
+
+  /comments/{offerId}:
+    get:
+      tags:
+        - comments
+      summary: Список комментариев к предложению.
+      description: Возвращает список комментариев для определённого предложения.
+      parameters:
+        - $ref: '#/components/parameters/token'
+
+      responses:
+        "200":
+          description: Список комментариев.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/comment'
+
+        "404":
+          $ref: '#/components/responses/offer-404'
+
+    post:
+      tags:
+        - comments
+      summary: Создание нового комментария.
+      description: Добавление нового комментария для определённого предложения.
+      parameters:
+        - $ref: '#/components/parameters/offerId'
+
+        - $ref: '#/components/parameters/token'
+
+      requestBody:
+        description: Данные для добавления нового комментария.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createComment'
+
+      responses:
+        "200":
+          description: Успешное добавление комментария.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/comment'
+
+        "401":
+          $ref: '#/components/responses/401'
+
+        "404":
+          $ref: '#/components/responses/offer-404'
+
+  /favorites:
+    get:
+      tags:
+        - favorites
+      summary: Список избранных предложений.
+      description: Возвращает авторизованным пользователям список избранных предложений.
+      parameters:
+        - $ref: '#/components/parameters/token'
+
+      responses:
+        "200":
+          description: Список избранных предложений.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/offer'
+
+        "401":
+          $ref: '#/components/responses/401'
+
+    patch:
+      tags:
+        - favorites
+      summary: Изменение статуса избранного у предложения.
+      description: Добавляет или удаляет предложение в/из списка избранного.
+      parameters:
+        - $ref: '#/components/parameters/token'
+
+      requestBody:
+        description: Данные для обновления состояния предложения.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                offerId:
+                  type: string
+                  description: ID предложения.
+                  example: 632db7ffa4c4750721ab0618
+
+                favoriteStatus:
+                  type: boolean
+                  description: Обновлённое состояние предложения.
+                  example: true
+
+      responses:
+        "200":
+          description: Объект предложения.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/offer'
+
+        "401":
+          $ref: '#/components/responses/401'
+
+
+components:
+  schemas:
+    createUser:
+      type: object
+
+      properties:
+        email:
+          type: string
+          example: user@mail.com
+
+        name:
+          type: string
+          minLength: 1
+          maxLength: 15
+          example: John Smith
+
+        password:
+          type: string
+          minLength: 6
+          maxLength: 12
+          example: qwerty1234
+
+        avatar:
+          type: string
+          example: user1.jpg
+
+        type:
+          type: string
+          example: Default
+          enum:
+            - Default
+            - Pro
+
+      required:
+        - email
+        - name
+        - password
+
+    user:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 632db7ffa4c4750721ab0616
+
+        email:
+          type: string
+          example: user@mail.com
+
+        avatar:
+          type: string
+          example: user1.jpg
+
+        type:
+          type: string
+          example: Default
+          enum:
+            - Default
+            - Pro
+
+    token:
+      type: string
+      example: 'T2xpdmVyLmNvbm5lckBnbWFpbC5jb20='
+      description: Сессионный токен пользователя.
+
+    loginUser:
+      type: object
+      properties:
+        email:
+          type: string
+          example: user@mail.com
+
+        password:
+          type: string
+          minLength: 6
+          maxLength: 12
+          example: qwerty1234
+
+    checkAuth:
+      type: object
+      properties:
+        token:
+          type: string
+          example: T2xpdmVyLmNvbm5lckBnbWFpbC5jb20=
+
+    createOffer:
+      type:
+        object
+
+      properties:
+        title:
+          type: string
+          minLength: 10
+          maxLength: 100
+          example: Beautiful & luxurious studio at great location
+
+        description:
+          type: string
+          minLength: 20
+          maxLength: 1024
+          example: A quiet cozy and picturesque that hides behind a a river by the unique lightness of Amsterdam.
+            The building is green and from 18th century.
+
+        city:
+          type: object
+          example: {
+            name: 'Paris',
+            location: {
+              latitude: 48.85661,
+              longitude: 2.351499
+            }
+          }
+
+        previewImage:
+          type: string
+          example: 'img/apartment.jpg'
+
+        photos:
+          type: array
+          minItems: 6
+          example: [
+            "img/apartment-01.jpg",
+            "img/apartment-02.jpg",
+            "img/apartment-03.jpg",
+            "img/apartment-04.jpg",
+            "img/apartment-05.jpg",
+            "img/apartment-06.jpg",
+          ]
+
+        isPremium:
+          type: boolean
+          example: true
+
+        isFavorite:
+          type: boolean
+          example: false
+
+        rating:
+          type: number
+          example: 3.4
+          minimum: 1
+          maximum: 5
+
+        type:
+          type: string
+          example: Apartment
+          enum:
+            - Apartment
+            - House
+            - Room
+            - Hotel
+
+        rooms:
+          type: number
+          example: 3
+          minimum: 1
+          maximum: 8
+
+        guests:
+          type: number
+          example: 5
+          minimum: 1
+          maximum: 10
+
+        price:
+          type: number
+          example: 567.89
+          minimum: 100
+          maximum: 100000
+
+        features:
+          type: array
+          example: [
+            'Breakfast',
+            'Air conditioning'
+          ]
+          enum:
+            - Breakfast
+            - Air conditioning
+            - Laptop friendly workspace
+            - Baby seat
+            - Washer
+            - Towels
+            - Fridge
+
+        hostId:
+          type: string
+          example: 632db7ffa4c4750721ab0616
+
+        location:
+          type: object
+          example: {
+            latitude: 48.85661,
+            longitude: 2.351499
+          }
+
+      required:
+        - title
+        - description
+        - city
+        - type
+        - rooms
+        - guests
+        - price
+        - features
+        - hostId
+        - location
+
+
+    offer:
+      type:
+        object
+
+      properties:
+        id:
+          type: string
+          example: 632db7ffa4c4750721ab0618
+
+        title:
+          type: string
+          minLength: 10
+          maxLength: 100
+          example: Beautiful & luxurious studio at great location
+
+        description:
+          type: string
+          minLength: 20
+          maxLength: 1024
+          example: A quiet cozy and picturesque that hides behind a a river by the unique lightness of Amsterdam.
+            The building is green and from 18th century.
+
+        city:
+          type: object
+          example: {
+            name: 'Paris',
+            location: {
+              latitude: 48.85661,
+              longitude: 2.351499
+            }
+          }
+
+        previewImage:
+          type: string
+          example: 'img/apartment.jpg'
+
+        photos:
+          type: array
+          minItems: 6
+          example: [
+            "img/apartment-01.jpg",
+            "img/apartment-02.jpg",
+            "img/apartment-03.jpg",
+            "img/apartment-04.jpg",
+            "img/apartment-05.jpg",
+            "img/apartment-06.jpg",
+          ]
+
+        isPremium:
+          type: boolean
+          example: true
+
+        isFavorite:
+          type: boolean
+          example: true
+
+        rating:
+          type: number
+          example: 3.4
+          minimum: 1
+          maximum: 5
+
+        type:
+          type: string
+          example: Apartment
+          enum:
+            - Apartment
+            - House
+            - Room
+            - Hotel
+
+        rooms:
+          type: number
+          example: 3
+          minimum: 1
+          maximum: 8
+
+        guests:
+          type: number
+          example: 5
+          minimum: 1
+          maximum: 10
+
+        price:
+          type: number
+          example: 567.89
+          minimum: 100
+          maximum: 100000
+
+        features:
+          type: array
+          example: [
+            'Breakfast',
+            'Air conditioning'
+          ]
+          enum:
+            - Breakfast
+            - Air conditioning
+            - Laptop friendly workspace
+            - Baby seat
+            - Washer
+            - Towels
+            - Fridge
+
+        hostId:
+          type: string
+          example: 632db7ffa4c4750721ab0616
+
+        location:
+          type: object
+          example: {
+            latitude: 48.85661,
+            longitude: 2.351499
+          }
+
+        createdAt:
+          type: string
+          example: '2022-09-23T13:43:27.411Z'
+
+        updatedAt:
+          type: string
+          example: '2022-09-23T13:43:27.411Z'
+
+    offerIdParam:
+      type: string
+      description: ID запрашиваемого предложения.
+
+    comment:
+      type: object
+      properties:
+        text:
+          type: string
+          description: Текст комментария.
+          example: 'A quiet cozy and picturesque that hides behind a a river by the unique lightness of Amsterdam.
+          The building is green and from 18th century.'
+
+        date:
+          type: string
+          description: Дата создания комментария.
+          example: '2022-09-23T13:43:27.411Z'
+
+        rating:
+          type: number
+          description: Рейтинг комментария.
+          example: 4.5
+
+        user:
+          $ref: '#/components/schemas/user'
+
+    createComment:
+      type: object
+      description: Данные для создания нового комментария.
+      properties:
+        text:
+          type: string
+          description: Текст нового комментария.
+          minLength: 5
+          maxLength: 1024
+
+        rating:
+          type: number
+          description: Рейтинг предложения выставленный создателем комментария.
+          example: 4.5
+
+  parameters:
+    token:
+      in: header
+      name: X-Token
+      schema:
+        $ref: '#/components/schemas/token'
+
+    offerId:
+      in: path
+      name: offerId
+      required: true
+      schema:
+        $ref: '#/components/schemas/offerIdParam'
+
+  responses:
+    401:
+      description: Пользователь не авторизован.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Вы не имеете доступа к этим ресурсам.
+
+    offer-404:
+      description: Предложение не найдено.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Предложение не найдено.
