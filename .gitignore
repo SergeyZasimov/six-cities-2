@@ -8,6 +8,7 @@
 /tasks/
 /umls/
 /mongodb/
+/gen/
 
 .DS_Store
 coverage
