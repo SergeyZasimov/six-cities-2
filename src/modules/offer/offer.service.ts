@@ -5,6 +5,9 @@ import { OfferEntity } from './offer.entity.js';
 import CreateOfferDto from './dto/create-offer.dto.js';
 import { Component } from '../../types/component.types.js';
 import { LoggerInterface } from '../../services/logger/logger.interface.js';
+import UpdateOfferDto from './dto/update-offer.dto.js';
+import { DEFAULT_OFFER_COUNT } from './offer.constant.js';
+import { SortType } from '../../types/sort-type.enum.js';
 
 @injectable()
 export default class OfferService implements OfferServiceInterface {
@@ -21,6 +24,26 @@ export default class OfferService implements OfferServiceInterface {
   }
 
   public async findById( offerId: string ): Promise<DocumentType<OfferEntity> | null> {
-    return this.offerModel.findById(offerId).exec();
+    return this.offerModel.findById(offerId).populate('userId');
+  }
+
+  public async find(): Promise<DocumentType<OfferEntity>[]> {
+    return this.offerModel
+      .find()
+      .sort({ createdAt: SortType.Down })
+      .limit(DEFAULT_OFFER_COUNT)
+      .populate('userId');
+  }
+
+  public async updateById( offerId: string, dto: UpdateOfferDto ): Promise<DocumentType<OfferEntity> | null> {
+    return this.offerModel.findByIdAndUpdate(offerId, dto, { new: true }).populate('userId');
+  }
+
+  public async deleteById( offerId: string ): Promise<DocumentType<OfferEntity> | null> {
+    return this.offerModel.findByIdAndDelete(offerId);
+  }
+
+  public async findPremiumByCity( city: string ): Promise<DocumentType<OfferEntity>[]> {
+    return this.offerModel.find({ 'city.name': city, isPremium: true }).populate('userId');
   }
 }

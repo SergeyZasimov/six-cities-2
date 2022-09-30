@@ -3,7 +3,6 @@ import { Offer } from '../../types/offer.type.js';
 import { City } from '../../types/city.type.js';
 import { HousingType } from '../../types/housing-type.enum.js';
 import { FeatureType } from '../../types/feature-type.enum.js';
-import { User } from '../../types/user.type.js';
 import { Location } from '../../types/location.type.js';
 import { UserEntity } from '../user/user.entity.js';
 
@@ -62,7 +61,7 @@ export class OfferEntity extends defaultClasses.TimeStamps implements Offer {
     ref: UserEntity,
     required: true,
   })
-  public host!: User;
+  public userId!: string;
 
   @prop({ required: true, allowMixed: Severity.ALLOW })
   public location!: Location;
