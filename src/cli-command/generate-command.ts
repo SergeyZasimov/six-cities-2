@@ -31,7 +31,7 @@ export default class GenerateCommand implements CliCommandInterface {
         console.log(`Файл ${filePath} был записан!`);
       })
       .catch((err) => {
-        console.log(`запись в файл остановлена по причине: ${err}`);
+        console.log(`Запись в файл остановлена по причине: ${err}`);
       });
   }
 }

@@ -17,14 +17,14 @@ export class UserEntity extends defaultClasses.TimeStamps implements User {
   constructor( data: User ) {
     super();
 
-    this.name = data.name;
+    this.userName = data.userName;
     this.email = data.email;
     this.avatar = data.avatar || '';
-    this.type = data.type || UserType.Default;
+    this.userType = data.userType || UserType.Default;
   }
 
   @prop({ required: true, minLength: 1, maxLength: 15 })
-  public name!: string;
+  public userName!: string;
 
   @prop({ unique: true, match: [/^([\w-\\.]+@([\w-]+\.)+[\w-]{2,4})?$/, 'Email is incorrect'] })
   public email!: string;
@@ -36,7 +36,7 @@ export class UserEntity extends defaultClasses.TimeStamps implements User {
   private password!: string;
 
   @prop()
-  public type!: UserType;
+  public userType!: UserType;
 
   public async setPassword( password: string, salt: string ): Promise<void> {
     this.password = await createPasswordHash(password, salt);
