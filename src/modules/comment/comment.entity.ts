@@ -9,7 +9,7 @@ export interface CommentEntity extends defaultClasses.Base {
 
 @modelOptions({
   schemaOptions: {
-    collection: 'comment',
+    collection: 'comments',
   },
 })
 
@@ -22,6 +22,9 @@ export class CommentEntity extends defaultClasses.TimeStamps {
 
   @prop({ ref: UserEntity, required: true })
   public userId!: Ref<UserEntity>;
+
+  @prop({ required: true })
+  public rating!: number;
 }
 
 export const CommentModel = getModelForClass(CommentEntity);
