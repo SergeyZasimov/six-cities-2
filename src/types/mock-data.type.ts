@@ -13,4 +13,5 @@ export type MockData = {
   passwords: string[];
   avatars: string[];
   userTypes: string[];
+  comments: string[];
 };

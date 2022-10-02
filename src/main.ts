@@ -15,6 +15,9 @@ import OfferService from './modules/offer/offer.service.js';
 import { types } from '@typegoose/typegoose';
 import { UserEntity, UserModel } from './modules/user/user.entity.js';
 import { OfferEntity, OfferModel } from './modules/offer/offer.entity.js';
+import { CommentServiceInterface } from './modules/comment/comment-service.interface.js';
+import CommentService from './modules/comment/comment.service.js';
+import { CommentEntity, CommentModel } from './modules/comment/comment.entity.js';
 
 const appContainer = new Container();
 appContainer.bind<Application>(Component.Application).to(Application).inSingletonScope();
@@ -25,6 +28,8 @@ appContainer.bind<UserServiceInterface>(Component.UserServiceInterface).to(UserS
 appContainer.bind<types.ModelType<UserEntity>>(Component.UserModel).toConstantValue(UserModel);
 appContainer.bind<OfferServiceInterface>(Component.OfferServiceInterface).to(OfferService);
 appContainer.bind<types.ModelType<OfferEntity>>(Component.OfferModel).toConstantValue(OfferModel);
+appContainer.bind<CommentServiceInterface>(Component.CommentServiceInterface).to(CommentService);
+appContainer.bind<types.ModelType<CommentEntity>>(Component.CommentModel).toConstantValue(CommentModel);
 
 
 const app = appContainer.get<Application>(Component.Application);

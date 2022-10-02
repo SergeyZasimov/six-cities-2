@@ -6,6 +6,7 @@ import { DbConnectorInterface } from '../services/db-connector/db-connector.inte
 import { getUri } from '../utils/get-uri.js';
 import { DbConnection } from '../types/db-connection.enum.js';
 import { AppConfig } from '../types/config.enum.js';
+import { OfferServiceInterface } from '../modules/offer/offer-sevice.interface.js';
 
 @injectable()
 export default class Application {
@@ -13,7 +14,8 @@ export default class Application {
   constructor(
     @inject(Component.LoggerInterface) private logger: LoggerInterface,
     @inject(Component.ConfigInterface) private config: ConfigInterface,
-    @inject(Component.DbConnectorInterface) private dbClient: DbConnectorInterface ) {
+    @inject(Component.DbConnectorInterface) private dbClient: DbConnectorInterface,
+    @inject(Component.OfferServiceInterface) private offerService: OfferServiceInterface ) {
   }
 
   public async init() {
@@ -29,5 +31,8 @@ export default class Application {
     );
 
     await this.dbClient.connect(uri);
+
+    const offers = await this.offerService.find();
+    console.log(offers);
   }
 }

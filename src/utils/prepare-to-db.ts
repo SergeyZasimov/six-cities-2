@@ -2,16 +2,30 @@ import { Offer } from '../types/offer.type.js';
 import { HousingType } from '../types/housing-type.enum.js';
 import { FeatureType } from '../types/feature-type.enum.js';
 import { UserType } from '../types/user-type.enum.js';
+import { Comment } from '../types/comment.type.js';
 
-export const prepareToConsole = ( row: string ): Offer => {
+const parseComments = ( comments: string ): Comment[] | [] => {
+  if (comments) {
+    return comments.split(';').map(( comment ): Comment => {
+      const [text, rating, userName, email, avatar, userType] = comment.split('=');
+      return {
+        text,
+        rating: parseFloat(rating),
+        user: { userName, email, avatar, userType: userType as UserType },
+      };
+    });
+  }
+  return [];
+};
+
+export const prepareToDb = ( row: string ): Offer => {
   const dataArray = row.replace('\n', '').split('\t');
 
   const [
     title, description, cityName, cityLat, cityLong,
-    previewImage, photos, isPremium, isFavorite, rating,
-    type, rooms, guests, price, features, hostFirstName,
-    hostLastName, hostEmail, hostAvatar, hostType,
-    locationLat, locationLong,
+    previewImage, photos, isPremium,
+    type, rooms, guests, price, features, hostName, hostEmail, hostAvatar, hostType,
+    locationLat, locationLong, comments,
   ] = dataArray;
 
   return {
@@ -27,22 +41,21 @@ export const prepareToConsole = ( row: string ): Offer => {
     previewImage,
     photos: photos.split(';'),
     isPremium: isPremium === 'true',
-    isFavorite: isFavorite === 'true',
-    rating: parseFloat(rating),
     type: type as HousingType,
     rooms: parseInt(rooms, 10),
     guests: parseInt(guests, 10),
     price: parseFloat(price),
     features: features.split(';').map(( feature ) => feature as FeatureType),
-    host: {
-      name: [hostFirstName, hostLastName].join(' '),
+    user: {
+      userName: hostName,
       email: hostEmail,
       avatar: hostAvatar,
-      type: hostType as UserType,
+      userType: hostType as UserType,
     },
     location: {
       latitude: parseFloat(locationLat),
       longitude: parseFloat(locationLong),
     },
+    comments: parseComments(comments),
   };
 };
