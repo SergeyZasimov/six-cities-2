@@ -6,21 +6,22 @@ import { DbConnectorInterface } from '../services/db-connector/db-connector.inte
 import { getUri } from '../utils/get-uri.js';
 import { DbConnection } from '../types/db-connection.enum.js';
 import { AppConfig } from '../types/config.enum.js';
-import { OfferServiceInterface } from '../modules/offer/offer-sevice.interface.js';
+import express, { Express } from 'express';
 
 @injectable()
 export default class Application {
+  private expressApp: Express;
 
   constructor(
     @inject(Component.LoggerInterface) private logger: LoggerInterface,
     @inject(Component.ConfigInterface) private config: ConfigInterface,
     @inject(Component.DbConnectorInterface) private dbClient: DbConnectorInterface,
-    @inject(Component.OfferServiceInterface) private offerService: OfferServiceInterface ) {
+  ) {
+    this.expressApp = express();
   }
 
   public async init() {
     this.logger.info('App initialization...');
-    this.logger.info(`Get value from .env PORT: ${this.config.get(AppConfig.PORT)}`);
 
     const uri = getUri(
       this.config.get(DbConnection.DB_USER),
@@ -32,7 +33,9 @@ export default class Application {
 
     await this.dbClient.connect(uri);
 
-    const offers = await this.offerService.find();
-    console.log(offers);
+    this.expressApp.listen(this.config.get(AppConfig.PORT), () => {
+      this.logger.info(`Server started on http://localhost:${this.config.get(AppConfig.PORT)}`);
+    });
+
   }
 }
