@@ -26,6 +26,10 @@ export default class Application {
     this.expressApp.use('/offers', this.offerController.router);
   }
 
+  public initMiddleware() {
+    this.expressApp.use(express.json());
+  }
+
   public async init() {
     this.logger.info('App initialization...');
 
@@ -39,6 +43,7 @@ export default class Application {
 
     await this.dbClient.connect(uri);
 
+    this.initMiddleware();
     this.registerRoutes();
 
     this.expressApp.listen(this.config.get(AppConfig.PORT), () => {
