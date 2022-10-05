@@ -8,6 +8,8 @@ import { Request, Response } from 'express';
 import CreateUserDto from './dto/create-user.dto.js';
 import { fillDto } from '../../utils/fill-dto.js';
 import UserResponse from './response/user.response.js';
+import HttpError from '../../services/errors/http-error.js';
+import { StatusCodes } from 'http-status-codes';
 
 @injectable()
 export default class UserController extends Controller {
@@ -28,7 +30,11 @@ export default class UserController extends Controller {
     const existUser = await this.userService.findByEmail(body.email);
 
     if (existUser) {
-      throw new Error(`User with email ${body.email} exists`);
+      throw new HttpError(
+        StatusCodes.CONFLICT,
+        `User with email ${body.email} exists`,
+        'UserController',
+      );
     }
 
     const result = await this.userService.create(body);

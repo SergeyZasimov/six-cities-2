@@ -9,6 +9,7 @@ import { fillDto } from '../../utils/fill-dto.js';
 import OfferResponse from './response/offer.response.js';
 import CreateOfferDto from './dto/create-offer.dto.js';
 import { StatusCodes } from 'http-status-codes';
+import HttpError from '../../services/errors/http-error.js';
 
 @injectable()
 export default class OfferController extends Controller {
@@ -34,9 +35,11 @@ export default class OfferController extends Controller {
     const existOffer = await this.offerService.findByTitle(body.title);
 
     if (existOffer) {
-      const errorMessage = `Offer with title ${body.title} exists`;
-      this.send(res, StatusCodes.UNPROCESSABLE_ENTITY, { error: errorMessage });
-      return this.logger.error(errorMessage);
+      throw new HttpError(
+        StatusCodes.CONFLICT,
+        `Offer with title ${body.title} exists.`,
+        'OfferController',
+      );
     }
 
     const result = await this.offerService.create(body);
