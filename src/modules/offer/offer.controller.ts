@@ -7,6 +7,8 @@ import { HttpMethod } from '../../types/http-method.enum.js';
 import { OfferServiceInterface } from './offer-sevice.interface.js';
 import { fillDto } from '../../utils/fill-dto.js';
 import OfferResponse from './response/offer.response.js';
+import CreateOfferDto from './dto/create-offer.dto.js';
+import { StatusCodes } from 'http-status-codes';
 
 @injectable()
 export default class OfferController extends Controller {
@@ -17,6 +19,7 @@ export default class OfferController extends Controller {
     super(logger);
     this.logger.info('Register routes for CategoryController');
     this.addRoute({ path: '/', method: HttpMethod.Get, handler: this.index });
+    this.addRoute({ path: '/', method: HttpMethod.Post, handler: this.create });
   }
 
   public async index( _req: Request, res: Response ): Promise<void> {
@@ -24,6 +27,19 @@ export default class OfferController extends Controller {
     this.ok(res, fillDto(OfferResponse, offers));
   }
 
-  public create( _req: Request, _res: Response ): void {
+  public async create(
+    { body }: Request<Record<string, unknown>, Record<string, unknown>, CreateOfferDto>,
+    res: Response ): Promise<void> {
+
+    const existOffer = await this.offerService.findByTitle(body.title);
+
+    if (existOffer) {
+      const errorMessage = `Offer with title ${body.title} exists`;
+      this.send(res, StatusCodes.UNPROCESSABLE_ENTITY, { error: errorMessage });
+      return this.logger.error(errorMessage);
+    }
+
+    const result = await this.offerService.create(body);
+    this.ok(res, fillDto(OfferResponse, result));
   }
 }

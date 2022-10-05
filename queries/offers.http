@@ -1,1 +1,39 @@
 GET http://localhost:10000/offers
+
+###
+
+POST http://localhost:10000/offers
+Content-Type: application/json
+
+{
+  "title": "New Offer 1",
+  "description": "Odio pellentesque diam volutpat commodo sed egestas egestas fringilla phasellus. Feugiat vivamus at augue eget arcu dictum varius duis.",
+  "city": {
+    "name": "Hamburg",
+    "location": {
+      "latitude": 53.550341,
+      "longitude": 10.000654
+    }
+  },
+  "previewImage": "room-5.jpg",
+  "photos": [
+    "room-4-photo2.jpg",
+    "room-5-photo1.jpg",
+    "room-5-photo2.jpg"
+  ],
+  "isPremium": false,
+  "type": "Hotel",
+  "rooms": 8,
+  "guests": 8,
+  "price": 750,
+  "features": [
+    "Breakfast",
+    "Air conditioning",
+    "Laptop friendly workspace"
+  ],
+  "userId": "6339141dd26fbbc45e4253bd",
+  "location": {
+    "latitude": 48.571118,
+    "longitude": 4.729841
+  }
+}
