@@ -7,6 +7,7 @@ import { getUri } from '../utils/get-uri.js';
 import { DbConnection } from '../types/db-connection.enum.js';
 import { AppConfig } from '../types/config.enum.js';
 import express, { Express } from 'express';
+import { ControllerInterface } from '../services/controller/controller.interface.js';
 
 @injectable()
 export default class Application {
@@ -16,8 +17,13 @@ export default class Application {
     @inject(Component.LoggerInterface) private logger: LoggerInterface,
     @inject(Component.ConfigInterface) private config: ConfigInterface,
     @inject(Component.DbConnectorInterface) private dbClient: DbConnectorInterface,
+    @inject(Component.OfferController) private offerController: ControllerInterface,
   ) {
     this.expressApp = express();
+  }
+
+  public registerRoutes() {
+    this.expressApp.use('/offers', this.offerController.router);
   }
 
   public async init() {
@@ -32,6 +38,8 @@ export default class Application {
     );
 
     await this.dbClient.connect(uri);
+
+    this.registerRoutes();
 
     this.expressApp.listen(this.config.get(AppConfig.PORT), () => {
       this.logger.info(`Server started on http://localhost:${this.config.get(AppConfig.PORT)}`);
