@@ -37,3 +37,20 @@ Content-Type: application/json
     "longitude": 4.729841
   }
 }
+
+###
+
+GET http://localhost:10000/offers/6339141dd26fbbc45e4253bf
+
+###
+
+PATCH http://localhost:10000/offers/633d57be3f0c5ed94d2166c9
+Content-Type: application/json
+
+{
+  "title": "New Offer 1"
+}
+
+###
+
+DELETE http://localhost:10000/offers/633d57be3f0c5ed94d2166c9

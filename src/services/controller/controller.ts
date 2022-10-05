@@ -25,7 +25,7 @@ export abstract class Controller implements ControllerInterface {
     this.logger.info(`Route registered: ${route.method.toUpperCase()} ${route.path}`);
   }
 
-  public send<T>( res: Response, statusCode: number, data: T ): void {
+  public send<T>( res: Response, statusCode: number, data?: T ): void {
     res
       .type('application/json')
       .status(statusCode)
@@ -40,16 +40,7 @@ export abstract class Controller implements ControllerInterface {
     this.send(res, StatusCodes.CREATED, data);
   }
 
-  public noContent<T>( res: Response, data: T ) {
-    this.send(res, StatusCodes.NO_CONTENT, data);
+  public noContent( res: Response) {
+    this.send(res, StatusCodes.NO_CONTENT);
   }
-
-  public noAuth<T>( res: Response, data: T ) {
-    this.send(res, StatusCodes.UNAUTHORIZED, data);
-  }
-
-  public notFound<T>( res: Response, data: T ) {
-    this.send(res, StatusCodes.NOT_FOUND, data);
-  }
-
 }
