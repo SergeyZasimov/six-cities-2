@@ -8,6 +8,7 @@ import { DbConnection } from '../types/db-connection.enum.js';
 import { AppConfig } from '../types/config.enum.js';
 import express, { Express } from 'express';
 import { ControllerInterface } from '../services/controller/controller.interface.js';
+import { ExceptionFilterInterface } from '../services/errors/exception-filter.interface.js';
 
 @injectable()
 export default class Application {
@@ -17,17 +18,24 @@ export default class Application {
     @inject(Component.LoggerInterface) private logger: LoggerInterface,
     @inject(Component.ConfigInterface) private config: ConfigInterface,
     @inject(Component.DbConnectorInterface) private dbClient: DbConnectorInterface,
+    @inject(Component.ExceptionFilterInterface) private exceptionFilter: ExceptionFilterInterface,
     @inject(Component.OfferController) private offerController: ControllerInterface,
+    @inject(Component.UserController) private userController: ControllerInterface,
   ) {
     this.expressApp = express();
   }
 
   public registerRoutes() {
     this.expressApp.use('/offers', this.offerController.router);
+    this.expressApp.use('/users', this.userController.router);
   }
 
   public initMiddleware() {
     this.expressApp.use(express.json());
+  }
+
+  public initExceptionFilters() {
+    this.expressApp.use(this.exceptionFilter.catch.bind(this.exceptionFilter));
   }
 
   public async init() {
@@ -45,6 +53,7 @@ export default class Application {
 
     this.initMiddleware();
     this.registerRoutes();
+    this.initExceptionFilters();
 
     this.expressApp.listen(this.config.get(AppConfig.PORT), () => {
       this.logger.info(`Server started on http://localhost:${this.config.get(AppConfig.PORT)}`);
