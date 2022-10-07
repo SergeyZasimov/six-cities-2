@@ -39,7 +39,7 @@ Content-Type: application/json
 }
 
 ### Show One Offer
-GET http://localhost:10000/offers/633ea92fb68d621eb85fd4d4
+GET http://localhost:10000/offers/6339141dd26fbbc45e4253bf
 
 ### Update Offer
 PATCH http://localhost:10000/offers/633ea92fb68d621eb85fd4d4
