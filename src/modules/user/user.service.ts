@@ -13,7 +13,7 @@ export default class UserService implements UserServiceInterface {
 
   constructor(
     @inject(Component.LoggerInterface) private readonly logger: LoggerInterface,
-    @inject(Component.UserServiceInterface) private readonly userModel: types.ModelType<UserEntity>,
+    @inject(Component.UserModel) private readonly userModel: types.ModelType<UserEntity>,
     @inject(Component.ConfigInterface) private readonly config: ConfigInterface,
   ) {
   }

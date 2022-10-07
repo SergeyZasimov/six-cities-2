@@ -20,11 +20,11 @@ export default class OfferService implements OfferServiceInterface {
   public async create( dto: CreateOfferDto ): Promise<DocumentType<OfferEntity>> {
     const result = await this.offerModel.create(dto);
     this.logger.info(`New offer created: ${dto.title}`);
-    return result;
+    return result.populate('userId');
   }
 
   public async findById( offerId: string ): Promise<DocumentType<OfferEntity> | null> {
-    return this.offerModel.findById(offerId).populate('userId');
+    return await this.offerModel.findById(offerId).populate('userId');
   }
 
   public async find(): Promise<DocumentType<OfferEntity>[]> {

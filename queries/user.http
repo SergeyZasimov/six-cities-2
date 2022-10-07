@@ -1,0 +1,20 @@
+POST http://localhost:10000/users/register
+Content-Type: application/json
+
+{
+  "email": "user1@gmail.com",
+  "avatar": "",
+  "userName": "user1",
+  "password": "secret123",
+  "userType": ""
+}
+
+###
+
+POST http://localhost:10000/users/login
+Content-Type: application/json
+
+{
+  "email": "user1@gmail.com",
+  "password": "secret123"
+}
