@@ -12,16 +12,8 @@ import CreateOfferDto from './dto/create-offer.dto.js';
 import UpdateOfferDto from './dto/update-offer.dto.js';
 import HttpError from '../../services/errors/http-error.js';
 import { StatusCodes } from 'http-status-codes';
-import { RequestQuery } from '../../types/request-query.type.js';
+import { ParamsGetOffer, ParamsGetPremium, RequestQuery } from '../../types/request-params-query.type.js';
 import { DEFAULT_OFFER_COUNT } from './offer.constant.js';
-
-type ParamsGetOffer = {
-  offerId: string;
-}
-
-type ParamsGetPremium = {
-  city: string;
-}
 
 @injectable()
 export default class OfferController extends Controller {

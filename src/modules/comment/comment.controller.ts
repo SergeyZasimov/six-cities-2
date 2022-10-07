@@ -1,3 +1,4 @@
+import * as core from 'express-serve-static-core';
 import { Controller } from '../../services/controller/controller.js';
 import { inject, injectable } from 'inversify';
 import { Component } from '../../types/component.types.js';
@@ -11,6 +12,7 @@ import { StatusCodes } from 'http-status-codes';
 import { fillDto } from '../../utils/fill-dto.js';
 import CommentResponse from './response/comment.response.js';
 import { HttpMethod } from '../../types/http-method.enum.js';
+import { ParamsGetOffer } from '../../types/request-params-query.type.js';
 
 @injectable()
 export default class CommentController extends Controller {
@@ -24,6 +26,7 @@ export default class CommentController extends Controller {
     this.logger.info('Register routes for CommentController');
 
     this.addRoute({ path: '/', method: HttpMethod.Post, handler: this.create });
+    this.addRoute({ path: '/:offerId', method: HttpMethod.Get, handler: this.getComments });
   }
 
   public async create(
@@ -42,6 +45,25 @@ export default class CommentController extends Controller {
 
     const result = this.commentService.create(body);
     this.created(res, fillDto(CommentResponse, result));
+  }
+
+  public async getComments(
+    req: Request<core.ParamsDictionary | ParamsGetOffer>,
+    res: Response,
+  ): Promise<void> {
+
+    const { params: { offerId } } = req;
+
+    if (!await this.offerService.findById(offerId)) {
+      throw new HttpError(
+        StatusCodes.NOT_FOUND,
+        `Offer with ID: ${offerId} - not found`,
+        'CommentOffer',
+      );
+    }
+
+    const result = await this.commentService.findByOfferId(offerId);
+    this.ok(res, fillDto(CommentResponse, result));
   }
 
 }

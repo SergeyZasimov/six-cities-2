@@ -8,3 +8,7 @@ Content-Type: application/json
   "offerId": "6339141dd26fbbc45e4253bf",
   "userId": "6339141dd26fbbc45e4253c2"
 }
+
+
+### Show Comments By Offer
+GET http://localhost:10000/comments/6339141dd26fbbc45e4253bf
