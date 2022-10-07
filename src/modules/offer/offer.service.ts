@@ -6,8 +6,37 @@ import CreateOfferDto from './dto/create-offer.dto.js';
 import { Component } from '../../types/component.types.js';
 import { LoggerInterface } from '../../services/logger/logger.interface.js';
 import UpdateOfferDto from './dto/update-offer.dto.js';
-import { DEFAULT_OFFER_COUNT } from './offer.constant.js';
 import { SortType } from '../../types/sort-type.enum.js';
+import { Types } from 'mongoose';
+
+const lookup = {
+  $lookup: {
+    from: 'comments',
+    let: { offerId: '$_id' },
+    pipeline: [
+      { $match: { $expr: { $eq: ['$offerId', '$$offerId'] } } },
+      { $project: { rating: 1 } },
+    ],
+    as: 'comments',
+  },
+};
+
+const addFields = {
+  $addFields:
+    {
+      id: { $toString: '$_id' },
+      commentCount: { $size: '$comments' },
+      rating: {
+        $cond: [
+          { $eq: [{ $size: '$comments' }, 0] },
+          0,
+          { $round: [{ $divide: [{ $sum: '$comments.rating' }, { $size: '$comments' }] }, 1] },
+        ],
+      },
+    },
+};
+
+const unset = { $unset: 'comments' };
 
 @injectable()
 export default class OfferService implements OfferServiceInterface {
@@ -24,39 +53,28 @@ export default class OfferService implements OfferServiceInterface {
   }
 
   public async findById( offerId: string ): Promise<DocumentType<OfferEntity> | null> {
-    return await this.offerModel.findById(offerId).populate('userId');
-  }
-
-  public async find(): Promise<DocumentType<OfferEntity>[]> {
     const result = await this.offerModel
       .aggregate([
         {
-          $lookup: {
-            from: 'comments',
-            let: { offerId: '$_id' },
-            pipeline: [
-              { $match: { $expr: { $eq: ['$offerId', '$$offerId'] } } },
-              { $project: { rating: 1 } },
-            ],
-            as: 'comments',
+          $match: {
+            '_id': new Types.ObjectId(offerId),
           },
         },
-        {
-          $addFields:
-            {
-              id: { $toString: '$_id' },
-              commentCount: { $size: '$comments' },
-              rating: {
-                $cond: [
-                  { $eq: [{ $size: '$comments' }, 0] },
-                  0,
-                  { $round: [{ $divide: [{ $sum: '$comments.rating' }, { $size: '$comments' }] }, 1] },
-                ],
-              },
-            },
-        },
-        { $unset: 'comments' },
-        { $limit: DEFAULT_OFFER_COUNT },
+        lookup,
+        addFields,
+        unset,
+      ]);
+    await this.offerModel.populate(result, { path: 'userId' });
+    return result[0];
+  }
+
+  public async find( limit: number ): Promise<DocumentType<OfferEntity>[]> {
+    const result = await this.offerModel
+      .aggregate([
+        lookup,
+        addFields,
+        unset,
+        { $limit: limit },
         { $sort: { createdAt: SortType.Down } },
       ]);
 
@@ -66,7 +84,8 @@ export default class OfferService implements OfferServiceInterface {
   }
 
   public async updateById( offerId: string, dto: UpdateOfferDto ): Promise<DocumentType<OfferEntity> | null> {
-    return this.offerModel.findByIdAndUpdate(offerId, dto, { new: true }).populate('userId');
+    await this.offerModel.findByIdAndUpdate(offerId, dto).populate('userId');
+    return await this.findById(offerId);
   }
 
   public async deleteById( offerId: string ): Promise<DocumentType<OfferEntity> | null> {
@@ -74,6 +93,17 @@ export default class OfferService implements OfferServiceInterface {
   }
 
   public async findPremiumByCity( city: string ): Promise<DocumentType<OfferEntity>[]> {
-    return this.offerModel.find({ 'city.name': city, isPremium: true }).populate('userId');
+    const result = await this.offerModel
+      .aggregate([
+        {
+          $match: { 'city.name': city, 'isPremium': true },
+        },
+        lookup,
+        addFields,
+        unset,
+      ]);
+
+    await this.offerModel.populate(result, { path: 'userId' });
+    return result;
   }
 }

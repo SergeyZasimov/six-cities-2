@@ -8,7 +8,7 @@ export interface OfferServiceInterface {
 
   findById( offerId: string ): Promise<DocumentType<OfferEntity> | null>;
 
-  find(): Promise<DocumentType<OfferEntity>[]>;
+  find(limit:number): Promise<DocumentType<OfferEntity>[]>;
 
   deleteById( offerId: string ): Promise<DocumentType<OfferEntity> | null>;
 

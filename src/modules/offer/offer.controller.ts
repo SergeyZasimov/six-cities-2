@@ -12,9 +12,15 @@ import CreateOfferDto from './dto/create-offer.dto.js';
 import UpdateOfferDto from './dto/update-offer.dto.js';
 import HttpError from '../../services/errors/http-error.js';
 import { StatusCodes } from 'http-status-codes';
+import { RequestQuery } from '../../types/request-query.type.js';
+import { DEFAULT_OFFER_COUNT } from './offer.constant.js';
 
 type ParamsGetOffer = {
   offerId: string;
+}
+
+type ParamsGetPremium = {
+  city: string;
 }
 
 @injectable()
@@ -24,23 +30,28 @@ export default class OfferController extends Controller {
     @inject(Component.OfferServiceInterface) private offerService: OfferServiceInterface,
   ) {
     super(logger);
-    this.logger.info('Register routes for CategoryController');
+    this.logger.info('Register routes for OfferController');
     this.addRoute({ path: '/', method: HttpMethod.Get, handler: this.index });
     this.addRoute({ path: '/', method: HttpMethod.Post, handler: this.create });
     this.addRoute({ path: '/:offerId', method: HttpMethod.Get, handler: this.show });
     this.addRoute({ path: '/:offerId', method: HttpMethod.Patch, handler: this.update });
     this.addRoute({ path: '/:offerId', method: HttpMethod.Delete, handler: this.delete });
+    this.addRoute({ path: '/:city/premium', method: HttpMethod.Get, handler: this.getPremiumByCity });
   }
 
-  public async index( _req: Request, res: Response ): Promise<void> {
-    const offers = await this.offerService.find();
+  public async index(
+    req: Request<unknown, unknown, unknown, RequestQuery>,
+    res: Response,
+  ): Promise<void> {
+    const { limit } = req.query;
+    const offers = await this.offerService.find(+(limit || DEFAULT_OFFER_COUNT));
     this.ok(res, fillDto(OfferResponse, offers));
   }
 
   public async create(
     req: Request<Record<string, unknown>, Record<string, unknown>, CreateOfferDto>,
-    res: Response ): Promise<void> {
-
+    res: Response,
+  ): Promise<void> {
     const { body } = req;
     const result = await this.offerService.create(body);
     this.ok(res, fillDto(OfferResponse, result));
@@ -53,9 +64,9 @@ export default class OfferController extends Controller {
 
     const { params: { offerId } } = req;
 
-    const existOffer = await this.offerService.findById(offerId);
+    const result = await this.offerService.findById(offerId);
 
-    if (!existOffer) {
+    if (!result) {
       throw new HttpError(
         StatusCodes.NOT_FOUND,
         `Offer with ID: ${offerId} - not found`,
@@ -63,7 +74,6 @@ export default class OfferController extends Controller {
       );
     }
 
-    const result = await this.offerService.findById(offerId);
     this.ok(res, fillDto(OfferResponse, result));
   }
 
@@ -94,7 +104,28 @@ export default class OfferController extends Controller {
   ): Promise<void> {
 
     const { params: { offerId } } = req;
+
+    const existOffer = await this.offerService.findById(offerId);
+
+    if (!existOffer) {
+      throw new HttpError(
+        StatusCodes.NOT_FOUND,
+        `Offer with ID: ${offerId} - not found`,
+        'OfferController',
+      );
+    }
+
     await this.offerService.deleteById(offerId);
     this.noContent(res);
   }
+
+  public async getPremiumByCity(
+    req: Request<core.ParamsDictionary | ParamsGetPremium>,
+    res: Response,
+  ): Promise<void> {
+    const { params: { city } } = req;
+    const result = await this.offerService.findPremiumByCity(city);
+    this.ok(res, fillDto(OfferResponse, result));
+  }
+
 }
