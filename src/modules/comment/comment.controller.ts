@@ -13,6 +13,7 @@ import { fillDto } from '../../utils/fill-dto.js';
 import CommentResponse from './response/comment.response.js';
 import { HttpMethod } from '../../types/http-method.enum.js';
 import { ParamsGetOffer } from '../../types/request-params-query.type.js';
+import { ValidateObjectIdMiddleware } from '../../services/middlewares/validate-objectId.middleware.js';
 
 @injectable()
 export default class CommentController extends Controller {
@@ -26,7 +27,12 @@ export default class CommentController extends Controller {
     this.logger.info('Register routes for CommentController');
 
     this.addRoute({ path: '/', method: HttpMethod.Post, handler: this.create });
-    this.addRoute({ path: '/:offerId', method: HttpMethod.Get, handler: this.getComments });
+    this.addRoute({
+      path: '/:offerId',
+      method: HttpMethod.Get,
+      handler: this.getComments,
+      middlewares: [new ValidateObjectIdMiddleware('offerId')],
+    });
   }
 
   public async create(

@@ -14,6 +14,7 @@ import HttpError from '../../services/errors/http-error.js';
 import { StatusCodes } from 'http-status-codes';
 import { ParamsGetOffer, ParamsGetPremium, RequestQuery } from '../../types/request-params-query.type.js';
 import { DEFAULT_OFFER_COUNT } from './offer.constant.js';
+import { ValidateObjectIdMiddleware } from '../../services/middlewares/validate-objectId.middleware.js';
 
 @injectable()
 export default class OfferController extends Controller {
@@ -23,12 +24,37 @@ export default class OfferController extends Controller {
   ) {
     super(logger);
     this.logger.info('Register routes for OfferController');
+
     this.addRoute({ path: '/', method: HttpMethod.Get, handler: this.index });
+
     this.addRoute({ path: '/', method: HttpMethod.Post, handler: this.create });
-    this.addRoute({ path: '/:offerId', method: HttpMethod.Get, handler: this.show });
-    this.addRoute({ path: '/:offerId', method: HttpMethod.Patch, handler: this.update });
-    this.addRoute({ path: '/:offerId', method: HttpMethod.Delete, handler: this.delete });
-    this.addRoute({ path: '/:city/premium', method: HttpMethod.Get, handler: this.getPremiumByCity });
+
+    this.addRoute({
+      path: '/:offerId',
+      method: HttpMethod.Get,
+      handler: this.show,
+      middlewares: [new ValidateObjectIdMiddleware('offerId')],
+    });
+
+    this.addRoute({
+      path: '/:offerId',
+      method: HttpMethod.Patch,
+      handler: this.update,
+      middlewares: [new ValidateObjectIdMiddleware('offerId')],
+    });
+
+    this.addRoute({
+      path: '/:offerId',
+      method: HttpMethod.Delete,
+      handler: this.delete,
+      middlewares: [new ValidateObjectIdMiddleware('offerId')],
+    });
+
+    this.addRoute({
+      path: '/:city/premium',
+      method: HttpMethod.Get,
+      handler: this.getPremiumByCity,
+    });
   }
 
   public async index(

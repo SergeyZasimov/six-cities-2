@@ -54,3 +54,7 @@ DELETE http://localhost:10000/offers/633ea92fb68d621eb85fd4d4
 
 ### Show Premium Offers
 GET http://localhost:10000/offers/Paris/premium
+
+
+### Invalid ID
+GET http://localhost:10000/offers/6339141
