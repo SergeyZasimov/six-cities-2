@@ -15,6 +15,7 @@ import { StatusCodes } from 'http-status-codes';
 import { ParamsGetOffer, ParamsGetPremium, RequestQuery } from '../../types/request-params-query.type.js';
 import { DEFAULT_OFFER_COUNT } from './offer.constant.js';
 import { ValidateObjectIdMiddleware } from '../../services/middlewares/validate-objectId.middleware.js';
+import ValidateDtoMiddleware from '../../services/middlewares/validate-dto.middleware.js';
 
 @injectable()
 export default class OfferController extends Controller {
@@ -27,7 +28,12 @@ export default class OfferController extends Controller {
 
     this.addRoute({ path: '/', method: HttpMethod.Get, handler: this.index });
 
-    this.addRoute({ path: '/', method: HttpMethod.Post, handler: this.create });
+    this.addRoute({
+      path: '/',
+      method: HttpMethod.Post,
+      handler: this.create,
+      middlewares: [new ValidateDtoMiddleware(CreateOfferDto)],
+    });
 
     this.addRoute({
       path: '/:offerId',

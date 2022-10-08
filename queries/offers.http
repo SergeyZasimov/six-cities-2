@@ -58,12 +58,12 @@ GET http://localhost:10000/offers/Paris/premium
 ### Invalid ID
 GET http://localhost:10000/offers/6339141
 
-### Invalid Location
+### Invalid Offer Data
 POST http://localhost:10000/offers
 Content-Type: application/json
 
 {
-  "title": "New Offer 1",
+  "title": "New",
   "description": "Odio pellentesque diam volutpat commodo sed egestas egestas fringilla phasellus. Feugiat vivamus at augue eget arcu dictum varius duis.",
   "city": {
     "name": "Hamburg",

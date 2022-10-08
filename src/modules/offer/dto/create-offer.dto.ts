@@ -13,11 +13,11 @@ import {
   Max,
   MaxLength,
   Min,
-  MinLength, Validate,
+  MinLength,
+  Validate,
 } from 'class-validator';
-import { Cities } from '../../../types/cities.enum.js';
 import { Location } from '../../../types/location.type.js';
-import LocationValidator from '../../../utils/location-validator.js';
+import { LocationValidator, CityValidator } from '../../../utils/custom-validators.js';
 
 export default class CreateOfferDto {
   @MinLength(10, { message: 'Minimum title length must be 10' })
@@ -28,7 +28,7 @@ export default class CreateOfferDto {
   @MaxLength(1024, { message: 'Maximum description length must be 1024' })
   public description!: string;
 
-  @IsEnum(Cities, { message: 'City must be Paris, Cologne, Brussels, Amsterdam, Hamburg or Dusseldorf' })
+  @Validate(CityValidator, { message: 'City must be Paris, Cologne, Brussels, Amsterdam, Hamburg or Dusseldorf' })
   public city!: City;
 
   @Matches(/[\w/-]+.(jpg|png)/, { message: 'Photo must be jpg or png' })
@@ -68,6 +68,6 @@ export default class CreateOfferDto {
   @IsMongoId({ message: 'UserID must be valid ID' })
   public userId!: string;
 
-  @Validate(LocationValidator, {message: 'Invalid location value'})
+  @Validate(LocationValidator, { message: 'Invalid location value' })
   public location!: Location;
 }
