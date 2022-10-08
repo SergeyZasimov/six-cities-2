@@ -106,4 +106,8 @@ export default class OfferService implements OfferServiceInterface {
     await this.offerModel.populate(result, { path: 'userId' });
     return result;
   }
+
+  public async exists( documentId: string ): Promise<boolean> {
+    return await this.offerModel.exists({ _id: documentId }) !== null;
+  }
 }

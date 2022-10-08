@@ -94,3 +94,6 @@ Content-Type: application/json
     "longitude": 4729841
   }
 }
+
+### Document not exist Show One Offer
+GET http://localhost:10000/offers/6339141dd26fbbc45e4253b3
