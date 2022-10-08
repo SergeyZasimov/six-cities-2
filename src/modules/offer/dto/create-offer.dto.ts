@@ -56,7 +56,7 @@ export default class CreateOfferDto {
   @Max(10, { message: 'Maximum is 10 guests' })
   public guests!: number;
 
-  @IsInt({ message: 'Guests must be an integer' })
+  @IsInt({ message: 'Price must be an integer' })
   @Min(100, { message: 'Minimum price is 100' })
   @Max(100000, { message: 'Maximum price is 100000' })
   public price!: number;
