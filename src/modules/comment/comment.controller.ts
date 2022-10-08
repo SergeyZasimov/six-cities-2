@@ -15,6 +15,7 @@ import { HttpMethod } from '../../types/http-method.enum.js';
 import { ParamsGetOffer } from '../../types/request-params-query.type.js';
 import { ValidateObjectIdMiddleware } from '../../services/middlewares/validate-objectId.middleware.js';
 import ValidateDtoMiddleware from '../../services/middlewares/validate-dto.middleware.js';
+import { DocumentExistsMiddleware } from '../../services/middlewares/document-exists.middleware.js';
 
 @injectable()
 export default class CommentController extends Controller {
@@ -38,7 +39,10 @@ export default class CommentController extends Controller {
       path: '/:offerId',
       method: HttpMethod.Get,
       handler: this.getComments,
-      middlewares: [new ValidateObjectIdMiddleware('offerId')],
+      middlewares: [
+        new ValidateObjectIdMiddleware('offerId'),
+        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId')
+      ],
     });
   }
 
@@ -48,7 +52,7 @@ export default class CommentController extends Controller {
   ): Promise<void> {
     const { body } = req;
 
-    if (!await this.offerService.findById(body.offerId)) {
+    if (!await this.offerService.exists(body.offerId)) {
       throw new HttpError(
         StatusCodes.NOT_FOUND,
         `Offer with ID: ${body.offerId} - not found`,
@@ -64,17 +68,7 @@ export default class CommentController extends Controller {
     req: Request<core.ParamsDictionary | ParamsGetOffer>,
     res: Response,
   ): Promise<void> {
-
     const { params: { offerId } } = req;
-
-    if (!await this.offerService.findById(offerId)) {
-      throw new HttpError(
-        StatusCodes.NOT_FOUND,
-        `Offer with ID: ${offerId} - not found`,
-        'CommentOffer',
-      );
-    }
-
     const result = await this.commentService.findByOfferId(offerId);
     this.ok(res, fillDto(CommentResponse, result));
   }

@@ -13,13 +13,5 @@ Content-Type: application/json
 ### Show Comments By Offer
 GET http://localhost:10000/comments/6339141dd26fbbc45e4253bf
 
-### Ivalid Create Comment
-POST http://localhost:10000/comments/
-Content-Type: application/json
-
-{
-  "text": "Test",
-  "rating": 6.6,
-  "offerId": "6339141dd26",
-  "userId": "6339141dd26fbbc45e4253c2"
-}
+### Invalid OfferID Show Comments By Offer
+GET http://localhost:10000/comments/6339141dd26fbbc45e4253b3
