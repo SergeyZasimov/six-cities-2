@@ -8,12 +8,13 @@ convict.addFormats(validator);
 export type ConfigSchema = {
   [AppConfig.PORT]: number;
   [AppConfig.SALT]: string;
+  [AppConfig.UPLOAD_DIRECTORY]: string;
   [DbConnection.DB_HOST]: string;
   [DbConnection.DB_USER]: string;
   [DbConnection.DB_PASSWORD]: string;
   [DbConnection.DB_PORT]: number;
   [DbConnection.DB_NAME]: string;
-}
+};
 
 export const configSchema = convict<ConfigSchema>({
   [AppConfig.PORT]: {
@@ -28,6 +29,12 @@ export const configSchema = convict<ConfigSchema>({
     env: AppConfig.SALT,
     default: null,
     sensitive: true,
+  },
+  [AppConfig.UPLOAD_DIRECTORY]: {
+    doc: 'Directory for upload files',
+    format: String,
+    env: AppConfig.UPLOAD_DIRECTORY,
+    default: null,
   },
   [DbConnection.DB_HOST]: {
     doc: 'Data Base Server IP address',
