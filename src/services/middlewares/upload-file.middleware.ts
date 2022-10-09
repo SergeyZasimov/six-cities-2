@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import { MiddlewareInterface } from '../../types/middleware.interface.js';
 import multer, { diskStorage } from 'multer';
-import mime from 'mime';
 import { nanoid } from 'nanoid';
+import mime from 'mime-types';
 
 export class UploadFileMiddleware implements MiddlewareInterface {
   constructor(
@@ -18,7 +18,7 @@ export class UploadFileMiddleware implements MiddlewareInterface {
         callback(null, `${this.uploadDirectory}/${this.entityName}`);
       },
       filename: ( _req, file, callback ) => {
-        const extension = mime.getExtension(file.mimetype);
+        const extension = mime.extension(file.mimetype);
         const filename = nanoid();
         callback(null, `${filename}.${extension}`);
       },

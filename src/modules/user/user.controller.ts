@@ -12,11 +12,16 @@ import HttpError from '../../services/errors/http-error.js';
 import { StatusCodes } from 'http-status-codes';
 import LoginUserDto from './dto/login-user.dto.js';
 import ValidateDtoMiddleware from '../../services/middlewares/validate-dto.middleware.js';
+import { ValidateObjectIdMiddleware } from '../../services/middlewares/validate-objectId.middleware.js';
+import { UploadFileMiddleware } from '../../services/middlewares/upload-file.middleware.js';
+import { ConfigInterface } from '../../services/config/config.interface.js';
+import { AppConfig } from '../../types/config.enum.js';
 
 @injectable()
 export default class UserController extends Controller {
   constructor(
     @inject(Component.LoggerInterface) logger: LoggerInterface,
+    @inject(Component.ConfigInterface) private readonly config: ConfigInterface,
     @inject(Component.UserServiceInterface) private readonly userService: UserServiceInterface,
   ) {
     super(logger);
@@ -34,6 +39,20 @@ export default class UserController extends Controller {
       method: HttpMethod.Post,
       handler: this.login,
       middlewares: [new ValidateDtoMiddleware(LoginUserDto)],
+    });
+
+    this.addRoute({
+      path: '/:userId/avatar',
+      method: HttpMethod.Post,
+      handler: this.uploadAvatar,
+      middlewares: [
+        new ValidateObjectIdMiddleware('userId'),
+        new UploadFileMiddleware(
+          this.config.get(AppConfig.UPLOAD_DIRECTORY),
+          'avatar',
+          'user',
+        ),
+      ],
     });
   }
 
@@ -75,5 +94,10 @@ export default class UserController extends Controller {
       'Not implemented',
       'UserController',
     );
+  }
+
+  private async uploadAvatar( req: Request, res: Response ): Promise<void> {
+    console.log('avatar');
+    this.created(res, { filepath: req.file?.path });
   }
 }
