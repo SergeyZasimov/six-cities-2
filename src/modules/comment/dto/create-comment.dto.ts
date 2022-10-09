@@ -1,14 +1,16 @@
 import { IsMongoId, IsNumber, IsString, Length, Max, Min } from 'class-validator';
+import { COMMENT_CONSTRAINT } from '../comment.constant.js';
+
+const { MIN_TEXT, MAX_TEXT, MIN_RATING, MAX_RATING } = COMMENT_CONSTRAINT;
 
 export default class CreateCommentDTO {
-
   @IsString({ message: 'Comment text is required' })
-  @Length(5, 1024, { message: 'Minimum comment text length is 5, maximum is 1024' })
+  @Length(MIN_TEXT, MAX_TEXT, { message: `Minimum comment text length is ${MIN_TEXT}, maximum is ${MAX_TEXT}` })
   public text!: string;
 
   @IsNumber({}, { message: 'Rating is required' })
-  @Min(1, { message: 'Minimum rating must be 1' })
-  @Max(5, { message: 'Maximum rating must be 5' })
+  @Min(MIN_RATING, { message: `Minimum rating must be ${MIN_RATING}` })
+  @Max(MAX_RATING, { message: `Maximum rating must be ${MAX_RATING}` })
   public rating!: number;
 
   @IsMongoId({ message: 'OfferID must be valid ID' })

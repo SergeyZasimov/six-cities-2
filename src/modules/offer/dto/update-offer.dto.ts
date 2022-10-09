@@ -17,14 +17,29 @@ import {
   Validate,
 } from 'class-validator';
 import { CityValidator, LocationValidator } from '../../../utils/custom-validators.js';
+import { OFFER_CONSTRAINT } from '../offer.constant.js';
+
+const {
+  MAX_TITLE,
+  MIN_TITLE,
+  MAX_DESCRIPTION,
+  MIN_DESCRIPTION,
+  PHOTOS_LENGTH,
+  MAX_ROOMS,
+  MIN_ROOMS,
+  MAX_GUESTS,
+  MIN_GUESTS,
+  MAX_PRICE,
+  MIN_PRICE,
+} = OFFER_CONSTRAINT;
 
 export default class UpdateOfferDto {
-  @MinLength(10, { message: 'Minimum title length must be 10' })
-  @MaxLength(100, { message: 'Maximum title length must be 100' })
+  @MinLength(MIN_TITLE, { message: `Minimum title length must be ${MIN_TITLE}` })
+  @MaxLength(MAX_TITLE, { message: `Maximum title length must be ${MAX_TITLE}` })
   public title?: string;
 
-  @MinLength(20, { message: 'Minimum description length must be 20' })
-  @MaxLength(1024, { message: 'Maximum description length must be 1024' })
+  @MinLength(MIN_DESCRIPTION, { message: `Minimum description length must be ${MIN_DESCRIPTION}` })
+  @MaxLength(MAX_DESCRIPTION, { message: `Maximum description length must be ${MAX_DESCRIPTION}` })
   public description?: string;
 
   @Validate(CityValidator, { message: 'City must be Paris, Cologne, Brussels, Amsterdam, Hamburg or Dusseldorf' })
@@ -34,8 +49,8 @@ export default class UpdateOfferDto {
   public previewImage?: string;
 
   @IsArray({ message: 'Photos must be an array' })
-  @ArrayMinSize(6, { message: 'Photos must be 6' })
-  @ArrayMaxSize(6, { message: 'Photos must be 6' })
+  @ArrayMinSize(PHOTOS_LENGTH, { message: `Photos must be ${PHOTOS_LENGTH}` })
+  @ArrayMaxSize(PHOTOS_LENGTH, { message: `Photos must be ${PHOTOS_LENGTH}` })
   @Matches(/[\w/-]+.(jpg|png)/, { each: true, message: 'Photo must be jpg or png' })
   public photos?: string[];
 
@@ -46,18 +61,18 @@ export default class UpdateOfferDto {
   public type?: HousingType;
 
   @IsInt({ message: 'Rooms must be an integer' })
-  @Min(1, { message: 'Minimum is 1 room' })
-  @Max(8, { message: 'Maximum is 8 rooms' })
+  @Min(MIN_ROOMS, { message: `Minimum is ${MIN_ROOMS} room` })
+  @Max(MAX_ROOMS, { message: `Maximum is ${MAX_ROOMS} rooms` })
   public rooms?: number;
 
   @IsInt({ message: 'Guests must be an integer' })
-  @Min(1, { message: 'Minimum is 1 guest' })
-  @Max(10, { message: 'Maximum is 10 guests' })
+  @Min(MIN_GUESTS, { message: `Minimum is ${MIN_GUESTS} guest` })
+  @Max(MAX_GUESTS, { message: `Maximum is ${MAX_GUESTS} guests` })
   public guests?: number;
 
   @IsInt({ message: 'Price must be an integer' })
-  @Min(100, { message: 'Minimum price is 100' })
-  @Max(100000, { message: 'Maximum price is 100000' })
+  @Min(MIN_PRICE, { message: `Minimum price is ${MIN_PRICE}` })
+  @Max(MAX_PRICE, { message: `Maximum price is ${MAX_PRICE}` })
   public price?: number;
 
   @IsArray({ message: 'Features must be an array' })
