@@ -34,6 +34,7 @@ export default class Application {
 
   public initMiddleware() {
     this.expressApp.use(express.json());
+    this.expressApp.use('/upload', express.static(this.config.get(AppConfig.UPLOAD_DIRECTORY)));
   }
 
   public initExceptionFilters() {
@@ -60,6 +61,5 @@ export default class Application {
     this.expressApp.listen(this.config.get(AppConfig.PORT), () => {
       this.logger.info(`Server started on http://localhost:${this.config.get(AppConfig.PORT)}`);
     });
-
   }
 }

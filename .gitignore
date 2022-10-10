@@ -9,6 +9,7 @@
 /umls/
 /mongodb/
 /gen/
+/upload/
 
 .DS_Store
 coverage
