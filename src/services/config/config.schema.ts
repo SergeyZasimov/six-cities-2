@@ -9,6 +9,7 @@ export type ConfigSchema = {
   [AppConfig.PORT]: number;
   [AppConfig.SALT]: string;
   [AppConfig.UPLOAD_DIRECTORY]: string;
+  [AppConfig.JWT_SECRET]: string;
   [DbConnection.DB_HOST]: string;
   [DbConnection.DB_USER]: string;
   [DbConnection.DB_PASSWORD]: string;
@@ -35,6 +36,12 @@ export const configSchema = convict<ConfigSchema>({
     format: String,
     env: AppConfig.UPLOAD_DIRECTORY,
     default: null,
+  },
+  [AppConfig.JWT_SECRET]: {
+    doc: 'Secret string for sign JWT',
+    format: String,
+    env: AppConfig.JWT_SECRET,
+    default:null,
   },
   [DbConnection.DB_HOST]: {
     doc: 'Data Base Server IP address',
