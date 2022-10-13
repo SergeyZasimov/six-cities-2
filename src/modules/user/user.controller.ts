@@ -19,6 +19,7 @@ import { AppConfig } from '../../types/config.enum.js';
 import { createJwt } from '../../utils/create-jwt.js';
 import { JWT_ALGORITHM } from './user.constant.js';
 import LoginUserResponse from './response/login-user.response.js';
+import PrivateRouteMiddleware from '../../services/middlewares/private-route.middleware.js';
 
 @injectable()
 export default class UserController extends Controller {
@@ -43,6 +44,13 @@ export default class UserController extends Controller {
       method: HttpMethod.Post,
       handler: this.login,
       middlewares: [new ValidateDtoMiddleware(LoginUserDto)],
+    });
+
+    this.addRoute({
+      path: '/login',
+      method: HttpMethod.Get,
+      handler: this.checkAuthenticate,
+      middlewares: [new PrivateRouteMiddleware()],
     });
 
     this.addRoute({
@@ -113,5 +121,11 @@ export default class UserController extends Controller {
   private async uploadAvatar(req: Request, res: Response): Promise<void> {
     console.log('avatar');
     this.created(res, { filepath: req.file?.path });
+  }
+
+  private async checkAuthenticate(req: Request, res: Response): Promise<void> {
+    const result = await this.userService.findByEmail(req.user.email);
+    console.log(result);
+    this.ok(res, fillDto(LoginUserResponse, result));
   }
 }

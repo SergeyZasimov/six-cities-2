@@ -17,7 +17,7 @@ Content-Type: application/json
   "userType": "Default"
 }
 
-###
+### Login User
 # @name Login
 POST {{baseUrl}}/users/login
 Content-Type: application/json
@@ -26,6 +26,11 @@ Content-Type: application/json
   "email": "user1@gmail.com",
   "password": "secret123"
 }
+
+### Check User Auth
+GET {{baseUrl}}/users/login
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
 
 ### Invalid Create User
 POST {{baseUrl}}/users/register
@@ -117,7 +122,7 @@ Content-Type: application/json
   "title": "New Test Offer"
 }
 
-### Remove Offer
+### Remove Offer without Auth
 DELETE http://localhost:10000/offers/634036514abd8ec4b8e44e62
 
 ### Show Premium Offers
