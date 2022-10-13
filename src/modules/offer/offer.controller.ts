@@ -15,6 +15,7 @@ import { DEFAULT_OFFER_COUNT } from './offer.constant.js';
 import { ValidateObjectIdMiddleware } from '../../services/middlewares/validate-objectId.middleware.js';
 import ValidateDtoMiddleware from '../../services/middlewares/validate-dto.middleware.js';
 import { DocumentExistsMiddleware } from '../../services/middlewares/document-exists.middleware.js';
+import PrivateRouteMiddleware from '../../services/middlewares/private-route.middleware.js';
 
 @injectable()
 export default class OfferController extends Controller {
@@ -31,7 +32,10 @@ export default class OfferController extends Controller {
       path: '/',
       method: HttpMethod.Post,
       handler: this.create,
-      middlewares: [new ValidateDtoMiddleware(CreateOfferDto)],
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateDtoMiddleware(CreateOfferDto)
+      ],
     });
 
     this.addRoute({
@@ -49,6 +53,7 @@ export default class OfferController extends Controller {
       method: HttpMethod.Patch,
       handler: this.update,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('offerId'),
         new ValidateDtoMiddleware(CreateOfferDto),
         new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
@@ -60,6 +65,7 @@ export default class OfferController extends Controller {
       method: HttpMethod.Delete,
       handler: this.delete,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('offerId'),
         new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
       ],
