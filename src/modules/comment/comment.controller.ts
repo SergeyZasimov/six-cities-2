@@ -60,7 +60,7 @@ export default class CommentController extends Controller {
       );
     }
 
-    const result = this.commentService.create(body);
+    const result = this.commentService.create({...body, userId: req.user.id});
     this.created(res, fillDto(CommentResponse, result));
   }
 

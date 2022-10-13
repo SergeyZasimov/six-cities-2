@@ -80,7 +80,6 @@ export default class CreateOfferDto {
   @IsEnum(FeatureType, { each: true, message: 'Features must be from suggested list' })
   public features!: FeatureType[];
 
-  @IsMongoId({ message: 'UserID must be valid ID' })
   public userId!: string;
 
   @Validate(LocationValidator, { message: 'Invalid location value' })
