@@ -36,20 +36,14 @@ export default class Application {
     this.expressApp.use('/offers', this.offerController.router);
     this.expressApp.use('/users', this.userController.router);
     this.expressApp.use('/comments', this.commentController.router);
-
-    const authMiddleware = new AuthenticateMiddleware(
-      this.config.get(AppConfig.JWT_SECRET),
-    );
-
-    this.expressApp.use(authMiddleware.execute.bind(authMiddleware));
   }
 
   public initMiddleware() {
     this.expressApp.use(express.json());
-    this.expressApp.use(
-      '/upload',
-      express.static(this.config.get(AppConfig.UPLOAD_DIRECTORY)),
-    );
+    this.expressApp.use('/upload', express.static(this.config.get(AppConfig.UPLOAD_DIRECTORY)));
+
+    const authMiddleware = new AuthenticateMiddleware(this.config.get(AppConfig.JWT_SECRET));
+    this.expressApp.use(authMiddleware.execute.bind(authMiddleware));
   }
 
   public initExceptionFilters() {
@@ -74,9 +68,7 @@ export default class Application {
     this.initExceptionFilters();
 
     this.expressApp.listen(this.config.get(AppConfig.PORT), () => {
-      this.logger.info(
-        `Server started on http://localhost:${this.config.get(AppConfig.PORT)}`,
-      );
+      this.logger.info(`Server started on http://localhost:${this.config.get(AppConfig.PORT)}`);
     });
   }
 }

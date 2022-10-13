@@ -8,7 +8,6 @@ import {
   IsBoolean,
   IsEnum,
   IsInt,
-  IsMongoId,
   Matches,
   Max,
   MaxLength,

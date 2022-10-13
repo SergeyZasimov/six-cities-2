@@ -41,36 +41,27 @@ export default class CommentController extends Controller {
       handler: this.getComments,
       middlewares: [
         new ValidateObjectIdMiddleware('offerId'),
-        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId')
+        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
       ],
     });
   }
 
-  public async create(
-    req: Request<unknown, unknown, CreateCommentDTO>,
-    res: Response,
-  ): Promise<void> {
+  public async create(req: Request<unknown, unknown, CreateCommentDTO>, res: Response): Promise<void> {
     const { body } = req;
 
-    if (!await this.offerService.exists(body.offerId)) {
-      throw new HttpError(
-        StatusCodes.NOT_FOUND,
-        `Offer with ID: ${body.offerId} - not found`,
-        'CommentOffer',
-      );
+    if (!(await this.offerService.exists(body.offerId))) {
+      throw new HttpError(StatusCodes.NOT_FOUND, `Offer with ID: ${body.offerId} - not found`, 'CommentOffer');
     }
 
-    const result = this.commentService.create({...body, userId: req.user.id});
+    const result = await this.commentService.create({ ...body, userId: req.user.id });
     this.created(res, fillDto(CommentResponse, result));
   }
 
-  public async getComments(
-    req: Request<core.ParamsDictionary | ParamsGetOffer>,
-    res: Response,
-  ): Promise<void> {
-    const { params: { offerId } } = req;
+  public async getComments(req: Request<core.ParamsDictionary | ParamsGetOffer>, res: Response): Promise<void> {
+    const {
+      params: { offerId },
+    } = req;
     const result = await this.commentService.findByOfferId(offerId);
     this.ok(res, fillDto(CommentResponse, result));
   }
-
 }
