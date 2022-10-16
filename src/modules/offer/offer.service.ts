@@ -52,7 +52,7 @@ export default class OfferService implements OfferServiceInterface {
     return result.populate('userId');
   }
 
-  public async findById( offerId: string ): Promise<DocumentType<OfferEntity> | null> {
+  public async findById( offerId: string, userId: string | undefined = undefined ): Promise<DocumentType<OfferEntity> | null> {
     const result = await this.offerModel
       .aggregate([
         {
@@ -62,17 +62,35 @@ export default class OfferService implements OfferServiceInterface {
         },
         lookup,
         addFields,
+        {
+          $set: {
+            isFavorite: {
+              $cond: [
+                { $in: [new Types.ObjectId(userId), '$favorites'] }, true, false,
+              ],
+            },
+          },
+        },
         unset,
       ]);
     await this.offerModel.populate(result, { path: 'userId' });
     return result[0];
   }
 
-  public async find( limit: number ): Promise<DocumentType<OfferEntity>[]> {
+  public async find( limit: number, userId: string | undefined = undefined ): Promise<DocumentType<OfferEntity>[]> {
     const result = await this.offerModel
       .aggregate([
         lookup,
         addFields,
+        {
+          $set: {
+            isFavorite: {
+              $cond: [
+                { $in: [new Types.ObjectId(userId), '$favorites'] }, true, false,
+              ],
+            },
+          },
+        },
         unset,
         { $limit: limit },
         { $sort: { createdAt: SortType.Down } },
@@ -109,5 +127,46 @@ export default class OfferService implements OfferServiceInterface {
 
   public async exists( documentId: string ): Promise<boolean> {
     return await this.offerModel.exists({ _id: documentId }) !== null;
+  }
+
+  public async addToFavorites( offerId: string, userId: string ): Promise<DocumentType<OfferEntity> | null> {
+    return await this.offerModel.findByIdAndUpdate(
+      offerId,
+      { $push: { favorites: userId } },
+      { new: true },
+    );
+  }
+
+  public async removeFromFavorites( offerId: string, userId: string ): Promise<DocumentType<OfferEntity> | null> {
+    return await this.offerModel.findByIdAndUpdate(
+      offerId,
+      { $pull: { favorites: userId } },
+      { new: true },
+    );
+  }
+
+  public async findFavorites( userId: string ): Promise<DocumentType<OfferEntity>[] | null> {
+    const result = await this.offerModel
+      .aggregate([
+        {
+          $match: {
+            $expr: { $in: [new Types.ObjectId(userId), '$favorites'] },
+          },
+        },
+        lookup,
+        addFields,
+        {
+          $set: {
+            isFavorite: {
+              $cond: [
+                { $in: [new Types.ObjectId(userId), '$favorites'] }, true, false,
+              ],
+            },
+          },
+        },
+        unset,
+      ]);
+    await this.offerModel.populate(result, { path: 'userId' });
+    return result;
   }
 }
