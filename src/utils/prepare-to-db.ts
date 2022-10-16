@@ -5,7 +5,7 @@ import { UserType } from '../types/user-type.enum.js';
 import { Comment } from '../types/comment.type.js';
 
 const parseComments = ( comments: string ): Comment[] | [] => {
-  if (comments) {
+  if (comments.trim()) {
     return comments.split(';').map(( comment ): Comment => {
       const [text, rating, userName, email, avatar, userType] = comment.split('=');
       return {
