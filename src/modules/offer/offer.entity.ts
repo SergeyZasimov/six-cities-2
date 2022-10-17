@@ -58,6 +58,9 @@ export class OfferEntity extends defaultClasses.TimeStamps {
 
   @prop({ required: true, allowMixed: Severity.ALLOW })
   public location!: Location;
+
+  @prop({ ref: UserEntity, default: [] })
+  public favorites!: Ref<UserEntity>[];
 }
 
 export const OfferModel = getModelForClass(OfferEntity);

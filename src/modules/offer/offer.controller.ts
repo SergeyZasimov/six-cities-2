@@ -15,6 +15,7 @@ import { DEFAULT_OFFER_COUNT } from './offer.constant.js';
 import { ValidateObjectIdMiddleware } from '../../services/middlewares/validate-objectId.middleware.js';
 import ValidateDtoMiddleware from '../../services/middlewares/validate-dto.middleware.js';
 import { DocumentExistsMiddleware } from '../../services/middlewares/document-exists.middleware.js';
+import PrivateRouteMiddleware from '../../services/middlewares/private-route.middleware.js';
 
 @injectable()
 export default class OfferController extends Controller {
@@ -31,7 +32,24 @@ export default class OfferController extends Controller {
       path: '/',
       method: HttpMethod.Post,
       handler: this.create,
-      middlewares: [new ValidateDtoMiddleware(CreateOfferDto)],
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateDtoMiddleware(CreateOfferDto),
+      ],
+    });
+
+    this.addRoute({
+      path: '/favorites',
+      method: HttpMethod.Post,
+      handler: this.changeFavorites,
+      middlewares: [new PrivateRouteMiddleware()],
+    });
+
+    this.addRoute({
+      path: '/favorites',
+      method: HttpMethod.Get,
+      handler: this.getFavorites,
+      middlewares: [new PrivateRouteMiddleware()],
     });
 
     this.addRoute({
@@ -49,6 +67,7 @@ export default class OfferController extends Controller {
       method: HttpMethod.Patch,
       handler: this.update,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('offerId'),
         new ValidateDtoMiddleware(CreateOfferDto),
         new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
@@ -60,6 +79,7 @@ export default class OfferController extends Controller {
       method: HttpMethod.Delete,
       handler: this.delete,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('offerId'),
         new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
       ],
@@ -77,7 +97,7 @@ export default class OfferController extends Controller {
     res: Response,
   ): Promise<void> {
     const { limit } = req.query;
-    const offers = await this.offerService.find(+(limit || DEFAULT_OFFER_COUNT));
+    const offers = await this.offerService.find(+(limit || DEFAULT_OFFER_COUNT), req.user?.id);
     this.ok(res, fillDto(OfferResponse, offers));
   }
 
@@ -86,7 +106,7 @@ export default class OfferController extends Controller {
     res: Response,
   ): Promise<void> {
     const { body } = req;
-    const result = await this.offerService.create(body);
+    const result = await this.offerService.create({ ...body, userId: req.user.id });
     this.ok(res, fillDto(OfferResponse, result));
   }
 
@@ -95,7 +115,7 @@ export default class OfferController extends Controller {
     res: Response,
   ): Promise<void> {
     const { params: { offerId } } = req;
-    const result = await this.offerService.findById(offerId);
+    const result = await this.offerService.findById(offerId, req.user?.id);
     this.ok(res, fillDto(OfferResponse, result));
   }
 
@@ -124,5 +144,21 @@ export default class OfferController extends Controller {
     const { params: { city } } = req;
     const result = await this.offerService.findPremiumByCity(city);
     this.ok(res, fillDto(OfferResponse, result));
+  }
+
+  private async changeFavorites( req: Request, res: Response ) {
+    const { user, body } = req;
+    if (body.status) {
+      await this.offerService.addToFavorites(body.offerId, user.id);
+    } else {
+      await this.offerService.removeFromFavorites(body.offerId, user.id);
+    }
+    const result = await this.offerService.findById(body.offerId, user.id);
+    return this.ok(res, fillDto(OfferResponse, result));
+  }
+
+  private async getFavorites( req: Request, res: Response ) {
+    const result = await this.offerService.findFavorites(req.user.id);
+    return this.ok(res, fillDto(OfferResponse, result));
   }
 }

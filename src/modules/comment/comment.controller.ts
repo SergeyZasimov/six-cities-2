@@ -16,6 +16,7 @@ import { ParamsGetOffer } from '../../types/request-params-query.type.js';
 import { ValidateObjectIdMiddleware } from '../../services/middlewares/validate-objectId.middleware.js';
 import ValidateDtoMiddleware from '../../services/middlewares/validate-dto.middleware.js';
 import { DocumentExistsMiddleware } from '../../services/middlewares/document-exists.middleware.js';
+import PrivateRouteMiddleware from '../../services/middlewares/private-route.middleware.js';
 
 @injectable()
 export default class CommentController extends Controller {
@@ -32,7 +33,10 @@ export default class CommentController extends Controller {
       path: '/',
       method: HttpMethod.Post,
       handler: this.create,
-      middlewares: [new ValidateDtoMiddleware(CreateCommentDTO)],
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateDtoMiddleware(CreateCommentDTO),
+      ],
     });
 
     this.addRoute({
@@ -41,36 +45,27 @@ export default class CommentController extends Controller {
       handler: this.getComments,
       middlewares: [
         new ValidateObjectIdMiddleware('offerId'),
-        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId')
+        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
       ],
     });
   }
 
-  public async create(
-    req: Request<unknown, unknown, CreateCommentDTO>,
-    res: Response,
-  ): Promise<void> {
+  public async create(req: Request<unknown, unknown, CreateCommentDTO>, res: Response): Promise<void> {
     const { body } = req;
 
-    if (!await this.offerService.exists(body.offerId)) {
-      throw new HttpError(
-        StatusCodes.NOT_FOUND,
-        `Offer with ID: ${body.offerId} - not found`,
-        'CommentOffer',
-      );
+    if (!(await this.offerService.exists(body.offerId))) {
+      throw new HttpError(StatusCodes.NOT_FOUND, `Offer with ID: ${body.offerId} - not found`, 'CommentOffer');
     }
 
-    const result = this.commentService.create(body);
+    const result = await this.commentService.create({ ...body, userId: req.user.id });
     this.created(res, fillDto(CommentResponse, result));
   }
 
-  public async getComments(
-    req: Request<core.ParamsDictionary | ParamsGetOffer>,
-    res: Response,
-  ): Promise<void> {
-    const { params: { offerId } } = req;
+  public async getComments(req: Request<core.ParamsDictionary | ParamsGetOffer>, res: Response): Promise<void> {
+    const {
+      params: { offerId },
+    } = req;
     const result = await this.commentService.findByOfferId(offerId);
     this.ok(res, fillDto(CommentResponse, result));
   }
-
 }

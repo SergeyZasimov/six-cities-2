@@ -7,6 +7,7 @@ import { Component } from '../../types/component.types.js';
 import { LoggerInterface } from '../../services/logger/logger.interface.js';
 import { ConfigInterface } from '../../services/config/config.interface.js';
 import { AppConfig } from '../../types/config.enum.js';
+import LoginUserDto from './dto/login-user.dto.js';
 
 @injectable()
 export default class UserService implements UserServiceInterface {
@@ -41,5 +42,21 @@ export default class UserService implements UserServiceInterface {
     }
 
     return this.create(dto);
+  }
+
+  public async verifyUser( dto: LoginUserDto ): Promise<DocumentType<UserEntity> | null> {
+    const { email, password } = dto;
+
+    const user = await this.findByEmail(email);
+
+    if (!user) {
+      return null;
+    }
+
+    if (await user.verifyPassword(password)) {
+      return user;
+    }
+
+    return null;
   }
 }

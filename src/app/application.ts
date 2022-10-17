@@ -9,6 +9,7 @@ import { AppConfig } from '../types/config.enum.js';
 import express, { Express } from 'express';
 import { ControllerInterface } from '../services/controller/controller.interface.js';
 import { ExceptionFilterInterface } from '../services/errors/exception-filter.interface.js';
+import AuthenticateMiddleware from '../services/middlewares/authenticate.middleware.js';
 
 @injectable()
 export default class Application {
@@ -17,11 +18,16 @@ export default class Application {
   constructor(
     @inject(Component.LoggerInterface) private logger: LoggerInterface,
     @inject(Component.ConfigInterface) private config: ConfigInterface,
-    @inject(Component.DbConnectorInterface) private dbClient: DbConnectorInterface,
-    @inject(Component.ExceptionFilterInterface) private exceptionFilter: ExceptionFilterInterface,
-    @inject(Component.OfferController) private offerController: ControllerInterface,
-    @inject(Component.UserController) private userController: ControllerInterface,
-    @inject(Component.CommentController) private commentController: ControllerInterface,
+    @inject(Component.DbConnectorInterface)
+    private dbClient: DbConnectorInterface,
+    @inject(Component.ExceptionFilterInterface)
+    private exceptionFilter: ExceptionFilterInterface,
+    @inject(Component.OfferController)
+    private offerController: ControllerInterface,
+    @inject(Component.UserController)
+    private userController: ControllerInterface,
+    @inject(Component.CommentController)
+    private commentController: ControllerInterface,
   ) {
     this.expressApp = express();
   }
@@ -35,6 +41,9 @@ export default class Application {
   public initMiddleware() {
     this.expressApp.use(express.json());
     this.expressApp.use('/upload', express.static(this.config.get(AppConfig.UPLOAD_DIRECTORY)));
+
+    const authMiddleware = new AuthenticateMiddleware(this.config.get(AppConfig.JWT_SECRET));
+    this.expressApp.use(authMiddleware.execute.bind(authMiddleware));
   }
 
   public initExceptionFilters() {

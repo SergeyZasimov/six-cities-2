@@ -15,7 +15,6 @@ import DbConnectorService from '../services/db-connector/db-connector.service.js
 import { ConfigInterface } from '../services/config/config.interface.js';
 import ConfigService from '../services/config/config.service.js';
 import { Offer } from '../types/offer.type.js';
-import { AppConfig } from '../types/config.enum.js';
 import { getUri } from '../utils/get-uri.js';
 import { CommentServiceInterface } from '../modules/comment/comment-service.interface.js';
 import CommentService from '../modules/comment/comment.service.js';
@@ -31,7 +30,6 @@ export default class ImportCommand implements CliCommandInterface {
   private dbConnectorService!: DbConnectorInterface;
   private logger!: LoggerInterface;
   private config!: ConfigInterface;
-  private salt!: string;
 
   constructor() {
     this.onCompleteRow = this.onCompleteRow.bind(this);
@@ -44,14 +42,13 @@ export default class ImportCommand implements CliCommandInterface {
     this.commentService = new CommentService(this.logger, CommentModel);
     this.dbConnectorService = new DbConnectorService(this.logger);
 
-    this.salt = this.config.get(AppConfig.SALT);
   }
 
   private async saveUser( user: User ): Promise<DocumentType<UserEntity>> {
     return await this.userService.findOrCreate({
       ...user,
       password: 'secret',
-    }, this.salt);
+    });
   }
 
   private async saveData( offer: Offer ) {

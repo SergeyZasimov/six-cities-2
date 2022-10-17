@@ -16,13 +16,18 @@ import { ValidateObjectIdMiddleware } from '../../services/middlewares/validate-
 import { UploadFileMiddleware } from '../../services/middlewares/upload-file.middleware.js';
 import { ConfigInterface } from '../../services/config/config.interface.js';
 import { AppConfig } from '../../types/config.enum.js';
+import { createJwt } from '../../utils/create-jwt.js';
+import { JWT_ALGORITHM } from './user.constant.js';
+import LoginUserResponse from './response/login-user.response.js';
+import PrivateRouteMiddleware from '../../services/middlewares/private-route.middleware.js';
 
 @injectable()
 export default class UserController extends Controller {
   constructor(
     @inject(Component.LoggerInterface) logger: LoggerInterface,
     @inject(Component.ConfigInterface) private readonly config: ConfigInterface,
-    @inject(Component.UserServiceInterface) private readonly userService: UserServiceInterface,
+    @inject(Component.UserServiceInterface)
+    private readonly userService: UserServiceInterface,
   ) {
     super(logger);
     this.logger.info('Register routes for UserController...');
@@ -42,6 +47,13 @@ export default class UserController extends Controller {
     });
 
     this.addRoute({
+      path: '/login',
+      method: HttpMethod.Get,
+      handler: this.checkAuthenticate,
+      middlewares: [new PrivateRouteMiddleware()],
+    });
+
+    this.addRoute({
       path: '/:userId/avatar',
       method: HttpMethod.Post,
       handler: this.uploadAvatar,
@@ -57,7 +69,9 @@ export default class UserController extends Controller {
   }
 
   public async create(
-    { body }: Request<Record<string, unknown>, Record<string, unknown>, CreateUserDto>,
+    {
+      body,
+    }: Request<Record<string, unknown>, Record<string, unknown>, CreateUserDto>,
     res: Response,
   ): Promise<void> {
     const existUser = await this.userService.findByEmail(body.email);
@@ -76,28 +90,42 @@ export default class UserController extends Controller {
   }
 
   public async login(
-    { body }: Request<Record<string, unknown>, Record<string, unknown>, LoginUserDto>,
-    _res: Response,
+    req: Request<
+      Record<string, unknown>,
+      Record<string, unknown>,
+      LoginUserDto
+    >,
+    res: Response,
   ): Promise<void> {
-    const existUser = await this.userService.findByEmail(body.email);
+    const { body } = req;
 
-    if (!existUser) {
+    const user = await this.userService.verifyUser(body);
+
+    if (!user) {
       throw new HttpError(
         StatusCodes.UNAUTHORIZED,
-        `User with email ${body.email} not found`,
+        'Unauthorized',
         'UserController',
       );
     }
 
-    throw new HttpError(
-      StatusCodes.NOT_IMPLEMENTED,
-      'Not implemented',
-      'UserController',
+    const token = await createJwt(
+      JWT_ALGORITHM,
+      this.config.get(AppConfig.JWT_SECRET),
+      { email: user.email, id: user.id },
     );
+
+    this.ok(res, fillDto(LoginUserResponse, { token }));
   }
 
-  private async uploadAvatar( req: Request, res: Response ): Promise<void> {
+  private async uploadAvatar(req: Request, res: Response): Promise<void> {
     console.log('avatar');
     this.created(res, { filepath: req.file?.path });
+  }
+
+  private async checkAuthenticate(req: Request, res: Response): Promise<void> {
+    const result = await this.userService.findByEmail(req.user.email);
+    console.log(result);
+    this.ok(res, fillDto(LoginUserResponse, result));
   }
 }

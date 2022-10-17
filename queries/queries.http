@@ -1,0 +1,221 @@
+# Users
+### Create User
+POST {{baseUrl}} /users/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "user1@gmail.com",
+  "avatar": "user-avatar.jpg",
+  "userName": "user1",
+  "password": "secret123",
+  "userType": "Default"
+}
+
+### Login User
+POST {{baseUrl}}/users/login
+Content-Type: application/json
+
+{
+  "email": "user1@gmail.com",
+  "password": "secret123"
+}
+
+> {% client.global.set("authToken", response.body.token); %}
+
+
+### Check User Auth
+GET {{baseUrl}}/users/login
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+### Invalid Create User
+POST {{baseUrl}}/users/register
+Content-Type: application/json
+
+{
+  "email": "user1gmail.com",
+  "avatar": "user-avatar.gif",
+  "userName": "user1",
+  "password": "secret123",
+  "userType": ""
+}
+
+### Invalid Login User
+POST {{baseUrl}}/users/login
+Content-Type: application/json
+
+{
+  "email": "user1gmail.com",
+  "password": "sec"
+}
+
+### Send a form with user avatar
+POST {{baseUrl}}/users/633bea8df245edac1e9a2011/avatar
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="avatar"; filename="avatar-max.jpg"
+Content-Type: image/jpeg
+
+< ../markup/img/avatar-max.jpg
+--WebAppBoundary--
+
+# Offers
+### Show Offers List
+GET {{baseUrl}}/offers?limit=5
+Authorization: Bearer {{authToken}}
+
+### Create Offer
+POST http://localhost:10000/offers
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "title": "New Offer 1",
+  "description": "Odio pellentesque diam volutpat commodo sed egestas egestas fringilla phasellus. Feugiat vivamus at augue eget arcu dictum varius duis.",
+  "city": {
+    "name": "Hamburg",
+    "location": {
+      "latitude": 53.550341,
+      "longitude": 10.000654
+    }
+  },
+  "previewImage": "room-5.jpg",
+  "photos": [
+    "room-4-photo2.jpg",
+    "room-5-photo1.jpg",
+    "room-5-photo2.jpg",
+    "room-4-photo2.jpg",
+    "room-5-photo1.jpg",
+    "room-5-photo2.jpg"
+  ],
+  "isPremium": false,
+  "type": "Hotel",
+  "rooms": 8,
+  "guests": 8,
+  "price": 750,
+  "features": [
+    "Breakfast",
+    "Air conditioning",
+    "Laptop friendly workspace"
+  ],
+  "location": {
+    "latitude": 48.571118,
+    "longitude": 4.729841
+  }
+}
+
+### Show One Offer
+GET http://localhost:10000/offers/634c13e3f89a4bf8048054c9
+Authorization: Bearer {{authToken}}
+
+
+### Update Offer
+PATCH http://localhost:10000/offers/633ea92fb68d621eb85fd4d4
+Content-Type: application/json
+
+{
+  "title": "New Test Offer"
+}
+
+### Remove Offer without Auth
+DELETE http://localhost:10000/offers/634036514abd8ec4b8e44e62
+
+### Show Premium Offers
+GET http://localhost:10000/offers/Paris/premium
+
+### Invalid ID
+GET http://localhost:10000/offers/6339141
+
+### Invalid Offer Data
+POST http://localhost:10000/offers
+Content-Type: application/json
+
+{
+  "title": "New",
+  "description": "Odio pellentesque diam volutpat commodo sed egestas egestas fringilla phasellus. Feugiat vivamus at augue eget arcu dictum varius duis.",
+  "city": {
+    "name": "Hamburg",
+    "location": {
+      "latitude": 53.550341,
+      "longitude": 10.000654
+    }
+  },
+  "previewImage": "room-5.jpg",
+  "photos": [
+    "room-4-photo2.jpg",
+    "room-5-photo1.jpg",
+    "room-5-photo2.jpg"
+  ],
+  "isPremium": false,
+  "type": "Hotel",
+  "rooms": 8,
+  "guests": 8,
+  "price": 750,
+  "features": [
+    "Breakfast",
+    "Air conditioning",
+    "Laptop friendly workspace"
+  ],
+  "userId": "6339141dd26fbbc45e4253bd",
+  "location": {
+    "latitude": 48.571118,
+    "longitude": 4729841
+  }
+}
+
+### Document not exist Show One Offer
+GET http://localhost:10000/offers/6339141dd26fbbc45e4253b3
+
+# Comments
+### Create Comment
+POST http://localhost:10000/comments/
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "text": "Test comment. Neque egestas congue quisque egestas diam in. Quisque egestas diam in arcu cursus euismod quis. Ut porttitor leo a diam sollicitudin tempor id eu nisl. Mattis pellentesque id nibh tortor. Morbi tempus iaculis urna id volutpat lacus. Non odio euismod lacinia at quis risus. In pellentesque massa placerat duis ultricies lacus. Dolor sed viverra ipsum nunc aliquet bibendum enim. Pretium quam vulputate dignissim suspendisse in est ante in nibh. Consectetur purus ut faucibus pulvinar elementum integer enim neque volutpat.",
+  "rating": 3.6,
+  "offerId": "6339141dd26fbbc45e4253bf"
+}
+
+### Show Comments By Offer
+GET http://localhost:10000/comments/6339141dd26fbbc45e4253bf
+
+### Invalid OfferID Show Comments By Offer
+GET http://localhost:10000/comments/6339141dd26fbbc45e4253b3
+
+#Favorites
+### Add to Favorites
+POST {{baseUrl}}/offers/favorites
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "offerId": "634c13e3f89a4bf8048054c9",
+  "status": 1
+}
+
+### Add to Favorites
+POST {{baseUrl}}/offers/favorites
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "offerId": "634c13e3f89a4bf8048054db",
+  "status": 1
+}
+
+### Remove from Favorites
+POST {{baseUrl}}/offers/favorites
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "offerId": "634a8a3f11696e10ce5f5831",
+  "status": 0
+}
+
+### Get Favorites
+GET {{baseUrl}}/offers/favorites
+Authorization: Bearer {{authToken}}

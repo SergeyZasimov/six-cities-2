@@ -2,6 +2,7 @@ import { User } from '../../types/user.type.js';
 import { UserType } from '../../types/user-type.enum.js';
 import typegoose, { defaultClasses, getModelForClass } from '@typegoose/typegoose';
 import { createPasswordHash } from '../../utils/create-password-hash.js';
+import bcrypt from 'bcrypt';
 
 const { prop, modelOptions } = typegoose;
 
@@ -44,6 +45,10 @@ export class UserEntity extends defaultClasses.TimeStamps implements User {
 
   public getPassword() {
     return this.password;
+  }
+
+  public async verifyPassword(password: string): Promise<boolean> {
+    return await bcrypt.compare(password, this.password);
   }
 }
 
