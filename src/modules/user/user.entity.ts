@@ -3,6 +3,7 @@ import { UserType } from '../../types/user-type.enum.js';
 import typegoose, { defaultClasses, getModelForClass } from '@typegoose/typegoose';
 import { createPasswordHash } from '../../utils/create-password-hash.js';
 import bcrypt from 'bcrypt';
+import { DEFAULT_AVATAR_IMAGE } from './user.constant.js';
 
 const { prop, modelOptions } = typegoose;
 
@@ -20,7 +21,7 @@ export class UserEntity extends defaultClasses.TimeStamps implements User {
 
     this.userName = data.userName;
     this.email = data.email;
-    this.avatar = data.avatar || '';
+    this.avatar = data.avatar || DEFAULT_AVATAR_IMAGE;
     this.userType = data.userType || UserType.Default;
   }
 
