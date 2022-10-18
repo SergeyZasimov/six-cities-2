@@ -7,6 +7,7 @@ convict.addFormats(validator);
 
 export type ConfigSchema = {
   [AppConfig.PORT]: number;
+  [AppConfig.HOST]: string;
   [AppConfig.SALT]: string;
   [AppConfig.JWT_SECRET]: string;
   [AppConfig.UPLOAD_DIRECTORY]: string;
@@ -24,6 +25,12 @@ export const configSchema = convict<ConfigSchema>({
     format: 'port',
     env: AppConfig.PORT,
     default: 4455,
+  },
+  [AppConfig.HOST]: {
+    doc: 'Application host',
+    format: String,
+    env: AppConfig.HOST,
+    default: 'localhost',
   },
   [AppConfig.SALT]: {
     doc: 'The string that is added when encrypting the password',

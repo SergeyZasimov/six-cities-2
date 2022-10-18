@@ -1,5 +1,6 @@
 export enum AppConfig {
   PORT = 'PORT',
+  HOST = 'HOST',
   SALT = 'SALT',
   JWT_SECRET = 'JWT_SECRET',
   UPLOAD_DIRECTORY = 'UPLOAD_DIRECTORY',
