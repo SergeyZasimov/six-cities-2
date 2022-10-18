@@ -41,6 +41,7 @@ export default class Application {
   public initMiddleware() {
     this.expressApp.use(express.json());
     this.expressApp.use('/upload', express.static(this.config.get(AppConfig.UPLOAD_DIRECTORY)));
+    this.expressApp.use('/static', express.static(this.config.get(AppConfig.STATIC_DIRECTORY)));
 
     const authMiddleware = new AuthenticateMiddleware(this.config.get(AppConfig.JWT_SECRET));
     this.expressApp.use(authMiddleware.execute.bind(authMiddleware));
