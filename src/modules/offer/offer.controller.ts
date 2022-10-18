@@ -16,14 +16,16 @@ import { ValidateObjectIdMiddleware } from '../../services/middlewares/validate-
 import ValidateDtoMiddleware from '../../services/middlewares/validate-dto.middleware.js';
 import { DocumentExistsMiddleware } from '../../services/middlewares/document-exists.middleware.js';
 import PrivateRouteMiddleware from '../../services/middlewares/private-route.middleware.js';
+import { ConfigInterface } from '../../services/config/config.interface.js';
 
 @injectable()
 export default class OfferController extends Controller {
   constructor(
     @inject(Component.LoggerInterface) logger: LoggerInterface,
+    @inject(Component.ConfigInterface) config: ConfigInterface,
     @inject(Component.OfferServiceInterface) private offerService: OfferServiceInterface,
   ) {
-    super(logger);
+    super(logger, config);
     this.logger.info('Register routes for OfferController');
 
     this.addRoute({ path: '/', method: HttpMethod.Get, handler: this.index });

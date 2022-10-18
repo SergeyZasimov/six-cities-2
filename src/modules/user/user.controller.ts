@@ -25,11 +25,10 @@ import PrivateRouteMiddleware from '../../services/middlewares/private-route.mid
 export default class UserController extends Controller {
   constructor(
     @inject(Component.LoggerInterface) logger: LoggerInterface,
-    @inject(Component.ConfigInterface) private readonly config: ConfigInterface,
-    @inject(Component.UserServiceInterface)
-    private readonly userService: UserServiceInterface,
+    @inject(Component.ConfigInterface) config: ConfigInterface,
+    @inject(Component.UserServiceInterface) private readonly userService: UserServiceInterface,
   ) {
-    super(logger);
+    super(logger, config);
     this.logger.info('Register routes for UserController...');
 
     this.addRoute({
