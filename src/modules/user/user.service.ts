@@ -9,6 +9,7 @@ import { ConfigInterface } from '../../services/config/config.interface.js';
 import { AppConfig } from '../../types/config.enum.js';
 import LoginUserDto from './dto/login-user.dto.js';
 import UpdateUserDto from './dto/update-user.dto.js';
+import { DEFAULT_AVATAR_IMAGE } from './user.constant.js';
 
 @injectable()
 export default class UserService implements UserServiceInterface {
@@ -22,7 +23,7 @@ export default class UserService implements UserServiceInterface {
 
   public async create( dto: CreateUserDto ): Promise<DocumentType<UserEntity>> {
     const salt = this.config.get(AppConfig.SALT);
-    const user = new UserEntity(dto);
+    const user = new UserEntity({...dto, avatar: DEFAULT_AVATAR_IMAGE});
     await user.setPassword(dto.password, salt);
 
     const result = await this.userModel.create(user);

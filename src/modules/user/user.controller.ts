@@ -58,11 +58,9 @@ export default class UserController extends Controller {
       method: HttpMethod.Post,
       handler: this.uploadAvatar,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('userId'),
-        new UploadFileMiddleware(
-          this.config.get(AppConfig.UPLOAD_DIRECTORY),
-          'avatar',
-        ),
+        new UploadFileMiddleware(this.config.get(AppConfig.UPLOAD_DIRECTORY), 'avatar'),
       ],
     });
   }

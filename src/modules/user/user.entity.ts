@@ -3,7 +3,6 @@ import { UserType } from '../../types/user-type.enum.js';
 import typegoose, { defaultClasses, getModelForClass } from '@typegoose/typegoose';
 import { createPasswordHash } from '../../utils/create-password-hash.js';
 import bcrypt from 'bcrypt';
-import { DEFAULT_AVATAR_IMAGE } from './user.constant.js';
 
 const { prop, modelOptions } = typegoose;
 
@@ -18,11 +17,8 @@ export interface UserEntity extends defaultClasses.Base {
 export class UserEntity extends defaultClasses.TimeStamps implements User {
   constructor( data: User ) {
     super();
-
     this.userName = data.userName;
     this.email = data.email;
-    this.avatar = data.avatar || DEFAULT_AVATAR_IMAGE;
-    this.userType = data.userType || UserType.Default;
   }
 
   @prop({ required: true, minLength: 1, maxLength: 15 })
@@ -37,18 +33,14 @@ export class UserEntity extends defaultClasses.TimeStamps implements User {
   @prop()
   private password!: string;
 
-  @prop()
+  @prop({ default: UserType.Default })
   public userType!: UserType;
 
   public async setPassword( password: string, salt: string ): Promise<void> {
     this.password = await createPasswordHash(password, salt);
   }
 
-  public getPassword() {
-    return this.password;
-  }
-
-  public async verifyPassword(password: string): Promise<boolean> {
+  public async verifyPassword( password: string ): Promise<boolean> {
     return await bcrypt.compare(password, this.password);
   }
 }
