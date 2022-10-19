@@ -7,4 +7,4 @@ export const USER_CONSTRAINT = {
 
 export const JWT_ALGORITHM = 'HS256';
 
-export const DEFAULT_AVATAR_IMAGE = 'default-avatar.svg';
+export const DEFAULT_AVATAR_IMAGE = 'default-avatar.jpg';

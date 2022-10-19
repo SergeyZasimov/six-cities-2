@@ -8,14 +8,13 @@ export class UploadFileMiddleware implements MiddlewareInterface {
   constructor(
     private uploadDirectory: string,
     private fieldName: string,
-    private entityName: string,
   ) {
   }
 
   public async execute( req: Request, res: Response, next: NextFunction ): Promise<void> {
     const storage = diskStorage({
       destination: ( _req, _file, callback ) => {
-        callback(null, `${this.uploadDirectory}/${this.entityName}`);
+        callback(null, `${this.uploadDirectory}`);
       },
       filename: ( _req, file, callback ) => {
         const extension = mime.extension(file.mimetype);

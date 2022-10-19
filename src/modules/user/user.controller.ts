@@ -20,6 +20,7 @@ import { createJwt } from '../../utils/create-jwt.js';
 import { JWT_ALGORITHM } from './user.constant.js';
 import LoginUserResponse from './response/login-user.response.js';
 import PrivateRouteMiddleware from '../../services/middlewares/private-route.middleware.js';
+import UploadUserAvatarResponse from './response/upload-user-avatar.response.js';
 
 @injectable()
 export default class UserController extends Controller {
@@ -61,7 +62,6 @@ export default class UserController extends Controller {
         new UploadFileMiddleware(
           this.config.get(AppConfig.UPLOAD_DIRECTORY),
           'avatar',
-          'user',
         ),
       ],
     });
@@ -89,11 +89,9 @@ export default class UserController extends Controller {
   }
 
   public async login(
-    req: Request<
+    req: Request<Record<string, unknown>,
       Record<string, unknown>,
-      Record<string, unknown>,
-      LoginUserDto
-    >,
+      LoginUserDto>,
     res: Response,
   ): Promise<void> {
     const { body } = req;
@@ -117,12 +115,14 @@ export default class UserController extends Controller {
     this.ok(res, fillDto(LoginUserResponse, { token }));
   }
 
-  private async uploadAvatar(req: Request, res: Response): Promise<void> {
-    console.log('avatar');
-    this.created(res, { filepath: req.file?.path });
+  private async uploadAvatar( req: Request, res: Response ): Promise<void> {
+    const { userId } = req.params;
+    const uploadFile = { avatar: req.file?.filename };
+    await this.userService.updateById(userId, uploadFile);
+    this.created(res, fillDto(UploadUserAvatarResponse, uploadFile));
   }
 
-  private async checkAuthenticate(req: Request, res: Response): Promise<void> {
+  private async checkAuthenticate( req: Request, res: Response ): Promise<void> {
     const result = await this.userService.findByEmail(req.user.email);
     console.log(result);
     this.ok(res, fillDto(LoginUserResponse, result));
