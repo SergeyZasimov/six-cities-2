@@ -17,19 +17,19 @@ export interface OfferEntity extends defaultClasses.Base {
 })
 export class OfferEntity extends defaultClasses.TimeStamps {
 
-  @prop({ required: true, minlength: 10, maxlength: 100 })
+  @prop({ required: true, trim: true, minlength: 10, maxlength: 100 })
   public title!: string;
 
-  @prop({ required: true, minlength: 20, maxlength: 1024 })
+  @prop({ required: true, trim: true, minlength: 20, maxlength: 1024 })
   public description!: string;
 
   @prop({ required: true, allowMixed: Severity.ALLOW })
   public city!: City;
 
-  @prop({ required: true })
+  @prop({ required: true, default: '' })
   public previewImage!: string;
 
-  @prop({ required: true, allowMixed: Severity.ALLOW })
+  @prop({ required: true, default: [], allowMixed: Severity.ALLOW })
   public photos!: string[];
 
   @prop({ required: true })

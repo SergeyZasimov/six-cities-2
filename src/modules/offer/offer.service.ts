@@ -8,6 +8,8 @@ import { LoggerInterface } from '../../services/logger/logger.interface.js';
 import UpdateOfferDto from './dto/update-offer.dto.js';
 import { SortType } from '../../types/sort-type.enum.js';
 import { Types } from 'mongoose';
+import UpdatePreviewImageOfferDto from './dto/update-preview-image-offer.dto.js';
+import UpdatePhotosOfferDto from './dto/update-photos-offer.dto.js';
 
 const lookup = {
   $lookup: {
@@ -101,7 +103,10 @@ export default class OfferService implements OfferServiceInterface {
     return result;
   }
 
-  public async updateById( offerId: string, dto: UpdateOfferDto ): Promise<DocumentType<OfferEntity> | null> {
+  public async updateById(
+    offerId: string,
+    dto: UpdateOfferDto | UpdatePreviewImageOfferDto | UpdatePhotosOfferDto,
+  ): Promise<DocumentType<OfferEntity> | null> {
     await this.offerModel.findByIdAndUpdate(offerId, dto).populate('userId');
     return await this.findById(offerId);
   }

@@ -17,6 +17,12 @@ import ValidateDtoMiddleware from '../../services/middlewares/validate-dto.middl
 import { DocumentExistsMiddleware } from '../../services/middlewares/document-exists.middleware.js';
 import PrivateRouteMiddleware from '../../services/middlewares/private-route.middleware.js';
 import { ConfigInterface } from '../../services/config/config.interface.js';
+import { UploadFileMiddleware } from '../../services/middlewares/upload-file.middleware.js';
+import { AppConfig } from '../../types/config.enum.js';
+import UploadOfferPreviewImageResponse from './response/upload-offer-preview-image.response.js';
+import { UploadFilesArrayMiddleware } from '../../services/middlewares/upload-files-array.middleware.js';
+import UpdatePreviewImageOfferDto from './dto/update-preview-image-offer.dto.js';
+import UpdatePhotosOfferDto from './dto/update-photos-offer.dto.js';
 
 @injectable()
 export default class OfferController extends Controller {
@@ -92,6 +98,30 @@ export default class OfferController extends Controller {
       method: HttpMethod.Get,
       handler: this.getPremiumByCity,
     });
+
+    this.addRoute(({
+      path: '/:offerId/previewImage',
+      method: HttpMethod.Post,
+      handler: this.uploadPreviewImage,
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateObjectIdMiddleware('offerId'),
+        new ValidateDtoMiddleware(UpdatePreviewImageOfferDto),
+        new UploadFileMiddleware(this.config.get(AppConfig.UPLOAD_DIRECTORY), 'previewImage'),
+      ],
+    }));
+
+    this.addRoute(({
+      path: '/:offerId/photos',
+      method: HttpMethod.Post,
+      handler: this.uploadPhotos,
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateObjectIdMiddleware('offerId'),
+        new ValidateDtoMiddleware(UpdatePhotosOfferDto),
+        new UploadFilesArrayMiddleware(this.config.get(AppConfig.UPLOAD_DIRECTORY), 'photos'),
+      ],
+    }));
   }
 
   public async index(
@@ -162,5 +192,21 @@ export default class OfferController extends Controller {
   private async getFavorites( req: Request, res: Response ) {
     const result = await this.offerService.findFavorites(req.user.id);
     return this.ok(res, fillDto(OfferResponse, result));
+  }
+
+  private async uploadPreviewImage( req: Request, res: Response ): Promise<void> {
+    const { offerId } = req.params;
+    const uploadFile = { previewImage: req.file?.filename };
+    await this.offerService.updateById(offerId, uploadFile);
+    this.created(res, fillDto(UploadOfferPreviewImageResponse, uploadFile));
+  }
+
+  private async uploadPhotos( req: Request, res: Response ): Promise<void> {
+    const { offerId } = req.params;
+    const files = [...JSON.parse(JSON.stringify(req.files))];
+    const photos = files.map(( file ) => file.filename);
+    const uploadFiles = { photos };
+    await this.offerService.updateById(offerId, uploadFiles);
+    this.created(res, photos);
   }
 }

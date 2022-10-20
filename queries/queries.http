@@ -34,10 +34,8 @@ Content-Type: application/json
 
 {
   "email": "user1gmail.com",
-  "avatar": "user-avatar.gif",
   "userName": "user1",
-  "password": "secret123",
-  "userType": ""
+  "password": "secret123"
 }
 
 ### Invalid Login User
@@ -52,6 +50,8 @@ Content-Type: application/json
 ### Send a form with user avatar
 POST {{baseUrl}}/users/634f7301302c1e8a3cd2a919/avatar
 Content-Type: multipart/form-data; boundary=WebAppBoundary
+Authorization: Bearer {{authToken}}
+
 
 --WebAppBoundary
 Content-Disposition: form-data; name="avatar"; filename="avatar-max.jpg"
@@ -166,6 +166,57 @@ Content-Type: application/json
 
 ### Document not exist Show One Offer
 GET http://localhost:10000/offers/6339141dd26fbbc45e4253b3
+
+### Upload offer preview Image
+POST {{baseUrl}}/offers/634c13e3f89a4bf8048054c9/previewImage
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+Authorization: Bearer {{authToken}}
+
+
+--WebAppBoundary
+Content-Disposition: form-data; name="previewImage"; filename="apartment-01.jpg"
+Content-Type: image/jpeg
+
+< ../markup/img/apartment-01.jpg
+--WebAppBoundary--
+
+### Upload offer photos
+POST {{baseUrl}}/offers/634c13e3f89a4bf8048054c9/photos
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+Authorization: Bearer {{authToken}}
+
+
+--WebAppBoundary
+Content-Disposition: form-data; name="photos"; filename="apartment-02.jpg"
+Content-Type: image/jpeg
+
+< ../markup/img/apartment-02.jpg
+
+--WebAppBoundary
+Content-Disposition: form-data; name="photos"; filename="apartment-03.jpg"
+Content-Type: image/jpeg
+
+< ../markup/img/apartment-03.jpg
+
+--WebAppBoundary
+Content-Disposition: form-data; name="photos"; filename="apartment-01.jpg"
+Content-Type: image/jpeg
+
+< ../markup/img/apartment-01.jpg
+
+--WebAppBoundary
+Content-Disposition: form-data; name="photos"; filename="apartment-02.jpg"
+Content-Type: image/jpeg
+
+< ../markup/img/apartment-02.jpg
+
+--WebAppBoundary
+Content-Disposition: form-data; name="photos"; filename="apartment-03.jpg"
+Content-Type: image/jpeg
+
+< ../markup/img/apartment-03.jpg
+
+--WebAppBoundary--
 
 # Comments
 ### Create Comment
