@@ -1,0 +1,681 @@
+POST http://localhost:10000/users/avatar
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RVc2VyQGdtYWlsLmNvbSIsImlkIjoiNjM1MGM3NDRjZDE1YWU5NTBmNTdhNzlmIiwiaWF0IjoxNjY2MjgyOTYxLCJleHAiOjE2NjYzNjkzNjF9.CfldccQu4LSOUgWPAKXUpLXo7qcWRzFi01iD_K_k2XU
+
+--WebAppBoundary
+Content-Disposition: form-data; name="avatar"; filename="avatar-max.jpg"
+Content-Type: image/jpeg
+
+< C:\Users\zasim\Desktop\HTMLAcademy\six-cities-2\markup\img\avatar-max.jpg
+--WebAppBoundary--
+
+<> 2022-10-20T193934.201.json
+
+###
+
+PATCH http://localhost:10000/offers/6351797e76b01ce8ae729476
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RVc2VyQGdtYWlsLmNvbSIsImlkIjoiNjM1MGM3NDRjZDE1YWU5NTBmNTdhNzlmIiwiaWF0IjoxNjY2MjgyOTYxLCJleHAiOjE2NjYzNjkzNjF9.CfldccQu4LSOUgWPAKXUpLXo7qcWRzFi01iD_K_k2XU
+
+{
+  "title": "New Test Offer"
+}
+
+<> 2022-10-20T193828.200.json
+
+###
+
+POST http://localhost:10000/offers
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RVc2VyQGdtYWlsLmNvbSIsImlkIjoiNjM1MGM3NDRjZDE1YWU5NTBmNTdhNzlmIiwiaWF0IjoxNjY2MjgyOTYxLCJleHAiOjE2NjYzNjkzNjF9.CfldccQu4LSOUgWPAKXUpLXo7qcWRzFi01iD_K_k2XU
+
+{
+  "title": "New Offer 1",
+  "description": "Odio pellentesque diam volutpat commodo sed egestas egestas fringilla phasellus. Feugiat vivamus at augue eget arcu dictum varius duis.",
+  "city": {
+    "name": "Hamburg",
+    "location": {
+      "latitude": 53.550341,
+      "longitude": 10.000654
+    }
+  },
+  "previewImage": "room-5.jpg",
+  "photos": [
+    "room-4-photo2.jpg",
+    "room-5-photo1.jpg",
+    "room-5-photo2.jpg",
+    "room-4-photo2.jpg",
+    "room-5-photo1.jpg",
+    "room-5-photo2.jpg"
+  ],
+  "isPremium": false,
+  "type": "Hotel",
+  "rooms": 8,
+  "guests": 8,
+  "price": 750,
+  "features": [
+    "Breakfast",
+    "Air conditioning",
+    "Laptop friendly workspace"
+  ],
+  "location": {
+    "latitude": 48.571118,
+    "longitude": 4.729841
+  }
+}
+
+<> 2022-10-20T193823.200.json
+
+###
+
+POST http://localhost:10000/favorites/63515618cab1187ebb68d3ad
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RVc2VyQGdtYWlsLmNvbSIsImlkIjoiNjM1MGM3NDRjZDE1YWU5NTBmNTdhNzlmIiwiaWF0IjoxNjY2MjgyOTYxLCJleHAiOjE2NjYzNjkzNjF9.CfldccQu4LSOUgWPAKXUpLXo7qcWRzFi01iD_K_k2XU
+Content-Type: application/json
+
+{
+  "status": 2
+}
+
+<> 2022-10-20T193420.400.json
+
+###
+
+POST http://localhost:10000/favorites/63515618cab1187ebb68d3ad
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RVc2VyQGdtYWlsLmNvbSIsImlkIjoiNjM1MGM3NDRjZDE1YWU5NTBmNTdhNzlmIiwiaWF0IjoxNjY2MjgyOTYxLCJleHAiOjE2NjYzNjkzNjF9.CfldccQu4LSOUgWPAKXUpLXo7qcWRzFi01iD_K_k2XU
+Content-Type: application/json
+
+{
+  "status": 1
+}
+
+<> 2022-10-20T193400.404.json
+
+###
+
+POST http://localhost:10000/favorites/63515618cab1187ebb68d3ae
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RVc2VyQGdtYWlsLmNvbSIsImlkIjoiNjM1MGM3NDRjZDE1YWU5NTBmNTdhNzlmIiwiaWF0IjoxNjY2MjgyOTYxLCJleHAiOjE2NjYzNjkzNjF9.CfldccQu4LSOUgWPAKXUpLXo7qcWRzFi01iD_K_k2XU
+Content-Type: application/json
+
+{
+  "status": 1
+}
+
+<> 2022-10-20T193356.200.json
+
+###
+
+POST http://localhost:10000/favorites/63515618cab1187ebb68d3ae
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RVc2VyQGdtYWlsLmNvbSIsImlkIjoiNjM1MGM3NDRjZDE1YWU5NTBmNTdhNzlmIiwiaWF0IjoxNjY2MjgyOTYxLCJleHAiOjE2NjYzNjkzNjF9.CfldccQu4LSOUgWPAKXUpLXo7qcWRzFi01iD_K_k2XU
+Content-Type: application/json
+
+{
+  "offerId": "63515618cab1187ebb68d3ae",
+  "status": 0
+}
+
+<> 2022-10-20T193353.200.json
+
+###
+
+GET http://localhost:10000/favorites
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RVc2VyQGdtYWlsLmNvbSIsImlkIjoiNjM1MGM3NDRjZDE1YWU5NTBmNTdhNzlmIiwiaWF0IjoxNjY2MjgyOTYxLCJleHAiOjE2NjYzNjkzNjF9.CfldccQu4LSOUgWPAKXUpLXo7qcWRzFi01iD_K_k2XU
+
+<> 2022-10-20T193347.200.json
+
+###
+
+POST http://localhost:10000/favorites
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RVc2VyQGdtYWlsLmNvbSIsImlkIjoiNjM1MGM3NDRjZDE1YWU5NTBmNTdhNzlmIiwiaWF0IjoxNjY2MjgyOTYxLCJleHAiOjE2NjYzNjkzNjF9.CfldccQu4LSOUgWPAKXUpLXo7qcWRzFi01iD_K_k2XU
+Content-Type: application/json
+
+{
+  "offerId": "63515618cab1187ebb68d3ad",
+  "status": 1
+}
+
+###
+
+POST http://localhost:10000/favorites
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RVc2VyQGdtYWlsLmNvbSIsImlkIjoiNjM1MGM3NDRjZDE1YWU5NTBmNTdhNzlmIiwiaWF0IjoxNjY2MjgyOTYxLCJleHAiOjE2NjYzNjkzNjF9.CfldccQu4LSOUgWPAKXUpLXo7qcWRzFi01iD_K_k2XU
+Content-Type: application/json
+
+{
+  "offerId": "63515618cab1187ebb68d3ad",
+  "status": 2
+}
+
+<> 2022-10-20T192629.400.json
+
+###
+
+POST http://localhost:10000/favorites
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RVc2VyQGdtYWlsLmNvbSIsImlkIjoiNjM1MGM3NDRjZDE1YWU5NTBmNTdhNzlmIiwiaWF0IjoxNjY2MjgyOTYxLCJleHAiOjE2NjYzNjkzNjF9.CfldccQu4LSOUgWPAKXUpLXo7qcWRzFi01iD_K_k2XU
+Content-Type: application/json
+
+{
+  "offerId": "63515618cab1187ebb68d3ae",
+  "status": 2
+}
+
+<> 2022-10-20T192331.400.json
+
+###
+
+GET http://localhost:10000/favorites
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RVc2VyQGdtYWlsLmNvbSIsImlkIjoiNjM1MGM3NDRjZDE1YWU5NTBmNTdhNzlmIiwiaWF0IjoxNjY2MjgyOTYxLCJleHAiOjE2NjYzNjkzNjF9.CfldccQu4LSOUgWPAKXUpLXo7qcWRzFi01iD_K_k2XU
+
+<> 2022-10-20T192306.200.json
+
+###
+
+POST http://localhost:10000/favorites
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RVc2VyQGdtYWlsLmNvbSIsImlkIjoiNjM1MGM3NDRjZDE1YWU5NTBmNTdhNzlmIiwiaWF0IjoxNjY2MjgyOTYxLCJleHAiOjE2NjYzNjkzNjF9.CfldccQu4LSOUgWPAKXUpLXo7qcWRzFi01iD_K_k2XU
+Content-Type: application/json
+
+{
+  "offerId": "63515618cab1187ebb68d3ae",
+  "status": 1
+}
+
+<> 2022-10-20T192302.200.json
+
+###
+
+POST http://localhost:10000/favorites
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RVc2VyQGdtYWlsLmNvbSIsImlkIjoiNjM1MGM3NDRjZDE1YWU5NTBmNTdhNzlmIiwiaWF0IjoxNjY2MjgyOTYxLCJleHAiOjE2NjYzNjkzNjF9.CfldccQu4LSOUgWPAKXUpLXo7qcWRzFi01iD_K_k2XU
+Content-Type: application/json
+
+{
+  "offerId": "63515618cab1187ebb68d3ae",
+  "status": 0
+}
+
+<> 2022-10-20T192257.200.json
+
+###
+
+POST http://localhost:10000/offers/favorites
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RVc2VyQGdtYWlsLmNvbSIsImlkIjoiNjM1MGM3NDRjZDE1YWU5NTBmNTdhNzlmIiwiaWF0IjoxNjY2MjgyOTYxLCJleHAiOjE2NjYzNjkzNjF9.CfldccQu4LSOUgWPAKXUpLXo7qcWRzFi01iD_K_k2XU
+Content-Type: application/json
+
+{
+  "offerId": "63515618cab1187ebb68d3ae",
+  "status": 0
+}
+
+<> 2022-10-20T192247.404.html
+
+###
+
+POST http://localhost:10000/users/login
+Content-Type: application/json
+
+{
+  "email": "testUser@gmail.com",
+  "password": "testSecret"
+}
+
+<> 2022-10-20T192241.200.json
+
+###
+
+POST http://localhost:10000/offers/favorites
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "offerId": "63515618cab1187ebb68d3ae",
+  "status": 0
+}
+
+<> 2022-10-20T192229.401.json
+
+###
+
+GET http://localhost:10000/offers/63515618cab1187ebb68d3ae
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RVc2VyQGdtYWlsLmNvbSIsImlkIjoiNjM1MGM3NDRjZDE1YWU5NTBmNTdhNzlmIiwiaWF0IjoxNjY2Mjc1OTU1LCJleHAiOjE2NjYzNjIzNTV9.K5myruPUMR_hRJl1O0Bd0L7d8BanHViQ8yS_-7JfiEI
+
+<> 2022-10-20T175145.200.json
+
+###
+
+POST http://localhost:10000/favorites
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RVc2VyQGdtYWlsLmNvbSIsImlkIjoiNjM1MGM3NDRjZDE1YWU5NTBmNTdhNzlmIiwiaWF0IjoxNjY2Mjc1OTU1LCJleHAiOjE2NjYzNjIzNTV9.K5myruPUMR_hRJl1O0Bd0L7d8BanHViQ8yS_-7JfiEI
+Content-Type: application/json
+
+{
+  "offerId": "63515618cab1187ebb68d3ae",
+  "status": 1
+}
+
+<> 2022-10-20T175139.200.json
+
+###
+
+POST http://localhost:10000/favorites
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RVc2VyQGdtYWlsLmNvbSIsImlkIjoiNjM1MGM3NDRjZDE1YWU5NTBmNTdhNzlmIiwiaWF0IjoxNjY2Mjc1OTU1LCJleHAiOjE2NjYzNjIzNTV9.K5myruPUMR_hRJl1O0Bd0L7d8BanHViQ8yS_-7JfiEI
+Content-Type: application/json
+
+{
+  "offerId": "63515618cab1187ebb68d3ae",
+  "status": 1
+}
+
+<> 2022-10-20T175059.404.html
+
+###
+
+POST http://localhost:10000/favorites
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RVc2VyQGdtYWlsLmNvbSIsImlkIjoiNjM1MGM3NDRjZDE1YWU5NTBmNTdhNzlmIiwiaWF0IjoxNjY2Mjc1OTU1LCJleHAiOjE2NjYzNjIzNTV9.K5myruPUMR_hRJl1O0Bd0L7d8BanHViQ8yS_-7JfiEI
+Content-Type: application/json
+
+{
+  "offerId": "63515618cab1187ebb68d3ae",
+  "status": 1
+}
+
+<> 2022-10-20T175055.404.html
+
+###
+
+POST http://localhost:10000/offers/favorites
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RVc2VyQGdtYWlsLmNvbSIsImlkIjoiNjM1MGM3NDRjZDE1YWU5NTBmNTdhNzlmIiwiaWF0IjoxNjY2Mjc1OTU1LCJleHAiOjE2NjYzNjIzNTV9.K5myruPUMR_hRJl1O0Bd0L7d8BanHViQ8yS_-7JfiEI
+Content-Type: application/json
+
+{
+  "offerId": "63515618cab1187ebb68d3ae",
+  "status": 1
+}
+
+<> 2022-10-20T175044.404.html
+
+###
+
+GET http://localhost:10000/offers/63515618cab1187ebb68d3ae
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RVc2VyQGdtYWlsLmNvbSIsImlkIjoiNjM1MGM3NDRjZDE1YWU5NTBmNTdhNzlmIiwiaWF0IjoxNjY2Mjc1OTU1LCJleHAiOjE2NjYzNjIzNTV9.K5myruPUMR_hRJl1O0Bd0L7d8BanHViQ8yS_-7JfiEI
+
+<> 2022-10-20T175008.200.json
+
+###
+
+GET http://localhost:10000/comments/63515618cab1187ebb68d3ae
+
+<> 2022-10-20T173400.200.json
+
+###
+
+GET http://localhost:10000/comments/63515618cab1187ebb68d3ae
+
+<> 2022-10-20T173149.500.json
+
+###
+
+GET http://localhost:10000/comments/63515618cab1187ebb68d3ae
+
+<> 2022-10-20T173048.200.json
+
+###
+
+GET http://localhost:10000/comments/63515618cab1187ebb68d3ae
+
+<> 2022-10-20T172942.500.json
+
+###
+
+GET http://localhost:10000/comments/63515618cab1187ebb68d3ae
+
+<> 2022-10-20T172744.200.json
+
+###
+
+POST http://localhost:10000/comments/
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RVc2VyQGdtYWlsLmNvbSIsImlkIjoiNjM1MGM3NDRjZDE1YWU5NTBmNTdhNzlmIiwiaWF0IjoxNjY2Mjc1OTU1LCJleHAiOjE2NjYzNjIzNTV9.K5myruPUMR_hRJl1O0Bd0L7d8BanHViQ8yS_-7JfiEI
+Content-Type: application/json
+
+{
+  "text": "Test comment. Neque egestas congue quisque egestas diam in. Quisque egestas diam in arcu cursus euismod quis. Ut porttitor leo a diam sollicitudin tempor id eu nisl. Mattis pellentesque id nibh tortor. Morbi tempus iaculis urna id volutpat lacus. Non odio euismod lacinia at quis risus. In pellentesque massa placerat duis ultricies lacus. Dolor sed viverra ipsum nunc aliquet bibendum enim. Pretium quam vulputate dignissim suspendisse in est ante in nibh. Consectetur purus ut faucibus pulvinar elementum integer enim neque volutpat.",
+  "rating": 3.6,
+  "offerId": "63515618cab1187ebb68d3ae"
+}
+
+<> 2022-10-20T172653.201.json
+
+###
+
+GET http://localhost:10000/offers/63515618cab1187ebb68d3ae
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RVc2VyQGdtYWlsLmNvbSIsImlkIjoiNjM1MGM3NDRjZDE1YWU5NTBmNTdhNzlmIiwiaWF0IjoxNjY2Mjc1OTU1LCJleHAiOjE2NjYzNjIzNTV9.K5myruPUMR_hRJl1O0Bd0L7d8BanHViQ8yS_-7JfiEI
+
+<> 2022-10-20T172633.200.json
+
+###
+
+POST http://localhost:10000/comments/
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RVc2VyQGdtYWlsLmNvbSIsImlkIjoiNjM1MGM3NDRjZDE1YWU5NTBmNTdhNzlmIiwiaWF0IjoxNjY2Mjc1OTU1LCJleHAiOjE2NjYzNjIzNTV9.K5myruPUMR_hRJl1O0Bd0L7d8BanHViQ8yS_-7JfiEI
+Content-Type: application/json
+
+{
+  "text": "Test comment. Neque egestas congue quisque egestas diam in. Quisque egestas diam in arcu cursus euismod quis. Ut porttitor leo a diam sollicitudin tempor id eu nisl. Mattis pellentesque id nibh tortor. Morbi tempus iaculis urna id volutpat lacus. Non odio euismod lacinia at quis risus. In pellentesque massa placerat duis ultricies lacus. Dolor sed viverra ipsum nunc aliquet bibendum enim. Pretium quam vulputate dignissim suspendisse in est ante in nibh. Consectetur purus ut faucibus pulvinar elementum integer enim neque volutpat.",
+  "rating": 3.6,
+  "offerId": 63515618cab1187ebb68d3ae
+}
+
+<> 2022-10-20T172559.500.json
+
+###
+
+POST http://localhost:10000/users/login
+Content-Type: application/json
+
+{
+  "email": "testUser@gmail.com",
+  "password": "testSecret"
+}
+
+<> 2022-10-20T172555.200.json
+
+###
+
+POST http://localhost:10000/comments/
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RVc2VyQGdtYWlsLmNvbSIsImlkIjoiNjM1MGM3NDRjZDE1YWU5NTBmNTdhNzlmIiwiaWF0IjoxNjY2MjY3NzkzLCJleHAiOjE2NjYzNTQxOTN9.vnSp07d7jrAu73zlbcjExbZS-X-qggexcjfqqpzLIWA
+Content-Type: application/json
+
+{
+  "text": "Test comment. Neque egestas congue quisque egestas diam in. Quisque egestas diam in arcu cursus euismod quis. Ut porttitor leo a diam sollicitudin tempor id eu nisl. Mattis pellentesque id nibh tortor. Morbi tempus iaculis urna id volutpat lacus. Non odio euismod lacinia at quis risus. In pellentesque massa placerat duis ultricies lacus. Dolor sed viverra ipsum nunc aliquet bibendum enim. Pretium quam vulputate dignissim suspendisse in est ante in nibh. Consectetur purus ut faucibus pulvinar elementum integer enim neque volutpat.",
+  "rating": 3.6,
+  "offerId": 63515618cab1187ebb68d3ae
+}
+
+<> 2022-10-20T172512.500.json
+
+###
+
+POST http://localhost:10000/comments/
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RVc2VyQGdtYWlsLmNvbSIsImlkIjoiNjM1MGM3NDRjZDE1YWU5NTBmNTdhNzlmIiwiaWF0IjoxNjY2MjY3NzkzLCJleHAiOjE2NjYzNTQxOTN9.vnSp07d7jrAu73zlbcjExbZS-X-qggexcjfqqpzLIWA
+Content-Type: application/json
+
+{
+  "text": "Test comment. Neque egestas congue quisque egestas diam in. Quisque egestas diam in arcu cursus euismod quis. Ut porttitor leo a diam sollicitudin tempor id eu nisl. Mattis pellentesque id nibh tortor. Morbi tempus iaculis urna id volutpat lacus. Non odio euismod lacinia at quis risus. In pellentesque massa placerat duis ultricies lacus. Dolor sed viverra ipsum nunc aliquet bibendum enim. Pretium quam vulputate dignissim suspendisse in est ante in nibh. Consectetur purus ut faucibus pulvinar elementum integer enim neque volutpat.",
+  "rating": 3.6,
+  "offerId": 63515618cab1187ebb68d3ae
+}
+
+<> 2022-10-20T172412.500.json
+
+###
+
+POST http://localhost:10000/comments/
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RVc2VyQGdtYWlsLmNvbSIsImlkIjoiNjM1MGM3NDRjZDE1YWU5NTBmNTdhNzlmIiwiaWF0IjoxNjY2MjY3NzkzLCJleHAiOjE2NjYzNTQxOTN9.vnSp07d7jrAu73zlbcjExbZS-X-qggexcjfqqpzLIWA
+Content-Type: application/json
+
+{
+  "text": "Test comment. Neque egestas congue quisque egestas diam in. Quisque egestas diam in arcu cursus euismod quis. Ut porttitor leo a diam sollicitudin tempor id eu nisl. Mattis pellentesque id nibh tortor. Morbi tempus iaculis urna id volutpat lacus. Non odio euismod lacinia at quis risus. In pellentesque massa placerat duis ultricies lacus. Dolor sed viverra ipsum nunc aliquet bibendum enim. Pretium quam vulputate dignissim suspendisse in est ante in nibh. Consectetur purus ut faucibus pulvinar elementum integer enim neque volutpat.",
+  "rating": 3.6,
+  "offerId": 63515618cab1187ebb68d3ae
+}
+
+<> 2022-10-20T172024.500.json
+
+###
+
+GET http://localhost:10000/offers/63515618cab1187ebb68d3ae
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RVc2VyQGdtYWlsLmNvbSIsImlkIjoiNjM1MGM3NDRjZDE1YWU5NTBmNTdhNzlmIiwiaWF0IjoxNjY2MjY3NzkzLCJleHAiOjE2NjYzNTQxOTN9.vnSp07d7jrAu73zlbcjExbZS-X-qggexcjfqqpzLIWA
+
+<> 2022-10-20T171703.200.json
+
+###
+
+POST http://localhost:10000/comments/
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RVc2VyQGdtYWlsLmNvbSIsImlkIjoiNjM1MGM3NDRjZDE1YWU5NTBmNTdhNzlmIiwiaWF0IjoxNjY2MjY3NzkzLCJleHAiOjE2NjYzNTQxOTN9.vnSp07d7jrAu73zlbcjExbZS-X-qggexcjfqqpzLIWA
+Content-Type: application/json
+
+{
+  "text": "Test comment. Neque egestas congue quisque egestas diam in. Quisque egestas diam in arcu cursus euismod quis. Ut porttitor leo a diam sollicitudin tempor id eu nisl. Mattis pellentesque id nibh tortor. Morbi tempus iaculis urna id volutpat lacus. Non odio euismod lacinia at quis risus. In pellentesque massa placerat duis ultricies lacus. Dolor sed viverra ipsum nunc aliquet bibendum enim. Pretium quam vulputate dignissim suspendisse in est ante in nibh. Consectetur purus ut faucibus pulvinar elementum integer enim neque volutpat.",
+  "rating": 3.6,
+  "offerId": 63515618cab1187ebb68d3ae
+}
+
+<> 2022-10-20T171640.500.json
+
+###
+
+GET http://localhost:10000/comments/63515618cab1187ebb68d3ae
+
+<> 2022-10-20T171605.200.json
+
+###
+
+POST http://localhost:10000/comments/
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RVc2VyQGdtYWlsLmNvbSIsImlkIjoiNjM1MGM3NDRjZDE1YWU5NTBmNTdhNzlmIiwiaWF0IjoxNjY2MjY3NzkzLCJleHAiOjE2NjYzNTQxOTN9.vnSp07d7jrAu73zlbcjExbZS-X-qggexcjfqqpzLIWA
+Content-Type: application/json
+
+{
+  "text": "Test comment. Neque egestas congue quisque egestas diam in. Quisque egestas diam in arcu cursus euismod quis. Ut porttitor leo a diam sollicitudin tempor id eu nisl. Mattis pellentesque id nibh tortor. Morbi tempus iaculis urna id volutpat lacus. Non odio euismod lacinia at quis risus. In pellentesque massa placerat duis ultricies lacus. Dolor sed viverra ipsum nunc aliquet bibendum enim. Pretium quam vulputate dignissim suspendisse in est ante in nibh. Consectetur purus ut faucibus pulvinar elementum integer enim neque volutpat.",
+  "rating": 3.6,
+  "offerId": 63515618cab1187ebb68d3ae
+}
+
+<> 2022-10-20T171548.500.json
+
+###
+
+POST http://localhost:10000/comments/
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RVc2VyQGdtYWlsLmNvbSIsImlkIjoiNjM1MGM3NDRjZDE1YWU5NTBmNTdhNzlmIiwiaWF0IjoxNjY2MjY3NzkzLCJleHAiOjE2NjYzNTQxOTN9.vnSp07d7jrAu73zlbcjExbZS-X-qggexcjfqqpzLIWA
+Content-Type: application/json
+
+{
+  "text": "Test comment. Neque egestas congue quisque egestas diam in. Quisque egestas diam in arcu cursus euismod quis. Ut porttitor leo a diam sollicitudin tempor id eu nisl. Mattis pellentesque id nibh tortor. Morbi tempus iaculis urna id volutpat lacus. Non odio euismod lacinia at quis risus. In pellentesque massa placerat duis ultricies lacus. Dolor sed viverra ipsum nunc aliquet bibendum enim. Pretium quam vulputate dignissim suspendisse in est ante in nibh. Consectetur purus ut faucibus pulvinar elementum integer enim neque volutpat.",
+  "rating": 3.6,
+  "offerId": 63515618cab1187ebb68d3ae
+}
+
+<> 2022-10-20T171426.500.json
+
+###
+
+POST http://localhost:10000/comments/
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RVc2VyQGdtYWlsLmNvbSIsImlkIjoiNjM1MGM3NDRjZDE1YWU5NTBmNTdhNzlmIiwiaWF0IjoxNjY2MjY3NzkzLCJleHAiOjE2NjYzNTQxOTN9.vnSp07d7jrAu73zlbcjExbZS-X-qggexcjfqqpzLIWA
+Content-Type: application/json
+
+{
+  "text": "Test comment. Neque egestas congue quisque egestas diam in. Quisque egestas diam in arcu cursus euismod quis. Ut porttitor leo a diam sollicitudin tempor id eu nisl. Mattis pellentesque id nibh tortor. Morbi tempus iaculis urna id volutpat lacus. Non odio euismod lacinia at quis risus. In pellentesque massa placerat duis ultricies lacus. Dolor sed viverra ipsum nunc aliquet bibendum enim. Pretium quam vulputate dignissim suspendisse in est ante in nibh. Consectetur purus ut faucibus pulvinar elementum integer enim neque volutpat.",
+  "rating": 3.6,
+  "offerId": 63515618cab1187ebb68d3ae
+}
+
+<> 2022-10-20T170757.500.json
+
+###
+
+GET http://localhost:10000/comments/63515618cab1187ebb68d3ae
+
+<> 2022-10-20T170735.200.json
+
+###
+
+POST http://localhost:10000/offers
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RVc2VyQGdtYWlsLmNvbSIsImlkIjoiNjM1MGM3NDRjZDE1YWU5NTBmNTdhNzlmIiwiaWF0IjoxNjY2MjY3NzkzLCJleHAiOjE2NjYzNTQxOTN9.vnSp07d7jrAu73zlbcjExbZS-X-qggexcjfqqpzLIWA
+
+{
+  "title": "New Offer 1",
+  "description": "Odio pellentesque diam volutpat commodo sed egestas egestas fringilla phasellus. Feugiat vivamus at augue eget arcu dictum varius duis.",
+  "city": {
+    "name": "Hamburg",
+    "location": {
+      "latitude": 53.550341,
+      "longitude": 10.000654
+    }
+  },
+  "previewImage": "room-5.jpg",
+  "photos": [
+    "room-4-photo2.jpg",
+    "room-5-photo1.jpg",
+    "room-5-photo2.jpg",
+    "room-4-photo2.jpg",
+    "room-5-photo1.jpg",
+    "room-5-photo2.jpg"
+  ],
+  "isPremium": false,
+  "type": "Hotel",
+  "rooms": 8,
+  "guests": 8,
+  "price": 750,
+  "features": [
+    "Breakfast",
+    "Air conditioning",
+    "Laptop friendly workspace"
+  ],
+  "location": {
+    "latitude": 48.571118,
+    "longitude": 4.729841
+  }
+}
+
+<> 2022-10-20T170720.200.json
+
+###
+
+GET http://localhost:10000/comments/6339141dd26fbbc45e4253b3
+
+<> 2022-10-20T170704.404.json
+
+###
+
+POST http://localhost:10000/offers/63514a34b8ee3de4d83a440c/photos
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RVc2VyQGdtYWlsLmNvbSIsImlkIjoiNjM1MGM3NDRjZDE1YWU5NTBmNTdhNzlmIiwiaWF0IjoxNjY2MjY3NzkzLCJleHAiOjE2NjYzNTQxOTN9.vnSp07d7jrAu73zlbcjExbZS-X-qggexcjfqqpzLIWA
+
+--WebAppBoundary
+Content-Disposition: form-data; name="photos"; filename="apartment-02.jpg"
+Content-Type: image/jpeg
+
+< C:\Users\zasim\Desktop\HTMLAcademy\six-cities-2\markup\img\apartment-02.jpg
+--WebAppBoundary
+Content-Disposition: form-data; name="photos"; filename="apartment-03.jpg"
+Content-Type: image/jpeg
+
+< C:\Users\zasim\Desktop\HTMLAcademy\six-cities-2\markup\img\apartment-03.jpg
+--WebAppBoundary
+Content-Disposition: form-data; name="photos"; filename="apartment-01.jpg"
+Content-Type: image/jpeg
+
+< C:\Users\zasim\Desktop\HTMLAcademy\six-cities-2\markup\img\apartment-01.jpg
+--WebAppBoundary
+Content-Disposition: form-data; name="photos"; filename="apartment-02.jpg"
+Content-Type: image/jpeg
+
+< C:\Users\zasim\Desktop\HTMLAcademy\six-cities-2\markup\img\apartment-02.jpg
+--WebAppBoundary
+Content-Disposition: form-data; name="photos"; filename="apartment-03.jpg"
+Content-Type: image/jpeg
+
+< C:\Users\zasim\Desktop\HTMLAcademy\six-cities-2\markup\img\apartment-03.jpg
+--WebAppBoundary--
+
+<> 2022-10-20T163005.200.json
+
+###
+
+POST http://localhost:10000/offers/63514a34b8ee3de4d83a440c/photos
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RVc2VyQGdtYWlsLmNvbSIsImlkIjoiNjM1MGM3NDRjZDE1YWU5NTBmNTdhNzlmIiwiaWF0IjoxNjY2MjY3NzkzLCJleHAiOjE2NjYzNTQxOTN9.vnSp07d7jrAu73zlbcjExbZS-X-qggexcjfqqpzLIWA
+
+--WebAppBoundary
+Content-Disposition: form-data; name="photos"; filename="apartment-02.jpg"
+Content-Type: image/jpeg
+
+< C:\Users\zasim\Desktop\HTMLAcademy\six-cities-2\markup\img\apartment-02.jpg
+--WebAppBoundary
+Content-Disposition: form-data; name="photos"; filename="apartment-03.jpg"
+Content-Type: image/jpeg
+
+< C:\Users\zasim\Desktop\HTMLAcademy\six-cities-2\markup\img\apartment-03.jpg
+--WebAppBoundary
+Content-Disposition: form-data; name="photos"; filename="apartment-01.jpg"
+Content-Type: image/jpeg
+
+< C:\Users\zasim\Desktop\HTMLAcademy\six-cities-2\markup\img\apartment-01.jpg
+--WebAppBoundary
+Content-Disposition: form-data; name="photos"; filename="apartment-02.jpg"
+Content-Type: image/jpeg
+
+< C:\Users\zasim\Desktop\HTMLAcademy\six-cities-2\markup\img\apartment-02.jpg
+--WebAppBoundary
+Content-Disposition: form-data; name="photos"; filename="apartment-03.jpg"
+Content-Type: image/jpeg
+
+< C:\Users\zasim\Desktop\HTMLAcademy\six-cities-2\markup\img\apartment-03.jpg
+--WebAppBoundary--
+
+<> 2022-10-20T162911.200.json
+
+###
+
+POST http://localhost:10000/offers/63514a34b8ee3de4d83a440c/previewImage
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RVc2VyQGdtYWlsLmNvbSIsImlkIjoiNjM1MGM3NDRjZDE1YWU5NTBmNTdhNzlmIiwiaWF0IjoxNjY2MjY3NzkzLCJleHAiOjE2NjYzNTQxOTN9.vnSp07d7jrAu73zlbcjExbZS-X-qggexcjfqqpzLIWA
+
+--WebAppBoundary
+Content-Disposition: form-data; name="previewImage"; filename="apartment-01.jpg"
+Content-Type: image/jpeg
+
+< C:\Users\zasim\Desktop\HTMLAcademy\six-cities-2\markup\img\apartment-01.jpg
+--WebAppBoundary--
+
+<> 2022-10-20T161654.201.json
+
+###
+
+POST http://localhost:10000/offers
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RVc2VyQGdtYWlsLmNvbSIsImlkIjoiNjM1MGM3NDRjZDE1YWU5NTBmNTdhNzlmIiwiaWF0IjoxNjY2MjY3NzkzLCJleHAiOjE2NjYzNTQxOTN9.vnSp07d7jrAu73zlbcjExbZS-X-qggexcjfqqpzLIWA
+
+{
+  "title": "New Offer 1",
+  "description": "Odio pellentesque diam volutpat commodo sed egestas egestas fringilla phasellus. Feugiat vivamus at augue eget arcu dictum varius duis.",
+  "city": {
+    "name": "Hamburg",
+    "location": {
+      "latitude": 53.550341,
+      "longitude": 10.000654
+    }
+  },
+  "previewImage": "room-5.jpg",
+  "photos": [
+    "room-4-photo2.jpg",
+    "room-5-photo1.jpg",
+    "room-5-photo2.jpg",
+    "room-4-photo2.jpg",
+    "room-5-photo1.jpg",
+    "room-5-photo2.jpg"
+  ],
+  "isPremium": false,
+  "type": "Hotel",
+  "rooms": 8,
+  "guests": 8,
+  "price": 750,
+  "features": [
+    "Breakfast",
+    "Air conditioning",
+    "Laptop friendly workspace"
+  ],
+  "location": {
+    "latitude": 48.571118,
+    "longitude": 4.729841
+  }
+}
+
+<> 2022-10-20T161637.200.json
+
+###
+
+GET http://localhost:10000/offers/635144c5b8ee3de4d83a43e9
+
+<> 2022-10-20T155518.404.json
+
+###
+
+DELETE http://localhost:10000/offers/635144c5b8ee3de4d83a43e9
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RVc2VyQGdtYWlsLmNvbSIsImlkIjoiNjM1MGM3NDRjZDE1YWU5NTBmNTdhNzlmIiwiaWF0IjoxNjY2MjY3NzkzLCJleHAiOjE2NjYzNTQxOTN9.vnSp07d7jrAu73zlbcjExbZS-X-qggexcjfqqpzLIWA
+
+###

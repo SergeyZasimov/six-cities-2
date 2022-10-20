@@ -20,6 +20,7 @@ import { JWT_ALGORITHM } from './user.constant.js';
 import LoginUserResponse from './response/login-user.response.js';
 import PrivateRouteMiddleware from '../../services/middlewares/private-route.middleware.js';
 import UploadUserAvatarResponse from './response/upload-user-avatar.response.js';
+import UpdateOfferDto from '../offer/dto/update-offer.dto.js';
 
 @injectable()
 export default class UserController extends Controller {
@@ -58,6 +59,7 @@ export default class UserController extends Controller {
       handler: this.uploadAvatar,
       middlewares: [
         new PrivateRouteMiddleware(),
+        new ValidateDtoMiddleware(UpdateOfferDto),
         new UploadFileMiddleware(this.config.get(AppConfig.UPLOAD_DIRECTORY), 'avatar'),
       ],
     });
@@ -108,7 +110,7 @@ export default class UserController extends Controller {
   }
 
   private async uploadAvatar( req: Request, res: Response ): Promise<void> {
-    const userId  = req.user.id;
+    const userId = req.user.id;
     const uploadFile = { avatar: req.file?.filename };
     await this.userService.updateById(userId, uploadFile);
     this.created(res, fillDto(UploadUserAvatarResponse, uploadFile));
