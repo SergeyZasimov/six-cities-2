@@ -52,9 +52,8 @@ export default class CommentController extends Controller {
     });
   }
 
-  public async create( req: Request<unknown, unknown, CreateCommentDTO>, res: Response ): Promise<void> {
+  public async create( req: Request<Record<string, unknown>, Record<string, unknown>, CreateCommentDTO>, res: Response ): Promise<void> {
     const { body } = req;
-
     if (!(await this.offerService.exists(body.offerId))) {
       throw new HttpError(StatusCodes.NOT_FOUND, `Offer with ID: ${body.offerId} - not found`, 'CommentOffer');
     }

@@ -176,7 +176,6 @@ export default class OfferController extends Controller {
     res: Response,
   ): Promise<void> {
     const { city } = req.query;
-    console.log(city);
     if (!city) {
       throw new HttpError(
         StatusCodes.BAD_REQUEST,

@@ -384,7 +384,6 @@ paths:
         "404":
           $ref: '#/components/responses/404'
 
-
   /comments/{offerId}:
     get:
       tags:
@@ -392,7 +391,7 @@ paths:
       summary: Список комментариев к предложению.
       description: Возвращает список комментариев для определённого предложения.
       parameters:
-        - $ref: '#/components/parameters/token'
+        - $ref: '#/components/parameters/offerId'
 
       responses:
         "200":
@@ -407,14 +406,13 @@ paths:
         "404":
           $ref: '#/components/responses/404'
 
+  /comments:
     post:
       tags:
         - comments
       summary: Создание нового комментария.
       description: Добавление нового комментария для определённого предложения.
       parameters:
-        - $ref: '#/components/parameters/offerId'
-
         - $ref: '#/components/parameters/token'
 
       requestBody:
@@ -822,13 +820,17 @@ components:
     comment:
       type: object
       properties:
+        id:
+          type: string
+          example: 632db7ffa4c4750721ab0618
+
         text:
           type: string
           description: Текст комментария.
           example: 'A quiet cozy and picturesque that hides behind a a river by the unique lightness of Amsterdam.
           The building is green and from 18th century.'
 
-        date:
+        postDate:
           type: string
           description: Дата создания комментария.
           example: '2022-09-23T13:43:27.411Z'
@@ -855,6 +857,10 @@ components:
           type: number
           description: Рейтинг предложения выставленный создателем комментария.
           example: 4.5
+
+        offerId:
+          type: string
+          example: 632db7ffa4c4750721ab0618
 
     errorDetail:
       type: object

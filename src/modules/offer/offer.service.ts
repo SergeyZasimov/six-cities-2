@@ -93,8 +93,8 @@ export default class OfferService implements OfferServiceInterface {
           },
         },
         unset,
-        { $limit: limit },
         { $sort: { createdAt: SortType.Down } },
+        { $limit: limit },
       ]);
 
     await this.offerModel.populate(result, { path: 'userId' });
@@ -129,8 +129,8 @@ export default class OfferService implements OfferServiceInterface {
           },
         },
         unset,
-        { $limit: PREMIUM_COUNT },
         { $sort: { createdAt: SortType.Down } },
+        { $limit: PREMIUM_COUNT },
       ]);
 
     await this.offerModel.populate(result, { path: 'userId' });
@@ -138,7 +138,6 @@ export default class OfferService implements OfferServiceInterface {
   }
 
   public async exists( documentId: string ): Promise<boolean> {
-    console.log(documentId);
     return await this.offerModel.exists({ _id: documentId }) !== null;
   }
 
