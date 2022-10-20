@@ -48,20 +48,6 @@ export default class OfferController extends Controller {
     });
 
     this.addRoute({
-      path: '/favorites',
-      method: HttpMethod.Post,
-      handler: this.changeFavorites,
-      middlewares: [new PrivateRouteMiddleware()],
-    });
-
-    this.addRoute({
-      path: '/favorites',
-      method: HttpMethod.Get,
-      handler: this.getFavorites,
-      middlewares: [new PrivateRouteMiddleware()],
-    });
-
-    this.addRoute({
       path: '/premium',
       method: HttpMethod.Get,
       handler: this.getPremiumByCity,
@@ -193,22 +179,6 @@ export default class OfferController extends Controller {
     }
     const result = await this.offerService.findPremiumByCity(city, req.user?.id);
     this.ok(res, fillDto(OfferResponse, result));
-  }
-
-  private async changeFavorites( req: Request, res: Response ) {
-    const { user, body } = req;
-    if (body.status) {
-      await this.offerService.addToFavorites(body.offerId, user.id);
-    } else {
-      await this.offerService.removeFromFavorites(body.offerId, user.id);
-    }
-    const result = await this.offerService.findById(body.offerId, user.id);
-    return this.ok(res, fillDto(OfferResponse, result));
-  }
-
-  private async getFavorites( req: Request, res: Response ) {
-    const result = await this.offerService.findFavorites(req.user.id);
-    return this.ok(res, fillDto(OfferResponse, result));
   }
 
   private async uploadPreviewImage(

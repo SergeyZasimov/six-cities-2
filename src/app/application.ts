@@ -24,6 +24,7 @@ export default class Application {
     @inject(Component.OfferController) private offerController: ControllerInterface,
     @inject(Component.UserController) private userController: ControllerInterface,
     @inject(Component.CommentController) private commentController: ControllerInterface,
+    @inject(Component.FavoriteController) private favoriteController: ControllerInterface,
   ) {
     this.expressApp = express();
   }
@@ -32,6 +33,7 @@ export default class Application {
     this.expressApp.use('/offers', this.offerController.router);
     this.expressApp.use('/users', this.userController.router);
     this.expressApp.use('/comments', this.commentController.router);
+    this.expressApp.use('/favorites', this.favoriteController.router);
   }
 
   public initMiddleware() {

@@ -24,6 +24,7 @@ import ExceptionFilter from './services/errors/exception-filter.js';
 import { ExceptionFilterInterface } from './services/errors/exception-filter.interface.js';
 import UserController from './modules/user/user.controller.js';
 import CommentController from './modules/comment/comment.controller.js';
+import FavoriteController from './modules/favorites/favoriteController.js';
 
 const appContainer = new Container();
 appContainer.bind<Application>(Component.Application).to(Application).inSingletonScope();
@@ -42,6 +43,7 @@ appContainer.bind<ExceptionFilterInterface>(Component.ExceptionFilterInterface).
 appContainer.bind<ControllerInterface>(Component.OfferController).to(OfferController).inSingletonScope();
 appContainer.bind<ControllerInterface>(Component.UserController).to(UserController).inSingletonScope();
 appContainer.bind<ControllerInterface>(Component.CommentController).to(CommentController).inSingletonScope();
+appContainer.bind<ControllerInterface>(Component.FavoriteController).to(FavoriteController).inSingletonScope();
 
 const app = appContainer.get<Application>(Component.Application);
 await app.init();

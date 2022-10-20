@@ -458,13 +458,15 @@ paths:
         "401":
           $ref: '#/components/responses/401'
 
-    patch:
+  /favorites/offerId:
+    post:
       tags:
         - favorites
       summary: Изменение статуса избранного у предложения.
       description: Добавляет или удаляет предложение в/из списка избранного.
       parameters:
         - $ref: '#/components/parameters/token'
+        - $ref: '#/components/parameters/offerId'
 
       requestBody:
         description: Данные для обновления состояния предложения.
@@ -473,15 +475,10 @@ paths:
             schema:
               type: object
               properties:
-                offerId:
-                  type: string
-                  description: ID предложения.
-                  example: 632db7ffa4c4750721ab0618
-
-                favoriteStatus:
-                  type: boolean
+                status:
+                  type: number
                   description: Обновлённое состояние предложения.
-                  example: true
+                  example: 1
 
       responses:
         "200":
@@ -493,6 +490,12 @@ paths:
 
         "401":
           $ref: '#/components/responses/401'
+
+        "400":
+          $ref: '#/components/responses/400'
+
+        "404":
+          $ref: '#/components/responses/404'
 
 components:
   schemas:
@@ -750,7 +753,7 @@ components:
 
         isFavorite:
           type: boolean
-          example: false
+          example: true
 
         type:
           type: string
@@ -950,28 +953,3 @@ components:
               details:
                 type: array
                 example: [ ]
-
-
-#        previewImage:
-#          type: string
-#          example: 'img/apartment.jpg'
-#
-#        photos:
-#          type: array
-#          minItems: 6
-#          example: [
-#            "img/apartment-01.jpg",
-#            "img/apartment-02.jpg",
-#            "img/apartment-03.jpg",
-#            "img/apartment-04.jpg",
-#            "img/apartment-05.jpg",
-#            "img/apartment-06.jpg",
-#          ]
-#        isFavorite:
-#          type: boolean
-#          example: false
-#        rating:
-#          type: number
-#          example: 3.4
-#          minimum: 1
-#          maximum: 5

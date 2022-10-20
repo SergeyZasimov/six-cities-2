@@ -4,3 +4,5 @@ export const COMMENT_CONSTRAINT = {
   MIN_RATING: 1,
   MAX_RATING: 5,
 } as const;
+
+export const COMMENTS_COUNT = 50;
