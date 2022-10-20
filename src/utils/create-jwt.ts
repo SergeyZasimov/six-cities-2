@@ -5,5 +5,5 @@ export const createJwt = async ( algorithm: string, secretJwt: string, payload: 
   new jose.SignJWT({ ...payload })
     .setProtectedHeader({ alg: algorithm })
     .setIssuedAt()
-    .setExpirationTime('1h')
+    .setExpirationTime('1d')
     .sign(crypto.createSecretKey(secretJwt, 'utf-8'));

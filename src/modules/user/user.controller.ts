@@ -12,7 +12,6 @@ import HttpError from '../../services/errors/http-error.js';
 import { StatusCodes } from 'http-status-codes';
 import LoginUserDto from './dto/login-user.dto.js';
 import ValidateDtoMiddleware from '../../services/middlewares/validate-dto.middleware.js';
-import { ValidateObjectIdMiddleware } from '../../services/middlewares/validate-objectId.middleware.js';
 import { UploadFileMiddleware } from '../../services/middlewares/upload-file.middleware.js';
 import { ConfigInterface } from '../../services/config/config.interface.js';
 import { AppConfig } from '../../types/config.enum.js';
@@ -54,23 +53,21 @@ export default class UserController extends Controller {
     });
 
     this.addRoute({
-      path: '/:userId/avatar',
+      path: '/avatar',
       method: HttpMethod.Post,
       handler: this.uploadAvatar,
       middlewares: [
         new PrivateRouteMiddleware(),
-        new ValidateObjectIdMiddleware('userId'),
         new UploadFileMiddleware(this.config.get(AppConfig.UPLOAD_DIRECTORY), 'avatar'),
       ],
     });
   }
 
   public async create(
-    {
-      body,
-    }: Request<Record<string, unknown>, Record<string, unknown>, CreateUserDto>,
+    req: Request<Record<string, unknown>, Record<string, unknown>, CreateUserDto>,
     res: Response,
   ): Promise<void> {
+    const { body } = req;
     const existUser = await this.userService.findByEmail(body.email);
 
     if (existUser) {
@@ -87,13 +84,10 @@ export default class UserController extends Controller {
   }
 
   public async login(
-    req: Request<Record<string, unknown>,
-      Record<string, unknown>,
-      LoginUserDto>,
+    req: Request<Record<string, unknown>, Record<string, unknown>, LoginUserDto>,
     res: Response,
   ): Promise<void> {
     const { body } = req;
-
     const user = await this.userService.verifyUser(body);
 
     if (!user) {
@@ -114,7 +108,7 @@ export default class UserController extends Controller {
   }
 
   private async uploadAvatar( req: Request, res: Response ): Promise<void> {
-    const { userId } = req.params;
+    const userId  = req.user.id;
     const uploadFile = { avatar: req.file?.filename };
     await this.userService.updateById(userId, uploadFile);
     this.created(res, fillDto(UploadUserAvatarResponse, uploadFile));
@@ -122,7 +116,6 @@ export default class UserController extends Controller {
 
   private async checkAuthenticate( req: Request, res: Response ): Promise<void> {
     const result = await this.userService.findByEmail(req.user.email);
-    console.log(result);
-    this.ok(res, fillDto(LoginUserResponse, result));
+    this.ok(res, fillDto(UserResponse, result));
   }
 }

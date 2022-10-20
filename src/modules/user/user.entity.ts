@@ -19,6 +19,7 @@ export class UserEntity extends defaultClasses.TimeStamps implements User {
     super();
     this.userName = data.userName;
     this.email = data.email;
+    this.avatar = data.avatar;
   }
 
   @prop({ required: true, minLength: 1, maxLength: 15 })

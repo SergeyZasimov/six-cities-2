@@ -21,7 +21,7 @@ export default class CreateUserDto {
   })
   public password!: string;
 
-  @ValidateIf(( obj ) => obj.userType !== '')
+  @ValidateIf(( obj ) => Boolean(obj.userType))
   @IsEnum(UserType, { message: 'User type must be Default or Pro' })
   public userType!: UserType;
 }

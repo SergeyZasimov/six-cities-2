@@ -42,15 +42,7 @@ paths:
                 $ref: '#/components/schemas/user'
 
         "400":
-          description: Отправлены неверные данные.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Пароль должен быть больше 6 символов и не более 12.
+          $ref: '#/components/responses/400'
 
         "409":
           description: Пользователь с таким email уже существует.
@@ -59,9 +51,17 @@ paths:
               schema:
                 type: object
                 properties:
+                  errorType:
+                    type: string
+                    example: 'HTTP_ERROR'
+
                   message:
                     type: string
-                    example: Пользователь с таким email уже существует.
+                    example: 'User with email testUser@gmail.com exists'
+
+                  details:
+                    type: array
+                    example: [ ]
 
   /users/login:
     post:
@@ -83,18 +83,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/user'
+                $ref: '#/components/schemas/token'
 
         "400":
-          description: Отправлены неверные данные.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Пароль должен быть больше 6 символов и не более 12.
+          $ref: '#/components/responses/400'
 
     get:
       tags:
@@ -115,19 +107,29 @@ paths:
         "401":
           $ref: '#/components/responses/401'
 
-  /users/logout:
-    delete:
+  /users/avatar:
+    post:
       tags:
         - users
-      summary: Выход из закрытой части приложения.
-      description: Завершает сеанс работы в закрытой части приложения.
-        Остаются доступными ресурсы, не требующие авторизации.
+      summary: Загрузка аватара
+      description: Загрузка аватара и сохранение в БД
       parameters:
         - $ref: '#/components/parameters/token'
 
       responses:
-        "204":
-          description: Сеанс завершён.
+        "201":
+          description: Аватар загружен
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  avatar:
+                    type: string
+                    example: "http://localhost:10000/upload/PcEyejH8F-Qvrlq-o8qrm.jpeg"
+
+        "401":
+          $ref: '#/components/responses/401'
 
   /offers/createOffer:
     post:
@@ -439,7 +441,6 @@ paths:
         "401":
           $ref: '#/components/responses/401'
 
-
 components:
   schemas:
     createUser:
@@ -450,7 +451,7 @@ components:
           type: string
           example: user@mail.com
 
-        name:
+        userName:
           type: string
           minLength: 1
           maxLength: 15
@@ -462,11 +463,7 @@ components:
           maxLength: 12
           example: qwerty1234
 
-        avatar:
-          type: string
-          example: user1.jpg
-
-        type:
+        userType:
           type: string
           example: Default
           enum:
@@ -485,6 +482,10 @@ components:
           type: string
           example: 632db7ffa4c4750721ab0616
 
+        userName:
+          type: string
+          example: John Smith
+
         email:
           type: string
           example: user@mail.com
@@ -493,7 +494,7 @@ components:
           type: string
           example: user1.jpg
 
-        type:
+        userType:
           type: string
           example: Default
           enum:
@@ -501,9 +502,11 @@ components:
             - Pro
 
     token:
-      type: string
-      example: 'T2xpdmVyLmNvbm5lckBnbWFpbC5jb20='
-      description: Сессионный токен пользователя.
+      type: object
+      properties:
+        token:
+          example: 'eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RVc2VyQGdtYWlsLmNvbSIsImlkIjoiNjM1MGM3NDRjZDE1YWU5NTBmNTdhNzlmIiwiaWF0IjoxNjY2MjM5NDg4LCJleHAiOjE2NjYzMjU4ODh9.9VM7Qf3TUbtOB6TsnH6Qtsq-BI2BJc2Htre0jUuuEO0'
+          description: Токен пользователя.
 
     loginUser:
       type: object
@@ -647,7 +650,6 @@ components:
         - features
         - hostId
         - location
-
 
     offer:
       type:
@@ -813,12 +815,28 @@ components:
           description: Рейтинг предложения выставленный создателем комментария.
           example: 4.5
 
+    errorDetail:
+      type: object
+      description: Ошибка валидации.
+      properties:
+        property:
+          type: string
+          example: "email"
+        value:
+          type: string
+          example: "user1gmail.com"
+        messages:
+          type: array
+          example: [ "Email must be valid email address" ]
+
   parameters:
     token:
       in: header
-      name: X-Token
+      name: Authorization
       schema:
-        $ref: '#/components/schemas/token'
+        type: string
+        example: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RVc2VyQGdtYWlsLmNvbSIsImlkIjoiNjM1MGM3NDRjZDE1YWU5NTBmNTdhNzlmIiwiaWF0IjoxNjY2MjM5NDg4LCJleHAiOjE2NjYzMjU4ODh9.9VM7Qf3TUbtOB6TsnH6Qtsq-BI2BJc2Htre0jUuuEO0'
+        description: Токен пользователя.
 
     offerId:
       in: path
@@ -828,6 +846,26 @@ components:
         $ref: '#/components/schemas/offerIdParam'
 
   responses:
+    "400":
+      description: Отправлены неверные данные.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errorType:
+                type: string
+                example: 'VALIDATION_ERROR'
+
+              message:
+                type: string
+                example: 'Validation error: "/register"'
+
+              details:
+                type: array
+                items:
+                  $ref: '#/components/schemas/errorDetail'
+
     401:
       description: Пользователь не авторизован.
       content:
@@ -835,9 +873,17 @@ components:
           schema:
             type: object
             properties:
+              errorType:
+                type: string
+                example: 'HTTP_ERROR'
+
               message:
                 type: string
-                example: Вы не имеете доступа к этим ресурсам.
+                example: 'Unauthorized'
+
+              details:
+                type: array
+                example: [ ]
 
     offer-404:
       description: Предложение не найдено.
