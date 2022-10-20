@@ -8,8 +8,7 @@ import { LoggerInterface } from '../../services/logger/logger.interface.js';
 import UpdateOfferDto from './dto/update-offer.dto.js';
 import { SortType } from '../../types/sort-type.enum.js';
 import { Types } from 'mongoose';
-import UpdatePreviewImageOfferDto from './dto/update-preview-image-offer.dto.js';
-import UpdatePhotosOfferDto from './dto/update-photos-offer.dto.js';
+import { PREMIUM_COUNT } from './offer.constant.js';
 
 const lookup = {
   $lookup: {
@@ -103,10 +102,7 @@ export default class OfferService implements OfferServiceInterface {
     return result;
   }
 
-  public async updateById(
-    offerId: string,
-    dto: UpdateOfferDto | UpdatePreviewImageOfferDto | UpdatePhotosOfferDto,
-  ): Promise<DocumentType<OfferEntity> | null> {
+  public async updateById( offerId: string, dto: UpdateOfferDto ): Promise<DocumentType<OfferEntity> | null> {
     await this.offerModel.findByIdAndUpdate(offerId, dto).populate('userId');
     return await this.findById(offerId);
   }
@@ -115,7 +111,7 @@ export default class OfferService implements OfferServiceInterface {
     return this.offerModel.findByIdAndDelete(offerId);
   }
 
-  public async findPremiumByCity( city: string ): Promise<DocumentType<OfferEntity>[]> {
+  public async findPremiumByCity( city: string, userId: string | undefined = undefined ): Promise<DocumentType<OfferEntity>[]> {
     const result = await this.offerModel
       .aggregate([
         {
@@ -123,7 +119,18 @@ export default class OfferService implements OfferServiceInterface {
         },
         lookup,
         addFields,
+        {
+          $set: {
+            isFavorite: {
+              $cond: [
+                { $in: [new Types.ObjectId(userId), '$favorites'] }, true, false,
+              ],
+            },
+          },
+        },
         unset,
+        { $limit: PREMIUM_COUNT },
+        { $sort: { createdAt: SortType.Down } },
       ]);
 
     await this.offerModel.populate(result, { path: 'userId' });
@@ -131,6 +138,7 @@ export default class OfferService implements OfferServiceInterface {
   }
 
   public async exists( documentId: string ): Promise<boolean> {
+    console.log(documentId);
     return await this.offerModel.exists({ _id: documentId }) !== null;
   }
 

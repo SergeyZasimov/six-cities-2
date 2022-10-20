@@ -10,7 +10,7 @@ import { fillDto } from '../../utils/fill-dto.js';
 import OfferResponse from './response/offer.response.js';
 import CreateOfferDto from './dto/create-offer.dto.js';
 import UpdateOfferDto from './dto/update-offer.dto.js';
-import { ParamsGetOffer, ParamsGetPremium, RequestQuery } from '../../types/request-params-query.type.js';
+import { ParamsGetOffer, RequestQuery } from '../../types/request-params-query.type.js';
 import { DEFAULT_OFFER_COUNT } from './offer.constant.js';
 import { ValidateObjectIdMiddleware } from '../../services/middlewares/validate-objectId.middleware.js';
 import ValidateDtoMiddleware from '../../services/middlewares/validate-dto.middleware.js';
@@ -21,8 +21,9 @@ import { UploadFileMiddleware } from '../../services/middlewares/upload-file.mid
 import { AppConfig } from '../../types/config.enum.js';
 import UploadOfferPreviewImageResponse from './response/upload-offer-preview-image.response.js';
 import { UploadFilesArrayMiddleware } from '../../services/middlewares/upload-files-array.middleware.js';
-import UpdatePreviewImageOfferDto from './dto/update-preview-image-offer.dto.js';
-import UpdatePhotosOfferDto from './dto/update-photos-offer.dto.js';
+import { Cities } from '../../types/cities.enum.js';
+import { StatusCodes } from 'http-status-codes';
+import HttpError from '../../services/errors/http-error.js';
 
 @injectable()
 export default class OfferController extends Controller {
@@ -61,6 +62,12 @@ export default class OfferController extends Controller {
     });
 
     this.addRoute({
+      path: '/premium',
+      method: HttpMethod.Get,
+      handler: this.getPremiumByCity,
+    });
+
+    this.addRoute({
       path: '/:offerId',
       method: HttpMethod.Get,
       handler: this.show,
@@ -77,7 +84,7 @@ export default class OfferController extends Controller {
       middlewares: [
         new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('offerId'),
-        new ValidateDtoMiddleware(CreateOfferDto),
+        new ValidateDtoMiddleware(UpdateOfferDto),
         new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
       ],
     });
@@ -93,12 +100,6 @@ export default class OfferController extends Controller {
       ],
     });
 
-    this.addRoute({
-      path: '/:city/premium',
-      method: HttpMethod.Get,
-      handler: this.getPremiumByCity,
-    });
-
     this.addRoute(({
       path: '/:offerId/previewImage',
       method: HttpMethod.Post,
@@ -106,7 +107,7 @@ export default class OfferController extends Controller {
       middlewares: [
         new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('offerId'),
-        new ValidateDtoMiddleware(UpdatePreviewImageOfferDto),
+        new ValidateDtoMiddleware(UpdateOfferDto),
         new UploadFileMiddleware(this.config.get(AppConfig.UPLOAD_DIRECTORY), 'previewImage'),
       ],
     }));
@@ -118,14 +119,14 @@ export default class OfferController extends Controller {
       middlewares: [
         new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('offerId'),
-        new ValidateDtoMiddleware(UpdatePhotosOfferDto),
+        new ValidateDtoMiddleware(UpdateOfferDto),
         new UploadFilesArrayMiddleware(this.config.get(AppConfig.UPLOAD_DIRECTORY), 'photos'),
       ],
     }));
   }
 
   public async index(
-    req: Request<unknown, unknown, unknown, RequestQuery>,
+    req: Request<Record<string, unknown>, Record<string, unknown>, Record<string, unknown>, RequestQuery>,
     res: Response,
   ): Promise<void> {
     const { limit } = req.query;
@@ -138,8 +139,9 @@ export default class OfferController extends Controller {
     res: Response,
   ): Promise<void> {
     const { body } = req;
-    const result = await this.offerService.create({ ...body, userId: req.user.id });
-    this.ok(res, fillDto(OfferResponse, result));
+    const offer = await this.offerService.create({ ...body, userId: req.user.id });
+    const result = fillDto(OfferResponse, offer);
+    this.ok(res, { ...result, rating: 0, commentCount: 0 });
   }
 
   public async show(
@@ -170,11 +172,27 @@ export default class OfferController extends Controller {
   }
 
   public async getPremiumByCity(
-    req: Request<core.ParamsDictionary | ParamsGetPremium>,
+    req: Request<Record<string, unknown>, Record<string, unknown>, Record<string, unknown>, RequestQuery>,
     res: Response,
   ): Promise<void> {
-    const { params: { city } } = req;
-    const result = await this.offerService.findPremiumByCity(city);
+    const { city } = req.query;
+    console.log(city);
+    if (!city) {
+      throw new HttpError(
+        StatusCodes.BAD_REQUEST,
+        'City name is required',
+        'OfferController',
+      );
+    }
+
+    if (!(Object.keys(Cities).includes(city))) {
+      throw new HttpError(
+        StatusCodes.NOT_FOUND,
+        `"${city}" is unknown city name`,
+        'OfferController',
+      );
+    }
+    const result = await this.offerService.findPremiumByCity(city, req.user?.id);
     this.ok(res, fillDto(OfferResponse, result));
   }
 
@@ -194,19 +212,22 @@ export default class OfferController extends Controller {
     return this.ok(res, fillDto(OfferResponse, result));
   }
 
-  private async uploadPreviewImage( req: Request, res: Response ): Promise<void> {
+  private async uploadPreviewImage(
+    req: Request<core.ParamsDictionary | ParamsGetOffer>,
+    res: Response,
+  ): Promise<void> {
     const { offerId } = req.params;
     const uploadFile = { previewImage: req.file?.filename };
     await this.offerService.updateById(offerId, uploadFile);
-    this.created(res, fillDto(UploadOfferPreviewImageResponse, uploadFile));
+    this.ok(res, fillDto(UploadOfferPreviewImageResponse, uploadFile));
   }
 
-  private async uploadPhotos( req: Request, res: Response ): Promise<void> {
+  private async uploadPhotos( req: Request<core.ParamsDictionary | ParamsGetOffer>, res: Response ): Promise<void> {
     const { offerId } = req.params;
     const files = [...JSON.parse(JSON.stringify(req.files))];
     const photos = files.map(( file ) => file.filename);
     const uploadFiles = { photos };
     await this.offerService.updateById(offerId, uploadFiles);
-    this.created(res, photos);
+    this.ok(res, uploadFiles);
   }
 }

@@ -156,37 +156,23 @@ paths:
                 $ref: '#/components/schemas/offer'
 
         "400":
-          description: Отправлены неверные данные.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Поле «Цена» обязательно для заполнения.
+          $ref: '#/components/responses/400'
 
         "401":
           $ref: '#/components/responses/401'
 
-  /offers:
+  /offers?limit=20:
     get:
       tags:
         - offers
       summary: Список предложений.
       description: Возвращает список предложений в порядке убывания даты публикации.
-
-      requestBody:
-        description: Данные о количестве возвращаемых предложений.
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                count:
-                  type: number
-                  example: 60
-                  default: 60
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: number
+            example: 60
 
       responses:
         "200":
@@ -216,7 +202,7 @@ paths:
                 $ref: '#/components/schemas/offer'
 
         "404":
-          $ref: '#/components/responses/offer-404'
+          $ref: '#/components/responses/404'
 
     patch:
       tags:
@@ -231,7 +217,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/createOffer'
+              $ref: '#/components/schemas/updateOffer'
 
       responses:
         "200":
@@ -242,21 +228,13 @@ paths:
                 $ref: '#/components/schemas/offer'
 
         "400":
-          description: Отправлены неверные данные.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Поле «Рейтинг» обязательно для заполнения.
+          $ref: '#/components/responses/400'
 
         "401":
           $ref: '#/components/responses/401'
 
         "404":
-          $ref: '#/components/responses/offer-404'
+          $ref: '#/components/responses/404'
 
     delete:
       tags:
@@ -264,43 +242,28 @@ paths:
       summary: Удаление предложения.
       description: Удаление предложения и комментариев к нему.
       parameters:
-        - in: path
-          name: offerId
-          required: true
-          schema:
-            type: string
-            example: '632db7ffa4c4750721ab0618'
-            description: ID удаляемого предложения.
-
         - $ref: '#/components/parameters/token'
+        - $ref: '#/components/parameters/offerId'
 
       responses:
-        "200":
+        "204":
           description: Предложение успешно удалено.
-          content:
-            application/json:
-              schema:
-                description: ID удалённого предложения
-                type: object
-                example: {
-                  id: '632db7ffa4c4750721ab0618'
-                }
 
         "401":
           $ref: '#/components/responses/401'
 
 
         "404":
-          $ref: '#/components/responses/offer-404'
+          $ref: '#/components/responses/404'
 
-  /offers/{city}/premium:
+  /offers/premium?city=Paris:
     get:
       tags:
         - offers
       summary: Список премиальных предложений для города.
       description: Возвращает не больше 3 предложений с флагом "Premium".
       parameters:
-        - in: path
+        - in: query
           name: city
           required: true
           schema:
@@ -319,6 +282,25 @@ paths:
                   $ref: '#/components/schemas/offer'
                 maxItems: 3
 
+        "400":
+          description: Город не указан.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorType:
+                    type: string
+                    example: "HTTP_ERROR"
+
+                  message:
+                    type: string
+                    example: 'City name is required'
+
+                  details:
+                    type: array
+                    example: [ ]
+
         "404":
           description: Город не найден.
           content:
@@ -326,9 +308,82 @@ paths:
               schema:
                 type: object
                 properties:
+                  errorType:
+                    type: string
+                    example: "HTTP_ERROR"
+
                   message:
                     type: string
-                    example: Город не найден.
+                    example: 'Moscow is unknown city name'
+
+                  details:
+                    type: array
+                    example: [ ]
+
+  /offers/{offerId}/previewImage:
+    post:
+      tags:
+        - offers
+      summary: Загрузка превью предложения.
+      description: Загрузка превью предложения и сохранение в БД
+      parameters:
+        - $ref: '#/components/parameters/token'
+        - $ref: '#/components/parameters/offerId'
+
+      responses:
+        "200":
+          description: Успешная загрузка превью предложения.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  previewImage:
+                    type: string
+                    example: 'http://localhost:10000/upload/A1Uvlv4vYkMEu_UzFdfnG.jpeg'
+
+        "400":
+          $ref: '#/components/responses/400'
+
+        "401":
+          $ref: '#/components/responses/401'
+
+        "404":
+          $ref: '#/components/responses/404'
+
+  /offers/{offerId}/photos:
+    post:
+      tags:
+        - offers
+      summary: Загрузка фотографий предложения.
+      description: Загрузка фотографий и сохранение в БД
+      parameters:
+        - $ref: '#/components/parameters/token'
+        - $ref: '#/components/parameters/offerId'
+
+      responses:
+        "200":
+          description: Успешная загрузка фотографий предложения.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  photos:
+                    type: array
+                    items:
+                      type: string
+                      example: 'http://localhost:10000/upload/A1Uvlv4vYkMEu_UzFdfnG.jpeg'
+
+        "400":
+          $ref: '#/components/responses/400'
+
+        "401":
+          $ref: '#/components/responses/401'
+
+        "404":
+          $ref: '#/components/responses/404'
+
 
   /comments/{offerId}:
     get:
@@ -350,7 +405,7 @@ paths:
                   $ref: '#/components/schemas/comment'
 
         "404":
-          $ref: '#/components/responses/offer-404'
+          $ref: '#/components/responses/404'
 
     post:
       tags:
@@ -381,7 +436,7 @@ paths:
           $ref: '#/components/responses/401'
 
         "404":
-          $ref: '#/components/responses/offer-404'
+          $ref: '#/components/responses/404'
 
   /favorites:
     get:
@@ -556,35 +611,9 @@ components:
             }
           }
 
-        previewImage:
-          type: string
-          example: 'img/apartment.jpg'
-
-        photos:
-          type: array
-          minItems: 6
-          example: [
-            "img/apartment-01.jpg",
-            "img/apartment-02.jpg",
-            "img/apartment-03.jpg",
-            "img/apartment-04.jpg",
-            "img/apartment-05.jpg",
-            "img/apartment-06.jpg",
-          ]
-
         isPremium:
           type: boolean
           example: true
-
-        isFavorite:
-          type: boolean
-          example: false
-
-        rating:
-          type: number
-          example: 3.4
-          minimum: 1
-          maximum: 5
 
         type:
           type: string
@@ -628,7 +657,7 @@ components:
             - Towels
             - Fridge
 
-        hostId:
+        userId:
           type: string
           example: 632db7ffa4c4750721ab0616
 
@@ -650,6 +679,24 @@ components:
         - features
         - hostId
         - location
+
+    updateOffer:
+      type:
+        object
+
+      properties:
+        title:
+          type: string
+          minLength: 10
+          maxLength: 100
+          example: Beautiful & luxurious studio at great location
+
+        description:
+          type: string
+          minLength: 20
+          maxLength: 1024
+          example: A quiet cozy and picturesque that hides behind a a river by the unique lightness of Amsterdam.
+            The building is green and from 18th century.
 
     offer:
       type:
@@ -705,13 +752,7 @@ components:
 
         isFavorite:
           type: boolean
-          example: true
-
-        rating:
-          type: number
-          example: 3.4
-          minimum: 1
-          maximum: 5
+          example: false
 
         type:
           type: string
@@ -755,9 +796,9 @@ components:
             - Towels
             - Fridge
 
-        hostId:
-          type: string
-          example: 632db7ffa4c4750721ab0616
+        user:
+          type: object
+          $ref: '#/components/schemas/user'
 
         location:
           type: object
@@ -766,13 +807,13 @@ components:
             longitude: 2.351499
           }
 
-        createdAt:
-          type: string
-          example: '2022-09-23T13:43:27.411Z'
+        rating:
+          type: number
+          example: 1.3
 
-        updatedAt:
-          type: string
-          example: '2022-09-23T13:43:27.411Z'
+        commentCount:
+          type: number
+          example: 1
 
     offerIdParam:
       type: string
@@ -885,13 +926,46 @@ components:
                 type: array
                 example: [ ]
 
-    offer-404:
+    404:
       description: Предложение не найдено.
       content:
         application/json:
           schema:
             type: object
             properties:
+              errorType:
+                type: string
+                example: "HTTP_ERROR"
+
               message:
                 type: string
-                example: Предложение не найдено.
+                example: "6339141 is invalid ID"
+
+              details:
+                type: array
+                example: [ ]
+
+
+#        previewImage:
+#          type: string
+#          example: 'img/apartment.jpg'
+#
+#        photos:
+#          type: array
+#          minItems: 6
+#          example: [
+#            "img/apartment-01.jpg",
+#            "img/apartment-02.jpg",
+#            "img/apartment-03.jpg",
+#            "img/apartment-04.jpg",
+#            "img/apartment-05.jpg",
+#            "img/apartment-06.jpg",
+#          ]
+#        isFavorite:
+#          type: boolean
+#          example: false
+#        rating:
+#          type: number
+#          example: 3.4
+#          minimum: 1
+#          maximum: 5

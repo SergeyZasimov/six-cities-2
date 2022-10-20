@@ -13,3 +13,5 @@ export const OFFER_CONSTRAINT = {
   MIN_PRICE: 100,
   MAX_PRICE: 100000,
 } as const;
+
+export const PREMIUM_COUNT = 3;
