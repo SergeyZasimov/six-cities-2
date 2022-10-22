@@ -11,6 +11,7 @@ import { ControllerInterface } from '../services/controller/controller.interface
 import { ExceptionFilterInterface } from '../services/errors/exception-filter.interface.js';
 import AuthenticateMiddleware from '../services/middlewares/authenticate.middleware.js';
 import { getServerPath } from '../utils/get-server-path.js';
+import cors from 'cors';
 
 @injectable()
 export default class Application {
@@ -43,6 +44,7 @@ export default class Application {
 
     const authMiddleware = new AuthenticateMiddleware(this.config.get(AppConfig.JWT_SECRET));
     this.expressApp.use(authMiddleware.execute.bind(authMiddleware));
+    this.expressApp.use(cors());
   }
 
   public initExceptionFilters() {
