@@ -17,15 +17,17 @@ import { ValidateObjectIdMiddleware } from '../../services/middlewares/validate-
 import ValidateDtoMiddleware from '../../services/middlewares/validate-dto.middleware.js';
 import { DocumentExistsMiddleware } from '../../services/middlewares/document-exists.middleware.js';
 import PrivateRouteMiddleware from '../../services/middlewares/private-route.middleware.js';
+import { ConfigInterface } from '../../services/config/config.interface.js';
 
 @injectable()
 export default class CommentController extends Controller {
   constructor(
     @inject(Component.LoggerInterface) logger: LoggerInterface,
+    @inject(Component.ConfigInterface) config: ConfigInterface,
     @inject(Component.CommentServiceInterface) private readonly commentService: CommentServiceInterface,
     @inject(Component.OfferServiceInterface) private readonly offerService: OfferServiceInterface,
   ) {
-    super(logger);
+    super(logger, config);
 
     this.logger.info('Register routes for CommentController');
 
@@ -50,9 +52,8 @@ export default class CommentController extends Controller {
     });
   }
 
-  public async create(req: Request<unknown, unknown, CreateCommentDTO>, res: Response): Promise<void> {
+  public async create( req: Request<Record<string, unknown>, Record<string, unknown>, CreateCommentDTO>, res: Response ): Promise<void> {
     const { body } = req;
-
     if (!(await this.offerService.exists(body.offerId))) {
       throw new HttpError(StatusCodes.NOT_FOUND, `Offer with ID: ${body.offerId} - not found`, 'CommentOffer');
     }
@@ -61,7 +62,7 @@ export default class CommentController extends Controller {
     this.created(res, fillDto(CommentResponse, result));
   }
 
-  public async getComments(req: Request<core.ParamsDictionary | ParamsGetOffer>, res: Response): Promise<void> {
+  public async getComments( req: Request<core.ParamsDictionary | ParamsGetOffer>, res: Response ): Promise<void> {
     const {
       params: { offerId },
     } = req;

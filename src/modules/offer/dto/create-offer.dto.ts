@@ -1,22 +1,9 @@
 import { City } from '../../../types/city.type.js';
 import { HousingType } from '../../../types/housing-type.enum.js';
 import { FeatureType } from '../../../types/feature-type.enum.js';
-import {
-  ArrayMaxSize,
-  ArrayMinSize,
-  IsArray,
-  IsBoolean,
-  IsEnum,
-  IsInt,
-  Matches,
-  Max,
-  MaxLength,
-  Min,
-  MinLength,
-  Validate,
-} from 'class-validator';
+import { IsArray, IsBoolean, IsEnum, IsInt, Max, MaxLength, Min, MinLength, Validate } from 'class-validator';
 import { Location } from '../../../types/location.type.js';
-import { LocationValidator, CityValidator } from '../../../utils/custom-validators.js';
+import { CityValidator, LocationValidator } from '../../../utils/custom-validators.js';
 import { OFFER_CONSTRAINT } from '../offer.constant.js';
 
 const {
@@ -24,7 +11,6 @@ const {
   MIN_TITLE,
   MAX_DESCRIPTION,
   MIN_DESCRIPTION,
-  PHOTOS_LENGTH,
   MAX_ROOMS,
   MIN_ROOMS,
   MAX_GUESTS,
@@ -44,15 +30,6 @@ export default class CreateOfferDto {
 
   @Validate(CityValidator, { message: 'City must be Paris, Cologne, Brussels, Amsterdam, Hamburg or Dusseldorf' })
   public city!: City;
-
-  @Matches(/[\w/-]+.(jpg|png)/, { message: 'Photo must be jpg or png' })
-  public previewImage!: string;
-
-  @IsArray({ message: 'Photos must be an array' })
-  @ArrayMinSize(PHOTOS_LENGTH, { message: `Photos must be ${PHOTOS_LENGTH}` })
-  @ArrayMaxSize(PHOTOS_LENGTH, { message: `Photos must be ${PHOTOS_LENGTH}` })
-  @Matches(/[\w/-]+.(jpg|png)/, { each: true, message: 'Photo must be jpg or png' })
-  public photos!: string[];
 
   @IsBoolean()
   public isPremium!: boolean;

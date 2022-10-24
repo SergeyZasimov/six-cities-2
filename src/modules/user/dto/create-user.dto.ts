@@ -1,5 +1,5 @@
 import { UserType } from '../../../types/user-type.enum.js';
-import { IsEmail, IsEnum, IsString, Length, Matches } from 'class-validator';
+import { IsEmail, IsEnum, IsString, Length, ValidateIf } from 'class-validator';
 import { USER_CONSTRAINT } from '../user.constant.js';
 
 const { MIN_USERNAME, MAX_USERNAME, MIN_PASSWORD, MAX_PASSWORD } = USER_CONSTRAINT;
@@ -8,9 +8,6 @@ export default class CreateUserDto {
   @IsString({ message: 'Email is required' })
   @IsEmail({}, { message: 'Email must be valid email address' })
   public email!: string;
-
-  @Matches(/[\w/-]+.(jpg|png)/, { message: 'Avatar must be jpg or png' })
-  public avatar!: string;
 
   @IsString({ message: 'User name is required' })
   @Length(MIN_USERNAME, MAX_USERNAME, {
@@ -24,6 +21,7 @@ export default class CreateUserDto {
   })
   public password!: string;
 
+  @ValidateIf(( obj ) => Boolean(obj.userType))
   @IsEnum(UserType, { message: 'User type must be Default or Pro' })
   public userType!: UserType;
 }

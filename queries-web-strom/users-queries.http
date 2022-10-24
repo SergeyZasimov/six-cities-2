@@ -1,0 +1,62 @@
+# Users
+### Create User
+POST {{baseUrl}}/users/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "testUser@gmail.com",
+  "userName": "Test User",
+  "password": "testSecret"
+}
+
+### Login User
+POST {{baseUrl}}/users/login
+Content-Type: application/json
+
+{
+  "email": "testUser@gmail.com",
+  "password": "testSecret"
+}
+
+> {% client.global.set("authToken", response.body.token); %}
+
+
+### Check User Auth
+GET {{baseUrl}}/users/login
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+### Invalid Create User
+POST {{baseUrl}}/users/register
+Content-Type: application/json
+
+{
+  "email": "user1gmail.com",
+  "userName": "user1",
+  "password": "secret123"
+}
+
+### Invalid Login User
+POST {{baseUrl}}/users/login
+Content-Type: application/json
+
+{
+  "email": "user1gmail.com",
+  "password": "sec"
+}
+
+### Unauthorization
+GET {{baseUrl}}/users/login
+Content-Type: application/json
+
+### Send a form with user avatar
+POST {{baseUrl}}/users/avatar
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+Authorization: Bearer {{authToken}}
+
+--WebAppBoundary
+Content-Disposition: form-data; name="avatar"; filename="avatar-max.jpg"
+Content-Type: image/jpeg
+
+< ../markup/img/avatar-max.jpg
+--WebAppBoundary--

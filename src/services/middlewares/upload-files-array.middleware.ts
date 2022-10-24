@@ -4,7 +4,7 @@ import multer, { diskStorage } from 'multer';
 import { nanoid } from 'nanoid';
 import mime from 'mime-types';
 
-export class UploadFileMiddleware implements MiddlewareInterface {
+export class UploadFilesArrayMiddleware implements MiddlewareInterface {
   constructor(
     private uploadDirectory: string,
     private fieldName: string,
@@ -23,7 +23,7 @@ export class UploadFileMiddleware implements MiddlewareInterface {
       },
     });
 
-    const uploadSingleFileMiddleware = multer({ storage }).single(this.fieldName);
-    uploadSingleFileMiddleware(req, res, next);
+    const uploadArrayFilesMiddleware = multer({ storage }).array(this.fieldName);
+    uploadArrayFilesMiddleware(req, res, next);
   }
 }

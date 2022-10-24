@@ -42,15 +42,7 @@ paths:
                 $ref: '#/components/schemas/user'
 
         "400":
-          description: Отправлены неверные данные.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Пароль должен быть больше 6 символов и не более 12.
+          $ref: '#/components/responses/400'
 
         "409":
           description: Пользователь с таким email уже существует.
@@ -59,9 +51,17 @@ paths:
               schema:
                 type: object
                 properties:
+                  errorType:
+                    type: string
+                    example: 'HTTP_ERROR'
+
                   message:
                     type: string
-                    example: Пользователь с таким email уже существует.
+                    example: 'User with email testUser@gmail.com exists'
+
+                  details:
+                    type: array
+                    example: [ ]
 
   /users/login:
     post:
@@ -83,18 +83,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/user'
+                $ref: '#/components/schemas/token'
 
         "400":
-          description: Отправлены неверные данные.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Пароль должен быть больше 6 символов и не более 12.
+          $ref: '#/components/responses/400'
 
     get:
       tags:
@@ -115,19 +107,29 @@ paths:
         "401":
           $ref: '#/components/responses/401'
 
-  /users/logout:
-    delete:
+  /users/avatar:
+    post:
       tags:
         - users
-      summary: Выход из закрытой части приложения.
-      description: Завершает сеанс работы в закрытой части приложения.
-        Остаются доступными ресурсы, не требующие авторизации.
+      summary: Загрузка аватара
+      description: Загрузка аватара и сохранение в БД
       parameters:
         - $ref: '#/components/parameters/token'
 
       responses:
-        "204":
-          description: Сеанс завершён.
+        "201":
+          description: Аватар загружен
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  avatar:
+                    type: string
+                    example: "http://localhost:10000/upload/PcEyejH8F-Qvrlq-o8qrm.jpeg"
+
+        "401":
+          $ref: '#/components/responses/401'
 
   /offers/createOffer:
     post:
@@ -154,37 +156,23 @@ paths:
                 $ref: '#/components/schemas/offer'
 
         "400":
-          description: Отправлены неверные данные.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Поле «Цена» обязательно для заполнения.
+          $ref: '#/components/responses/400'
 
         "401":
           $ref: '#/components/responses/401'
 
-  /offers:
+  /offers?limit=20:
     get:
       tags:
         - offers
       summary: Список предложений.
       description: Возвращает список предложений в порядке убывания даты публикации.
-
-      requestBody:
-        description: Данные о количестве возвращаемых предложений.
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                count:
-                  type: number
-                  example: 60
-                  default: 60
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: number
+            example: 60
 
       responses:
         "200":
@@ -214,7 +202,7 @@ paths:
                 $ref: '#/components/schemas/offer'
 
         "404":
-          $ref: '#/components/responses/offer-404'
+          $ref: '#/components/responses/404'
 
     patch:
       tags:
@@ -229,7 +217,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/createOffer'
+              $ref: '#/components/schemas/updateOffer'
 
       responses:
         "200":
@@ -240,21 +228,13 @@ paths:
                 $ref: '#/components/schemas/offer'
 
         "400":
-          description: Отправлены неверные данные.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Поле «Рейтинг» обязательно для заполнения.
+          $ref: '#/components/responses/400'
 
         "401":
           $ref: '#/components/responses/401'
 
         "404":
-          $ref: '#/components/responses/offer-404'
+          $ref: '#/components/responses/404'
 
     delete:
       tags:
@@ -262,43 +242,28 @@ paths:
       summary: Удаление предложения.
       description: Удаление предложения и комментариев к нему.
       parameters:
-        - in: path
-          name: offerId
-          required: true
-          schema:
-            type: string
-            example: '632db7ffa4c4750721ab0618'
-            description: ID удаляемого предложения.
-
         - $ref: '#/components/parameters/token'
+        - $ref: '#/components/parameters/offerId'
 
       responses:
-        "200":
+        "204":
           description: Предложение успешно удалено.
-          content:
-            application/json:
-              schema:
-                description: ID удалённого предложения
-                type: object
-                example: {
-                  id: '632db7ffa4c4750721ab0618'
-                }
 
         "401":
           $ref: '#/components/responses/401'
 
 
         "404":
-          $ref: '#/components/responses/offer-404'
+          $ref: '#/components/responses/404'
 
-  /offers/{city}/premium:
+  /offers/premium?city=Paris:
     get:
       tags:
         - offers
       summary: Список премиальных предложений для города.
       description: Возвращает не больше 3 предложений с флагом "Premium".
       parameters:
-        - in: path
+        - in: query
           name: city
           required: true
           schema:
@@ -317,6 +282,25 @@ paths:
                   $ref: '#/components/schemas/offer'
                 maxItems: 3
 
+        "400":
+          description: Город не указан.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorType:
+                    type: string
+                    example: "HTTP_ERROR"
+
+                  message:
+                    type: string
+                    example: 'City name is required'
+
+                  details:
+                    type: array
+                    example: [ ]
+
         "404":
           description: Город не найден.
           content:
@@ -324,9 +308,81 @@ paths:
               schema:
                 type: object
                 properties:
+                  errorType:
+                    type: string
+                    example: "HTTP_ERROR"
+
                   message:
                     type: string
-                    example: Город не найден.
+                    example: 'Moscow is unknown city name'
+
+                  details:
+                    type: array
+                    example: [ ]
+
+  /offers/{offerId}/previewImage:
+    post:
+      tags:
+        - offers
+      summary: Загрузка превью предложения.
+      description: Загрузка превью предложения и сохранение в БД
+      parameters:
+        - $ref: '#/components/parameters/token'
+        - $ref: '#/components/parameters/offerId'
+
+      responses:
+        "200":
+          description: Успешная загрузка превью предложения.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  previewImage:
+                    type: string
+                    example: 'http://localhost:10000/upload/A1Uvlv4vYkMEu_UzFdfnG.jpeg'
+
+        "400":
+          $ref: '#/components/responses/400'
+
+        "401":
+          $ref: '#/components/responses/401'
+
+        "404":
+          $ref: '#/components/responses/404'
+
+  /offers/{offerId}/photos:
+    post:
+      tags:
+        - offers
+      summary: Загрузка фотографий предложения.
+      description: Загрузка фотографий и сохранение в БД
+      parameters:
+        - $ref: '#/components/parameters/token'
+        - $ref: '#/components/parameters/offerId'
+
+      responses:
+        "200":
+          description: Успешная загрузка фотографий предложения.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  photos:
+                    type: array
+                    items:
+                      type: string
+                      example: 'http://localhost:10000/upload/A1Uvlv4vYkMEu_UzFdfnG.jpeg'
+
+        "400":
+          $ref: '#/components/responses/400'
+
+        "401":
+          $ref: '#/components/responses/401'
+
+        "404":
+          $ref: '#/components/responses/404'
 
   /comments/{offerId}:
     get:
@@ -335,7 +391,7 @@ paths:
       summary: Список комментариев к предложению.
       description: Возвращает список комментариев для определённого предложения.
       parameters:
-        - $ref: '#/components/parameters/token'
+        - $ref: '#/components/parameters/offerId'
 
       responses:
         "200":
@@ -348,16 +404,15 @@ paths:
                   $ref: '#/components/schemas/comment'
 
         "404":
-          $ref: '#/components/responses/offer-404'
+          $ref: '#/components/responses/404'
 
+  /comments:
     post:
       tags:
         - comments
       summary: Создание нового комментария.
       description: Добавление нового комментария для определённого предложения.
       parameters:
-        - $ref: '#/components/parameters/offerId'
-
         - $ref: '#/components/parameters/token'
 
       requestBody:
@@ -379,7 +434,7 @@ paths:
           $ref: '#/components/responses/401'
 
         "404":
-          $ref: '#/components/responses/offer-404'
+          $ref: '#/components/responses/404'
 
   /favorites:
     get:
@@ -403,13 +458,15 @@ paths:
         "401":
           $ref: '#/components/responses/401'
 
-    patch:
+  /favorites/offerId:
+    post:
       tags:
         - favorites
       summary: Изменение статуса избранного у предложения.
       description: Добавляет или удаляет предложение в/из списка избранного.
       parameters:
         - $ref: '#/components/parameters/token'
+        - $ref: '#/components/parameters/offerId'
 
       requestBody:
         description: Данные для обновления состояния предложения.
@@ -418,15 +475,10 @@ paths:
             schema:
               type: object
               properties:
-                offerId:
-                  type: string
-                  description: ID предложения.
-                  example: 632db7ffa4c4750721ab0618
-
-                favoriteStatus:
-                  type: boolean
+                status:
+                  type: number
                   description: Обновлённое состояние предложения.
-                  example: true
+                  example: 1
 
       responses:
         "200":
@@ -439,6 +491,11 @@ paths:
         "401":
           $ref: '#/components/responses/401'
 
+        "400":
+          $ref: '#/components/responses/400'
+
+        "404":
+          $ref: '#/components/responses/404'
 
 components:
   schemas:
@@ -450,7 +507,7 @@ components:
           type: string
           example: user@mail.com
 
-        name:
+        userName:
           type: string
           minLength: 1
           maxLength: 15
@@ -462,11 +519,7 @@ components:
           maxLength: 12
           example: qwerty1234
 
-        avatar:
-          type: string
-          example: user1.jpg
-
-        type:
+        userType:
           type: string
           example: Default
           enum:
@@ -485,6 +538,10 @@ components:
           type: string
           example: 632db7ffa4c4750721ab0616
 
+        userName:
+          type: string
+          example: John Smith
+
         email:
           type: string
           example: user@mail.com
@@ -493,7 +550,7 @@ components:
           type: string
           example: user1.jpg
 
-        type:
+        userType:
           type: string
           example: Default
           enum:
@@ -501,9 +558,11 @@ components:
             - Pro
 
     token:
-      type: string
-      example: 'T2xpdmVyLmNvbm5lckBnbWFpbC5jb20='
-      description: Сессионный токен пользователя.
+      type: object
+      properties:
+        token:
+          example: 'eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RVc2VyQGdtYWlsLmNvbSIsImlkIjoiNjM1MGM3NDRjZDE1YWU5NTBmNTdhNzlmIiwiaWF0IjoxNjY2MjM5NDg4LCJleHAiOjE2NjYzMjU4ODh9.9VM7Qf3TUbtOB6TsnH6Qtsq-BI2BJc2Htre0jUuuEO0'
+          description: Токен пользователя.
 
     loginUser:
       type: object
@@ -553,35 +612,9 @@ components:
             }
           }
 
-        previewImage:
-          type: string
-          example: 'img/apartment.jpg'
-
-        photos:
-          type: array
-          minItems: 6
-          example: [
-            "img/apartment-01.jpg",
-            "img/apartment-02.jpg",
-            "img/apartment-03.jpg",
-            "img/apartment-04.jpg",
-            "img/apartment-05.jpg",
-            "img/apartment-06.jpg",
-          ]
-
         isPremium:
           type: boolean
           example: true
-
-        isFavorite:
-          type: boolean
-          example: false
-
-        rating:
-          type: number
-          example: 3.4
-          minimum: 1
-          maximum: 5
 
         type:
           type: string
@@ -625,7 +658,7 @@ components:
             - Towels
             - Fridge
 
-        hostId:
+        userId:
           type: string
           example: 632db7ffa4c4750721ab0616
 
@@ -648,6 +681,23 @@ components:
         - hostId
         - location
 
+    updateOffer:
+      type:
+        object
+
+      properties:
+        title:
+          type: string
+          minLength: 10
+          maxLength: 100
+          example: Beautiful & luxurious studio at great location
+
+        description:
+          type: string
+          minLength: 20
+          maxLength: 1024
+          example: A quiet cozy and picturesque that hides behind a a river by the unique lightness of Amsterdam.
+            The building is green and from 18th century.
 
     offer:
       type:
@@ -705,12 +755,6 @@ components:
           type: boolean
           example: true
 
-        rating:
-          type: number
-          example: 3.4
-          minimum: 1
-          maximum: 5
-
         type:
           type: string
           example: Apartment
@@ -753,9 +797,9 @@ components:
             - Towels
             - Fridge
 
-        hostId:
-          type: string
-          example: 632db7ffa4c4750721ab0616
+        user:
+          type: object
+          $ref: '#/components/schemas/user'
 
         location:
           type: object
@@ -764,13 +808,13 @@ components:
             longitude: 2.351499
           }
 
-        createdAt:
-          type: string
-          example: '2022-09-23T13:43:27.411Z'
+        rating:
+          type: number
+          example: 1.3
 
-        updatedAt:
-          type: string
-          example: '2022-09-23T13:43:27.411Z'
+        commentCount:
+          type: number
+          example: 1
 
     offerIdParam:
       type: string
@@ -779,13 +823,17 @@ components:
     comment:
       type: object
       properties:
+        id:
+          type: string
+          example: 632db7ffa4c4750721ab0618
+
         text:
           type: string
           description: Текст комментария.
           example: 'A quiet cozy and picturesque that hides behind a a river by the unique lightness of Amsterdam.
           The building is green and from 18th century.'
 
-        date:
+        postDate:
           type: string
           description: Дата создания комментария.
           example: '2022-09-23T13:43:27.411Z'
@@ -813,12 +861,32 @@ components:
           description: Рейтинг предложения выставленный создателем комментария.
           example: 4.5
 
+        offerId:
+          type: string
+          example: 632db7ffa4c4750721ab0618
+
+    errorDetail:
+      type: object
+      description: Ошибка валидации.
+      properties:
+        property:
+          type: string
+          example: "email"
+        value:
+          type: string
+          example: "user1gmail.com"
+        messages:
+          type: array
+          example: [ "Email must be valid email address" ]
+
   parameters:
     token:
       in: header
-      name: X-Token
+      name: Authorization
       schema:
-        $ref: '#/components/schemas/token'
+        type: string
+        example: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RVc2VyQGdtYWlsLmNvbSIsImlkIjoiNjM1MGM3NDRjZDE1YWU5NTBmNTdhNzlmIiwiaWF0IjoxNjY2MjM5NDg4LCJleHAiOjE2NjYzMjU4ODh9.9VM7Qf3TUbtOB6TsnH6Qtsq-BI2BJc2Htre0jUuuEO0'
+        description: Токен пользователя.
 
     offerId:
       in: path
@@ -828,6 +896,26 @@ components:
         $ref: '#/components/schemas/offerIdParam'
 
   responses:
+    "400":
+      description: Отправлены неверные данные.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errorType:
+                type: string
+                example: 'VALIDATION_ERROR'
+
+              message:
+                type: string
+                example: 'Validation error: "/register"'
+
+              details:
+                type: array
+                items:
+                  $ref: '#/components/schemas/errorDetail'
+
     401:
       description: Пользователь не авторизован.
       content:
@@ -835,17 +923,33 @@ components:
           schema:
             type: object
             properties:
+              errorType:
+                type: string
+                example: 'HTTP_ERROR'
+
               message:
                 type: string
-                example: Вы не имеете доступа к этим ресурсам.
+                example: 'Unauthorized'
 
-    offer-404:
+              details:
+                type: array
+                example: [ ]
+
+    404:
       description: Предложение не найдено.
       content:
         application/json:
           schema:
             type: object
             properties:
+              errorType:
+                type: string
+                example: "HTTP_ERROR"
+
               message:
                 type: string
-                example: Предложение не найдено.
+                example: "6339141 is invalid ID"
+
+              details:
+                type: array
+                example: [ ]

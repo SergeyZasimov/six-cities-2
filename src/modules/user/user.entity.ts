@@ -17,11 +17,9 @@ export interface UserEntity extends defaultClasses.Base {
 export class UserEntity extends defaultClasses.TimeStamps implements User {
   constructor( data: User ) {
     super();
-
     this.userName = data.userName;
     this.email = data.email;
-    this.avatar = data.avatar || '';
-    this.userType = data.userType || UserType.Default;
+    this.avatar = data.avatar;
   }
 
   @prop({ required: true, minLength: 1, maxLength: 15 })
@@ -36,18 +34,14 @@ export class UserEntity extends defaultClasses.TimeStamps implements User {
   @prop()
   private password!: string;
 
-  @prop()
+  @prop({ default: UserType.Default })
   public userType!: UserType;
 
   public async setPassword( password: string, salt: string ): Promise<void> {
     this.password = await createPasswordHash(password, salt);
   }
 
-  public getPassword() {
-    return this.password;
-  }
-
-  public async verifyPassword(password: string): Promise<boolean> {
+  public async verifyPassword( password: string ): Promise<boolean> {
     return await bcrypt.compare(password, this.password);
   }
 }

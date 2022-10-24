@@ -8,6 +8,7 @@ import { LoggerInterface } from '../../services/logger/logger.interface.js';
 import UpdateOfferDto from './dto/update-offer.dto.js';
 import { SortType } from '../../types/sort-type.enum.js';
 import { Types } from 'mongoose';
+import { PREMIUM_COUNT } from './offer.constant.js';
 
 const lookup = {
   $lookup: {
@@ -92,8 +93,8 @@ export default class OfferService implements OfferServiceInterface {
           },
         },
         unset,
-        { $limit: limit },
         { $sort: { createdAt: SortType.Down } },
+        { $limit: limit },
       ]);
 
     await this.offerModel.populate(result, { path: 'userId' });
@@ -110,7 +111,7 @@ export default class OfferService implements OfferServiceInterface {
     return this.offerModel.findByIdAndDelete(offerId);
   }
 
-  public async findPremiumByCity( city: string ): Promise<DocumentType<OfferEntity>[]> {
+  public async findPremiumByCity( city: string, userId: string | undefined = undefined ): Promise<DocumentType<OfferEntity>[]> {
     const result = await this.offerModel
       .aggregate([
         {
@@ -118,7 +119,18 @@ export default class OfferService implements OfferServiceInterface {
         },
         lookup,
         addFields,
+        {
+          $set: {
+            isFavorite: {
+              $cond: [
+                { $in: [new Types.ObjectId(userId), '$favorites'] }, true, false,
+              ],
+            },
+          },
+        },
         unset,
+        { $sort: { createdAt: SortType.Down } },
+        { $limit: PREMIUM_COUNT },
       ]);
 
     await this.offerModel.populate(result, { path: 'userId' });

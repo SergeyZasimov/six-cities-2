@@ -12,7 +12,6 @@ import HttpError from '../../services/errors/http-error.js';
 import { StatusCodes } from 'http-status-codes';
 import LoginUserDto from './dto/login-user.dto.js';
 import ValidateDtoMiddleware from '../../services/middlewares/validate-dto.middleware.js';
-import { ValidateObjectIdMiddleware } from '../../services/middlewares/validate-objectId.middleware.js';
 import { UploadFileMiddleware } from '../../services/middlewares/upload-file.middleware.js';
 import { ConfigInterface } from '../../services/config/config.interface.js';
 import { AppConfig } from '../../types/config.enum.js';
@@ -20,16 +19,17 @@ import { createJwt } from '../../utils/create-jwt.js';
 import { JWT_ALGORITHM } from './user.constant.js';
 import LoginUserResponse from './response/login-user.response.js';
 import PrivateRouteMiddleware from '../../services/middlewares/private-route.middleware.js';
+import UploadUserAvatarResponse from './response/upload-user-avatar.response.js';
+import UpdateOfferDto from '../offer/dto/update-offer.dto.js';
 
 @injectable()
 export default class UserController extends Controller {
   constructor(
     @inject(Component.LoggerInterface) logger: LoggerInterface,
-    @inject(Component.ConfigInterface) private readonly config: ConfigInterface,
-    @inject(Component.UserServiceInterface)
-    private readonly userService: UserServiceInterface,
+    @inject(Component.ConfigInterface) config: ConfigInterface,
+    @inject(Component.UserServiceInterface) private readonly userService: UserServiceInterface,
   ) {
-    super(logger);
+    super(logger, config);
     this.logger.info('Register routes for UserController...');
 
     this.addRoute({
@@ -54,26 +54,22 @@ export default class UserController extends Controller {
     });
 
     this.addRoute({
-      path: '/:userId/avatar',
+      path: '/avatar',
       method: HttpMethod.Post,
       handler: this.uploadAvatar,
       middlewares: [
-        new ValidateObjectIdMiddleware('userId'),
-        new UploadFileMiddleware(
-          this.config.get(AppConfig.UPLOAD_DIRECTORY),
-          'avatar',
-          'user',
-        ),
+        new PrivateRouteMiddleware(),
+        new ValidateDtoMiddleware(UpdateOfferDto),
+        new UploadFileMiddleware(this.config.get(AppConfig.UPLOAD_DIRECTORY), 'avatar'),
       ],
     });
   }
 
   public async create(
-    {
-      body,
-    }: Request<Record<string, unknown>, Record<string, unknown>, CreateUserDto>,
+    req: Request<Record<string, unknown>, Record<string, unknown>, CreateUserDto>,
     res: Response,
   ): Promise<void> {
+    const { body } = req;
     const existUser = await this.userService.findByEmail(body.email);
 
     if (existUser) {
@@ -90,15 +86,10 @@ export default class UserController extends Controller {
   }
 
   public async login(
-    req: Request<
-      Record<string, unknown>,
-      Record<string, unknown>,
-      LoginUserDto
-    >,
+    req: Request<Record<string, unknown>, Record<string, unknown>, LoginUserDto>,
     res: Response,
   ): Promise<void> {
     const { body } = req;
-
     const user = await this.userService.verifyUser(body);
 
     if (!user) {
@@ -118,14 +109,15 @@ export default class UserController extends Controller {
     this.ok(res, fillDto(LoginUserResponse, { token }));
   }
 
-  private async uploadAvatar(req: Request, res: Response): Promise<void> {
-    console.log('avatar');
-    this.created(res, { filepath: req.file?.path });
+  private async uploadAvatar( req: Request, res: Response ): Promise<void> {
+    const userId = req.user.id;
+    const uploadFile = { avatar: req.file?.filename };
+    await this.userService.updateById(userId, uploadFile);
+    this.created(res, fillDto(UploadUserAvatarResponse, uploadFile));
   }
 
-  private async checkAuthenticate(req: Request, res: Response): Promise<void> {
+  private async checkAuthenticate( req: Request, res: Response ): Promise<void> {
     const result = await this.userService.findByEmail(req.user.email);
-    console.log(result);
-    this.ok(res, fillDto(LoginUserResponse, result));
+    this.ok(res, fillDto(UserResponse, result));
   }
 }

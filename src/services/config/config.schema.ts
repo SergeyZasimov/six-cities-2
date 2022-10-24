@@ -7,9 +7,11 @@ convict.addFormats(validator);
 
 export type ConfigSchema = {
   [AppConfig.PORT]: number;
+  [AppConfig.HOST]: string;
   [AppConfig.SALT]: string;
-  [AppConfig.UPLOAD_DIRECTORY]: string;
   [AppConfig.JWT_SECRET]: string;
+  [AppConfig.UPLOAD_DIRECTORY]: string;
+  [AppConfig.STATIC_DIRECTORY]: string;
   [DbConnection.DB_HOST]: string;
   [DbConnection.DB_USER]: string;
   [DbConnection.DB_PASSWORD]: string;
@@ -24,6 +26,12 @@ export const configSchema = convict<ConfigSchema>({
     env: AppConfig.PORT,
     default: 4455,
   },
+  [AppConfig.HOST]: {
+    doc: 'Application host',
+    format: String,
+    env: AppConfig.HOST,
+    default: 'localhost',
+  },
   [AppConfig.SALT]: {
     doc: 'The string that is added when encrypting the password',
     format: String,
@@ -31,17 +39,23 @@ export const configSchema = convict<ConfigSchema>({
     default: null,
     sensitive: true,
   },
+  [AppConfig.JWT_SECRET]: {
+    doc: 'Secret string for sign JWT',
+    format: String,
+    env: AppConfig.JWT_SECRET,
+    default: null,
+  },
   [AppConfig.UPLOAD_DIRECTORY]: {
     doc: 'Directory for upload files',
     format: String,
     env: AppConfig.UPLOAD_DIRECTORY,
     default: null,
   },
-  [AppConfig.JWT_SECRET]: {
-    doc: 'Secret string for sign JWT',
+  [AppConfig.STATIC_DIRECTORY]: {
+    doc: 'Directory for static files',
     format: String,
-    env: AppConfig.JWT_SECRET,
-    default:null,
+    env: AppConfig.STATIC_DIRECTORY,
+    default: '/static',
   },
   [DbConnection.DB_HOST]: {
     doc: 'Data Base Server IP address',

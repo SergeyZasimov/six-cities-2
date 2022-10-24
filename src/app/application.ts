@@ -10,6 +10,7 @@ import express, { Express } from 'express';
 import { ControllerInterface } from '../services/controller/controller.interface.js';
 import { ExceptionFilterInterface } from '../services/errors/exception-filter.interface.js';
 import AuthenticateMiddleware from '../services/middlewares/authenticate.middleware.js';
+import { getServerPath } from '../utils/get-server-path.js';
 
 @injectable()
 export default class Application {
@@ -18,16 +19,12 @@ export default class Application {
   constructor(
     @inject(Component.LoggerInterface) private logger: LoggerInterface,
     @inject(Component.ConfigInterface) private config: ConfigInterface,
-    @inject(Component.DbConnectorInterface)
-    private dbClient: DbConnectorInterface,
-    @inject(Component.ExceptionFilterInterface)
-    private exceptionFilter: ExceptionFilterInterface,
-    @inject(Component.OfferController)
-    private offerController: ControllerInterface,
-    @inject(Component.UserController)
-    private userController: ControllerInterface,
-    @inject(Component.CommentController)
-    private commentController: ControllerInterface,
+    @inject(Component.DbConnectorInterface) private dbClient: DbConnectorInterface,
+    @inject(Component.ExceptionFilterInterface) private exceptionFilter: ExceptionFilterInterface,
+    @inject(Component.OfferController) private offerController: ControllerInterface,
+    @inject(Component.UserController) private userController: ControllerInterface,
+    @inject(Component.CommentController) private commentController: ControllerInterface,
+    @inject(Component.FavoriteController) private favoriteController: ControllerInterface,
   ) {
     this.expressApp = express();
   }
@@ -36,11 +33,13 @@ export default class Application {
     this.expressApp.use('/offers', this.offerController.router);
     this.expressApp.use('/users', this.userController.router);
     this.expressApp.use('/comments', this.commentController.router);
+    this.expressApp.use('/favorites', this.favoriteController.router);
   }
 
   public initMiddleware() {
     this.expressApp.use(express.json());
     this.expressApp.use('/upload', express.static(this.config.get(AppConfig.UPLOAD_DIRECTORY)));
+    this.expressApp.use('/static', express.static(this.config.get(AppConfig.STATIC_DIRECTORY)));
 
     const authMiddleware = new AuthenticateMiddleware(this.config.get(AppConfig.JWT_SECRET));
     this.expressApp.use(authMiddleware.execute.bind(authMiddleware));
@@ -68,7 +67,9 @@ export default class Application {
     this.initExceptionFilters();
 
     this.expressApp.listen(this.config.get(AppConfig.PORT), () => {
-      this.logger.info(`Server started on http://localhost:${this.config.get(AppConfig.PORT)}`);
+      this.logger.info(
+        `Server started on ${getServerPath(this.config.get(AppConfig.HOST), this.config.get(AppConfig.PORT))}`,
+      );
     });
   }
 }
