@@ -31,7 +31,7 @@ Authorization: Bearer {{authToken}}
     "room-5-photo2.jpg"
   ],
   "isPremium": false,
-  "type": "Hotel",
+  "type": "hotel",
   "rooms": 8,
   "guests": 8,
   "price": 750,

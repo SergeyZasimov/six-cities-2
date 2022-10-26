@@ -9,12 +9,10 @@ import { fillDto } from '../../utils/fill-dto.js';
 import OfferResponse from '../offer/response/offer.response.js';
 import { HttpMethod } from '../../types/http-method.enum.js';
 import PrivateRouteMiddleware from '../../services/middlewares/private-route.middleware.js';
-import ChangeFavoriteDto from './dto/change-favorite.dto.js';
-import ValidateDtoMiddleware from '../../services/middlewares/validate-dto.middleware.js';
 import { ValidateObjectIdMiddleware } from '../../services/middlewares/validate-objectId.middleware.js';
 import { DocumentExistsMiddleware } from '../../services/middlewares/document-exists.middleware.js';
 import * as core from 'express-serve-static-core';
-import { ParamsGetOffer } from '../../types/request-params-query.type.js';
+import { ParamsChangeFavorite } from '../../types/request-params-query.type.js';
 
 @injectable()
 export default class FavoriteController extends Controller {
@@ -26,13 +24,12 @@ export default class FavoriteController extends Controller {
     super(logger, config);
 
     this.addRoute({
-      path: '/:offerId',
+      path: '/:offerId/:status',
       method: HttpMethod.Post,
       handler: this.changeFavorites,
       middlewares: [
         new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('offerId'),
-        new ValidateDtoMiddleware(ChangeFavoriteDto),
         new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
       ],
     });
@@ -46,12 +43,12 @@ export default class FavoriteController extends Controller {
   }
 
   private async changeFavorites(
-    req: Request<core.ParamsDictionary | ParamsGetOffer, Record<string, unknown>, ChangeFavoriteDto>,
+    req: Request<core.ParamsDictionary | ParamsChangeFavorite>,
     res: Response ) {
-    const { offerId } = req.params;
-    const { user, body } = req;
+    const { offerId, status } = req.params;
+    const { user } = req;
 
-    if (body.status) {
+    if (+status) {
       await this.offerService.addToFavorites(offerId, user.id);
     } else {
       await this.offerService.removeFromFavorites(offerId, user.id);

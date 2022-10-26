@@ -50,9 +50,8 @@ GET {{baseUrl}}/users/login
 Content-Type: application/json
 
 ### Send a form with user avatar
-POST {{baseUrl}}/users/avatar
+POST {{baseUrl}}/users/634c13e3f89a4bf8048054c7/avatar
 Content-Type: multipart/form-data; boundary=WebAppBoundary
-Authorization: Bearer {{authToken}}
 
 --WebAppBoundary
 Content-Disposition: form-data; name="avatar"; filename="avatar-max.jpg"

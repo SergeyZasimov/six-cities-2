@@ -58,7 +58,8 @@ export default class CommentController extends Controller {
       throw new HttpError(StatusCodes.NOT_FOUND, `Offer with ID: ${body.offerId} - not found`, 'CommentOffer');
     }
 
-    const result = await this.commentService.create({ ...body, userId: req.user.id });
+    await this.commentService.create({ ...body, userId: req.user.id });
+    const result = await this.commentService.findByOfferId(body.offerId);
     this.created(res, fillDto(CommentResponse, result));
   }
 

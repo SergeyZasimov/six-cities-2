@@ -21,6 +21,9 @@ import LoginUserResponse from './response/login-user.response.js';
 import PrivateRouteMiddleware from '../../services/middlewares/private-route.middleware.js';
 import UploadUserAvatarResponse from './response/upload-user-avatar.response.js';
 import UpdateOfferDto from '../offer/dto/update-offer.dto.js';
+import * as core from 'express-serve-static-core';
+import { ParamsGetUser } from '../../types/request-params-query.type.js';
+import { ValidateObjectIdMiddleware } from '../../services/middlewares/validate-objectId.middleware.js';
 
 @injectable()
 export default class UserController extends Controller {
@@ -54,11 +57,17 @@ export default class UserController extends Controller {
     });
 
     this.addRoute({
-      path: '/avatar',
+      path: '/logout',
+      method: HttpMethod.Delete,
+      handler: this.logout,
+    });
+
+    this.addRoute({
+      path: '/:userId/avatar',
       method: HttpMethod.Post,
       handler: this.uploadAvatar,
       middlewares: [
-        new PrivateRouteMiddleware(),
+        new ValidateObjectIdMiddleware('userId'),
         new ValidateDtoMiddleware(UpdateOfferDto),
         new UploadFileMiddleware(this.config.get(AppConfig.UPLOAD_DIRECTORY), 'avatar'),
       ],
@@ -94,8 +103,8 @@ export default class UserController extends Controller {
 
     if (!user) {
       throw new HttpError(
-        StatusCodes.UNAUTHORIZED,
-        'Unauthorized',
+        StatusCodes.NOT_FOUND,
+        'Not_found',
         'UserController',
       );
     }
@@ -109,8 +118,15 @@ export default class UserController extends Controller {
     this.ok(res, fillDto(LoginUserResponse, { token }));
   }
 
-  private async uploadAvatar( req: Request, res: Response ): Promise<void> {
-    const userId = req.user.id;
+  private async logout( _req: Request, res: Response ): Promise<void> {
+    this.noContent(res);
+  }
+
+  private async uploadAvatar(
+    req: Request<core.ParamsDictionary | ParamsGetUser>,
+    res: Response,
+  ): Promise<void> {
+    const { userId } = req.params;
     const uploadFile = { avatar: req.file?.filename };
     await this.userService.updateById(userId, uploadFile);
     this.created(res, fillDto(UploadUserAvatarResponse, uploadFile));

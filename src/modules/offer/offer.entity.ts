@@ -26,7 +26,7 @@ export class OfferEntity extends defaultClasses.TimeStamps {
   @prop({ required: true, allowMixed: Severity.ALLOW })
   public city!: City;
 
-  @prop({ required: true, default: '' })
+  @prop({ default: '' })
   public previewImage!: string;
 
   @prop({ required: true, default: [], allowMixed: Severity.ALLOW })

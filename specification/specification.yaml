@@ -107,7 +107,18 @@ paths:
         "401":
           $ref: '#/components/responses/401'
 
-  /users/avatar:
+  /users/logout:
+    delete:
+      tags:
+        - users
+      summary: Выход из закрытой части приложения
+      description: Выход из закрытой части приложения
+
+      responses:
+        "204":
+          description: Успешный выход.
+
+  /users/{userId}/avatar:
     post:
       tags:
         - users
@@ -115,6 +126,7 @@ paths:
       description: Загрузка аватара и сохранение в БД
       parameters:
         - $ref: '#/components/parameters/token'
+        - $ref: '#/components/parameters/userId'
 
       responses:
         "201":
@@ -428,7 +440,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/comment'
+                type: array
+                items:
+                  $ref: '#/components/schemas/comment'
 
         "401":
           $ref: '#/components/responses/401'
@@ -458,7 +472,7 @@ paths:
         "401":
           $ref: '#/components/responses/401'
 
-  /favorites/offerId:
+  /favorites/{offerId}/{status}:
     post:
       tags:
         - favorites
@@ -467,18 +481,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/token'
         - $ref: '#/components/parameters/offerId'
-
-      requestBody:
-        description: Данные для обновления состояния предложения.
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                status:
-                  type: number
-                  description: Обновлённое состояние предложения.
-                  example: 1
+        - $ref: '#/components/parameters/status'
 
       responses:
         "200":
@@ -879,6 +882,19 @@ components:
           type: array
           example: [ "Email must be valid email address" ]
 
+    status:
+      type: number
+      description: Новый статус избранного
+      enum:
+        - 0
+        - 1
+      example: 1
+
+    userId:
+      type: string
+      example: 632db7ffa4c4750721ab0616
+
+
   parameters:
     token:
       in: header
@@ -894,6 +910,20 @@ components:
       required: true
       schema:
         $ref: '#/components/schemas/offerIdParam'
+
+    status:
+      in: path
+      name: status
+      required: true
+      schema:
+        $ref: '#/components/schemas/status'
+
+    userId:
+      in: path
+      name: userId
+      required: true
+      schema:
+        $ref: '#/components/schemas/userId'
 
   responses:
     "400":

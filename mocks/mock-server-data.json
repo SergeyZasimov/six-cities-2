@@ -93,10 +93,10 @@
       "room-8-photo2.jpg"
     ],
     "housingTypes": [
-      "Apartment",
-      "House",
-      "Room",
-      "Hotel"
+      "apartment",
+      "house",
+      "room",
+      "hotel"
     ],
     "features": [
       "Breakfast",
