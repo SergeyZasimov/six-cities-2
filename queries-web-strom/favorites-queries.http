@@ -1,43 +1,17 @@
 #Favorites
 ### Add to Favorites
-POST {{baseUrl}}/favorites/63515618cab1187ebb68d3ae
+POST {{baseUrl}}/favorites/634c13e3f89a4bf8048054c9/1
 Authorization: Bearer {{authToken}}
-Content-Type: application/json
-
-{
-  "status": 1
-}
-
 
 ### Remove from Favorites
-POST {{baseUrl}}/favorites/63515618cab1187ebb68d3ae
+POST {{baseUrl}}/favorites/634c13e3f89a4bf8048054c9/0
 Authorization: Bearer {{authToken}}
-Content-Type: application/json
-
-{
-  "offerId": "63515618cab1187ebb68d3ae",
-  "status": 0
-}
 
 ### Get Favorites
 GET {{baseUrl}}/favorites
 Authorization: Bearer {{authToken}}
 
 ### Add to Favorites Invalid OfferId
-POST {{baseUrl}}/favorites/63515618cab1187ebb68d3ad
+POST {{baseUrl}}/favorites/63515618cab1187ebb68d3ad/1
 Authorization: Bearer {{authToken}}
 Content-Type: application/json
-
-{
-  "status": 1
-}
-
-
-### Add to Favorites Invalid body
-POST {{baseUrl}}/favorites/63515618cab1187ebb68d3ad
-Authorization: Bearer {{authToken}}
-Content-Type: application/json
-
-{
-  "status": 2
-}
